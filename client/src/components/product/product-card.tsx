@@ -52,7 +52,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         />
         
         {/* Badges */}
-        {product.discount > 0 && (
+        {product.discount && product.discount > 0 && (
           <Badge className="absolute top-3 left-3 bg-red-500 text-white">
             -{product.discount}%
           </Badge>
