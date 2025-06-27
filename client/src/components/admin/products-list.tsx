@@ -175,7 +175,7 @@ export default function ProductsList({ onEdit }: ProductsListProps) {
                           {parseInt(product.originalPrice).toLocaleString()} ₽
                         </div>
                       )}
-                      {product.discount > 0 && (
+                      {product.discount && product.discount > 0 && (
                         <Badge className="bg-red-100 text-red-800 hover:bg-red-200 mt-1">
                           -{product.discount}%
                         </Badge>
