@@ -87,6 +87,7 @@ export class MemStorage implements IStorage {
         brand: prod.brand || null,
         subcategory: prod.subcategory || null,
         volume: prod.volume || null,
+        images: prod.images || null,
         isPopular: prod.isPopular || false,
         isNew: prod.isNew || false,
         discount: prod.discount || 0,
