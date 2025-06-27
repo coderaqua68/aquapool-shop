@@ -72,6 +72,7 @@ export class MemStorage implements IStorage {
         price: "15990",
         originalPrice: "19990",
         category: "frame-pools",
+        subcategory: null,
         brand: "Intex",
         volume: "7000л",
         imageUrl: "https://images.unsplash.com/photo-1534430480872-3498386e7856",
@@ -85,6 +86,7 @@ export class MemStorage implements IStorage {
         }),
         inStock: true,
         isPopular: true,
+        isNew: false,
         discount: 20,
         rating: "4.8",
         reviewCount: 24
@@ -93,8 +95,11 @@ export class MemStorage implements IStorage {
         name: "Насос для бассейна 2000 л/ч",
         description: "Фильтр-насос для бассейнов до 10000 л",
         price: "8500",
+        originalPrice: null,
         category: "pumps-filters",
+        subcategory: null,
         brand: "Bestway",
+        volume: null,
         imageUrl: "https://pixabay.com/get/gf923fd370105fec386ca3292f64275afb115e445d595b7a00cdc82167279245d0574d80bfa008f19dd50f6cc4b0c3cad497f649384d7d28f3f4d9e76fc158575_1280.jpg",
         images: ["https://pixabay.com/get/gf923fd370105fec386ca3292f64275afb115e445d595b7a00cdc82167279245d0574d80bfa008f19dd50f6cc4b0c3cad497f649384d7d28f3f4d9e76fc158575_1280.jpg"],
         specifications: JSON.stringify({
@@ -105,6 +110,8 @@ export class MemStorage implements IStorage {
         }),
         inStock: true,
         isPopular: true,
+        isNew: false,
+        discount: 0,
         rating: "4.5",
         reviewCount: 18
       },
@@ -112,8 +119,11 @@ export class MemStorage implements IStorage {
         name: "Лестница металлическая 132 см",
         description: "Двухсторонняя лестница с платформой",
         price: "4200",
+        originalPrice: null,
         category: "ladders",
+        subcategory: null,
         brand: "Summer Fun",
+        volume: null,
         imageUrl: "https://images.unsplash.com/photo-1592861956120-e524fc739696",
         images: ["https://images.unsplash.com/photo-1592861956120-e524fc739696"],
         specifications: JSON.stringify({
@@ -125,6 +135,7 @@ export class MemStorage implements IStorage {
         inStock: true,
         isPopular: true,
         isNew: true,
+        discount: 0,
         rating: "4.9",
         reviewCount: 12
       },
@@ -132,8 +143,11 @@ export class MemStorage implements IStorage {
         name: "Набор химии для бассейна",
         description: "Стартовый набор средств для ухода за водой",
         price: "2890",
+        originalPrice: null,
         category: "chemicals",
+        subcategory: null,
         brand: "AquaDoctor",
+        volume: null,
         imageUrl: "https://pixabay.com/get/g7f639da33b0503aa4c565f71c93970afe1c966dd18a4b8b9ecb7e0be2920d6a4411b31eba307db8e989e6cadeb1e42bb6eaab8cb51727c2d835c0bc9f46dd9d3_1280.jpg",
         images: ["https://pixabay.com/get/g7f639da33b0503aa4c565f71c93970afe1c966dd18a4b8b9ecb7e0be2920d6a4411b31eba307db8e989e6cadeb1e42bb6eaab8cb51727c2d835c0bc9f46dd9d3_1280.jpg"],
         specifications: JSON.stringify({
@@ -145,6 +159,8 @@ export class MemStorage implements IStorage {
         }),
         inStock: true,
         isPopular: true,
+        isNew: false,
+        discount: 0,
         rating: "4.6",
         reviewCount: 31
       }
@@ -196,7 +212,21 @@ export class MemStorage implements IStorage {
 
   async createProduct(insertProduct: InsertProduct): Promise<Product> {
     const id = this.currentProductId++;
-    const product: Product = { ...insertProduct, id };
+    const product: Product = { 
+      ...insertProduct, 
+      id,
+      originalPrice: insertProduct.originalPrice ?? null,
+      subcategory: insertProduct.subcategory ?? null,
+      brand: insertProduct.brand ?? null,
+      volume: insertProduct.volume ?? null,
+      images: insertProduct.images ?? null,
+      inStock: insertProduct.inStock ?? true,
+      isPopular: insertProduct.isPopular ?? false,
+      isNew: insertProduct.isNew ?? false,
+      discount: insertProduct.discount ?? 0,
+      rating: insertProduct.rating ?? "0",
+      reviewCount: insertProduct.reviewCount ?? 0
+    };
     this.products.set(id, product);
     return product;
   }

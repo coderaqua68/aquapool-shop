@@ -14,6 +14,7 @@ import About from "./pages/about";
 import Contacts from "./pages/contacts";
 import NotFound from "@/pages/not-found";
 import CallbackModal from "./components/modals/callback-modal";
+import CartSidebar from "./components/cart/cart-sidebar";
 
 function Router() {
   return (
@@ -42,6 +43,7 @@ function App() {
           </main>
           <Footer />
         </div>
+        <CartSidebar />
         <CallbackModal />
         <Toaster />
       </TooltipProvider>
