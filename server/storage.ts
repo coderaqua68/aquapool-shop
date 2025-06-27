@@ -49,14 +49,20 @@ export class MemStorage implements IStorage {
   }
 
   private initializeData() {
-    // Initialize categories
+    // Initialize categories (structure based on intex-bassein.ru)
     const categoriesData = [
-      { name: "Каркасные бассейны", slug: "frame-pools", description: "Современные каркасные бассейны для дачи", imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5", productCount: 150 },
-      { name: "Насосы и фильтры", slug: "pumps-filters", description: "Оборудование для очистки воды", imageUrl: "https://pixabay.com/get/gd670bb74f0a47e34eda0506d0f0dadeda3f72eafc355e46ef91a1aa4773a75f9019f39aee1572c64843541647b3f91652665259c687decef7956b984d2d9a4d6_1280.jpg", productCount: 80 },
-      { name: "Лестницы", slug: "ladders", description: "Безопасные лестницы для бассейнов", imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b", productCount: 30 },
-      { name: "Подстилки и тенты", slug: "covers-underlays", description: "Защитные покрытия и подстилки", imageUrl: "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf", productCount: 45 },
-      { name: "Аксессуары", slug: "accessories", description: "Дополнительные аксессуары для бассейнов", imageUrl: "https://pixabay.com/get/g4913ea801ce2508f3b3a3494f5abc4d239a654ee734fa45b3df988fe4a188442ffbf94011391a59ac6703ddfb5144c7c3813e41137ecf8bf92c43290b09507a2_1280.jpg", productCount: 120 },
-      { name: "Химия и уход", slug: "chemicals", description: "Средства для ухода за водой", imageUrl: "https://pixabay.com/get/g357854e7fb59e092d285536302bda3ac39d11f3c4a30e7e8a482897a72dbd30428ef3ef15b5aa4aa7e80c6e98363f511e2044aa366f1f13f9ee4b4bc5170503a_1280.jpg", productCount: 60 }
+      { name: "Каркасные бассейны", slug: "frame-pools", description: "Прочные каркасные бассейны для дачи и постоянного использования", imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5", productCount: 200 },
+      { name: "Каркасные Intex", slug: "intex-frame", description: "Оригинальные каркасные бассейны бренда Intex всех серий", imageUrl: "https://images.unsplash.com/photo-1534430480872-3498386e7856", productCount: 85 },
+      { name: "Каркасные Bestway", slug: "bestway-frame", description: "Каркасные бассейны премиум класса Bestway Steel Pro", imageUrl: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f", productCount: 65 },
+      { name: "Надувные бассейны", slug: "inflatable-pools", description: "Легкие надувные бассейны для отдыха", imageUrl: "https://images.unsplash.com/photo-1557804506-669a67965ba0", productCount: 120 },
+      { name: "Морозоустойчивые", slug: "winter-pools", description: "Всесезонные морозоустойчивые бассейны", imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96", productCount: 35 },
+      { name: "Оборудование", slug: "equipment", description: "Насосы, фильтры и системы очистки", imageUrl: "https://pixabay.com/get/gd670bb74f0a47e34eda0506d0f0dadeda3f72eafc355e46ef91a1aa4773a75f9019f39aee1572c64843541647b3f91652665259c687decef7956b984d2d9a4d6_1280.jpg", productCount: 90 },
+      { name: "Павильоны", slug: "pavilions", description: "Павильоны и навесы для бассейнов", imageUrl: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2", productCount: 25 },
+      { name: "Химия и уход", slug: "chemicals", description: "Средства для обработки и дезинфекции воды", imageUrl: "https://images.unsplash.com/photo-1559827260-dc66d52bef19", productCount: 80 },
+      { name: "Покрытия и тенты", slug: "covers-underlays", description: "Защитные покрытия, тенты и подложки", imageUrl: "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf", productCount: 55 },
+      { name: "Лестницы и трапы", slug: "ladders", description: "Лестницы и трапы для безопасного входа", imageUrl: "https://images.unsplash.com/photo-1592861956120-e524fc739696", productCount: 40 },
+      { name: "Аксессуары", slug: "accessories", description: "Аксессуары для бассейнов и обслуживания", imageUrl: "https://images.unsplash.com/photo-1584464491033-06628f3a6b7b", productCount: 150 },
+      { name: "Отдых на воде", slug: "recreation", description: "Матрасы, игрушки и аксессуары для отдыха", imageUrl: "https://images.unsplash.com/photo-1530549387789-4c1017266635", productCount: 75 }
     ];
 
     categoriesData.forEach(cat => {
@@ -389,6 +395,260 @@ export class MemStorage implements IStorage {
         discount: 0,
         rating: "4.6",
         reviewCount: 9
+      },
+      
+      // Intex каркасные бассейны (по образцу intex-bassein.ru)
+      {
+        name: "Intex Ultra Frame XTR 549x132 см",
+        description: "Премиальный каркасный бассейн с песочным фильтром",
+        price: "89990",
+        originalPrice: "109990",
+        category: "intex-frame",
+        subcategory: "ultra-frame-xtr",
+        brand: "Intex",
+        volume: "26423л",
+        imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5",
+        images: ["https://images.unsplash.com/photo-1544551763-46a013bb70d5"],
+        specifications: JSON.stringify({
+          "Размер": "549 x 132 см",
+          "Объем": "26423 л",
+          "Материал каркаса": "Сталь с покрытием",
+          "Материал чаши": "ПВХ Super-Tough",
+          "Фильтр-насос": "Песочный 6000 л/ч",
+          "Лестница": "В комплекте",
+          "Подстилка": "В комплекте",
+          "Тент": "В комплекте"
+        }),
+        inStock: true,
+        isPopular: true,
+        isNew: false,
+        discount: 18,
+        rating: "4.9",
+        reviewCount: 67
+      },
+      {
+        name: "Intex Prism Frame 457x107 см",
+        description: "Каркасный бассейн серии Prism Frame с хромированными соединениями",
+        price: "32990",
+        originalPrice: null,
+        category: "intex-frame",
+        subcategory: "prism-frame",
+        brand: "Intex",
+        volume: "16805л",
+        imageUrl: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f",
+        images: ["https://images.unsplash.com/photo-1571902943202-507ec2618e8f"],
+        specifications: JSON.stringify({
+          "Размер": "457 x 107 см",
+          "Объем": "16805 л",
+          "Материал каркаса": "Сталь с порошковой окраской",
+          "Материал чаши": "Трёхслойный ПВХ",
+          "Фильтр-насос": "2006 л/ч",
+          "Лестница": "Опционально",
+          "Максимальная нагрузка": "Не указана"
+        }),
+        inStock: true,
+        isPopular: false,
+        isNew: true,
+        discount: 0,
+        rating: "4.7",
+        reviewCount: 34
+      },
+      {
+        name: "Intex Metal Frame 305x76 см",
+        description: "Классический каркасный бассейн серии Metal Frame",
+        price: "12990",
+        originalPrice: "15490",
+        category: "intex-frame",
+        subcategory: "metal-frame",
+        brand: "Intex",
+        volume: "4485л",
+        imageUrl: "https://images.unsplash.com/photo-1534430480872-3498386e7856",
+        images: ["https://images.unsplash.com/photo-1534430480872-3498386e7856"],
+        specifications: JSON.stringify({
+          "Размер": "305 x 76 см",
+          "Объем": "4485 л",
+          "Материал каркаса": "Оцинкованная сталь",
+          "Материал чаши": "ПВХ 3 слоя",
+          "Фильтр-насос": "1250 л/ч",
+          "Время сборки": "30 минут",
+          "Дренажный клапан": "Есть"
+        }),
+        inStock: true,
+        isPopular: true,
+        isNew: false,
+        discount: 16,
+        rating: "4.5",
+        reviewCount: 128
+      },
+      
+      // Bestway каркасные бассейны
+      {
+        name: "Bestway Steel Pro Max 366x100 см",
+        description: "Каркасный бассейн премиум-класса Steel Pro Max",
+        price: "28990",
+        originalPrice: null,
+        category: "bestway-frame",
+        subcategory: "steel-pro-max",
+        brand: "Bestway",
+        volume: "9150л",
+        imageUrl: "https://images.unsplash.com/photo-1557804506-669a67965ba0",
+        images: ["https://images.unsplash.com/photo-1557804506-669a67965ba0"],
+        specifications: JSON.stringify({
+          "Размер": "366 x 100 см",
+          "Объем": "9150 л",
+          "Материал каркаса": "Сталь с антикоррозийным покрытием",
+          "Материал чаши": "TriTech трёхслойный",
+          "Фильтр-насос": "2006 л/ч",
+          "Лестница": "В комплекте",
+          "Подстилка": "В комплекте",
+          "Сливной клапан": "ChemConnect"
+        }),
+        inStock: true,
+        isPopular: true,
+        isNew: false,
+        discount: 0,
+        rating: "4.8",
+        reviewCount: 89
+      },
+      {
+        name: "Bestway Power Steel 488x122 см",
+        description: "Овальный каркасный бассейн Power Steel с песочным фильтром",
+        price: "67990",
+        originalPrice: "79990",
+        category: "bestway-frame",
+        subcategory: "power-steel",
+        brand: "Bestway",
+        volume: "17203л",
+        imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96",
+        images: ["https://images.unsplash.com/photo-1578662996442-48f60103fc96"],
+        specifications: JSON.stringify({
+          "Размер": "488 x 305 x 122 см",
+          "Объем": "17203 л",
+          "Форма": "Овальный",
+          "Материал каркаса": "Сталь Corten",
+          "Материал чаши": "TriTech 3-слоя",
+          "Фильтр-насос": "Песочный 3785 л/ч",
+          "Лестница": "Двухсторонняя",
+          "Тент": "Flowclear"
+        }),
+        inStock: true,
+        isPopular: false,
+        isNew: true,
+        discount: 15,
+        rating: "4.6",
+        reviewCount: 23
+      },
+      
+      // Надувные бассейны
+      {
+        name: "Intex Easy Set 366x91 см",
+        description: "Надувной бассейн с системой Easy Set",
+        price: "8990",
+        originalPrice: null,
+        category: "inflatable-pools",
+        subcategory: "easy-set",
+        brand: "Intex",
+        volume: "7290л",
+        imageUrl: "https://images.unsplash.com/photo-1530549387789-4c1017266635",
+        images: ["https://images.unsplash.com/photo-1530549387789-4c1017266635"],
+        specifications: JSON.stringify({
+          "Размер": "366 x 91 см",
+          "Объем": "7290 л",
+          "Материал": "ПВХ Super-Tough",
+          "Надувное кольцо": "Верхнее",
+          "Фильтр-насос": "2006 л/ч",
+          "Время установки": "15 минут",
+          "Слив": "Дренажный клапан"
+        }),
+        inStock: true,
+        isPopular: true,
+        isNew: false,
+        discount: 0,
+        rating: "4.4",
+        reviewCount: 156
+      },
+      {
+        name: "Bestway Fast Set 457x107 см",
+        description: "Большой надувной бассейн Fast Set с картриджным фильтром",
+        price: "14990",
+        originalPrice: "17990",
+        category: "inflatable-pools",
+        subcategory: "fast-set",
+        brand: "Bestway",
+        volume: "16015л",
+        imageUrl: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2",
+        images: ["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2"],
+        specifications: JSON.stringify({
+          "Размер": "457 x 107 см",
+          "Объем": "16015 л",
+          "Материал": "Vinyl 0.55мм",
+          "Технология": "I-Beam конструкция",
+          "Фильтр-насос": "3028 л/ч",
+          "Заплатки": "В комплекте",
+          "Клапан": "Double Lock"
+        }),
+        inStock: true,
+        isPopular: false,
+        isNew: false,
+        discount: 17,
+        rating: "4.3",
+        reviewCount: 67
+      },
+      
+      // Оборудование
+      {
+        name: "Песочный фильтр Intex Krystal Clear 6000 л/ч",
+        description: "Мощный песочный фильтр для больших бассейнов",
+        price: "18500",
+        originalPrice: null,
+        category: "equipment",
+        subcategory: "sand-filters",
+        brand: "Intex",
+        volume: null,
+        imageUrl: "https://pixabay.com/get/gd670bb74f0a47e34eda0506d0f0dadeda3f72eafc355e46ef91a1aa4773a75f9019f39aee1572c64843541647b3f91652665259c687decef7956b984d2d9a4d6_1280.jpg",
+        images: ["https://pixabay.com/get/gd670bb74f0a47e34eda0506d0f0dadeda3f72eafc355e46ef91a1aa4773a75f9019f39aee1572c64843541647b3f91652665259c687decef7956b984d2d9a4d6_1280.jpg"],
+        specifications: JSON.stringify({
+          "Производительность": "6000 л/ч",
+          "Мощность": "230 Вт",
+          "Объем бака": "Не указан",
+          "Загрузка песка": "35 кг",
+          "Размер песка": "0.45-0.85 мм",
+          "6-ти позиционный клапан": "Есть",
+          "Манометр": "Встроенный"
+        }),
+        inStock: true,
+        isPopular: true,
+        isNew: false,
+        discount: 0,
+        rating: "4.7",
+        reviewCount: 45
+      },
+      {
+        name: "Тепловой насос Bestway 2.8 кВт",
+        description: "Тепловой насос для подогрева воды в бассейне",
+        price: "85000",
+        originalPrice: "95000",
+        category: "equipment",
+        subcategory: "heaters",
+        brand: "Bestway",
+        volume: null,
+        imageUrl: "https://images.unsplash.com/photo-1581094794329-c8112a89af12",
+        images: ["https://images.unsplash.com/photo-1581094794329-c8112a89af12"],
+        specifications: JSON.stringify({
+          "Мощность нагрева": "2.8 кВт",
+          "Потребляемая мощность": "0.65 кВт",
+          "COP": "4.3",
+          "Объем бассейна": "До 20 м³",
+          "Рабочая температура": "-7°C до +43°C",
+          "Хладагент": "R32",
+          "Подключение": "220В"
+        }),
+        inStock: true,
+        isPopular: false,
+        isNew: true,
+        discount: 11,
+        rating: "4.5",
+        reviewCount: 12
       }
     ];
 
