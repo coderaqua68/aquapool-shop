@@ -79,9 +79,9 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
+                <Link href="/delivery" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
                   Доставка и оплата
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
