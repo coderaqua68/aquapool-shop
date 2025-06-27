@@ -61,13 +61,17 @@ export class MemStorage implements IStorage {
     ];
 
     categoriesData.forEach(cat => {
-      const category: Category = { id: this.currentCategoryId++, ...cat };
+      const category: Category = { 
+        id: this.currentCategoryId++, 
+        ...cat,
+        imageUrl: null,
+        productCount: null
+      };
       this.categories.set(category.id, category);
     });
 
-    // Initialize products - Реальный каталог из basseyn.ru
+    // Initialize products - Реальные товары из basseyn.ru
     const productsData = [
-      // Реальные товары из CSV экспорта
       {
         name: "Каркасный бассейн Prism Frame 305x76см, 4485л, фил.-насос 1250л/ч, Intex, 28702",
         description: "Чаша бассейна изготовлена по запатентованной технологии SUPER-TOUGH из высококачественного трехслойного ПВХ: два слоя плотного винила и один — полиэстер для особой прочности.",
@@ -80,8 +84,7 @@ export class MemStorage implements IStorage {
         imageUrl: "https://basseyn.ru/upload/iblock/ae9/ae9a4bd1ec516620aee93d23d55d7aca.jpg",
         images: [
           "https://basseyn.ru/upload/iblock/ae9/ae9a4bd1ec516620aee93d23d55d7aca.jpg",
-          "https://basseyn.ru/upload/iblock/cda/cdab74dcdc0805db38b955b3581fdccc.png",
-          "https://basseyn.ru/upload/iblock/509/509e05ab6372ab825b6db0108a6ff9b6.jpg"
+          "https://basseyn.ru/upload/iblock/cda/cdab74dcdc0805db38b955b3581fdccc.png"
         ],
         specifications: JSON.stringify({
           "Диаметр": "305 см",
@@ -99,433 +102,111 @@ export class MemStorage implements IStorage {
         reviewCount: 32
       },
       {
-        name: "Бассейн каркасный Intex Prism Frame 26716 427x107 см",
-        description: "Круглый каркасный бассейн с картриджным фильтр-насосом",
-        price: "24990",
-        originalPrice: "29990",
+        name: "Каркасный бассейн Prism Frame 366x76см, 6503л, фил.-насос 2006л/ч, Intex, 28712",
+        description: "Чаша бассейна изготовлена по запатентованной технологии SUPER-TOUGH из высококачественного трехслойного ПВХ: два слоя плотного винила и один — полиэстер для особой прочности.",
+        price: "10080",
+        originalPrice: "12590",
         category: "frame-pools",
         subcategory: "prism-frame",
         brand: "Intex",
-        volume: "14062л",
-        imageUrl: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f",
-        images: ["https://images.unsplash.com/photo-1571902943202-507ec2618e8f"],
+        volume: "6503л",
+        imageUrl: "https://basseyn.ru/upload/iblock/e9a/e9ac1b8a9a46f6907c260922c5ff0ec6.jpg",
+        images: [
+          "https://basseyn.ru/upload/iblock/e9a/e9ac1b8a9a46f6907c260922c5ff0ec6.jpg",
+          "https://basseyn.ru/upload/iblock/78a/78a6c12a0cf62fd26697260491803fba.jpg"
+        ],
         specifications: JSON.stringify({
-          "Диаметр": "427 см",
-          "Высота": "107 см",
-          "Объем": "14062 л",
-          "Материал": "3-слойный ПВХ",
-          "Каркас": "Металлические стойки",
-          "Комплектация": "Насос 2006 л/ч, картридж",
-          "Артикул": "26716"
-        }),
-        inStock: true,
-        isPopular: true,
-        isNew: false,
-        discount: 17,
-        rating: "4.6",
-        reviewCount: 33
-      },
-      {
-        name: "Бассейн каркасный Intex Metal Frame 28200 305x76 см",
-        description: "Круглый каркасный бассейн начального уровня",
-        price: "8990",
-        originalPrice: null,
-        category: "frame-pools",
-        subcategory: "metal-frame",
-        brand: "Intex",
-        volume: "4485л",
-        imageUrl: "https://images.unsplash.com/photo-1530549387789-4c1017266635",
-        images: ["https://images.unsplash.com/photo-1530549387789-4c1017266635"],
-        specifications: JSON.stringify({
-          "Диаметр": "305 см",
+          "Диаметр": "366 см", 
           "Высота": "76 см",
-          "Объем": "4485 л",
-          "Материал": "Усиленный ПВХ",
-          "Каркас": "Оцинкованный металл",
-          "Артикул": "28200"
-        }),
-        inStock: true,
-        isPopular: false,
-        isNew: false,
-        discount: 0,
-        rating: "4.3",
-        reviewCount: 19
-      },
-      
-      // === КАРКАСНЫЕ БАССЕЙНЫ BESTWAY ===
-      {
-        name: "Бассейн каркасный Bestway Power Steel 56444 412x201x122 см",
-        description: "Овальный каркасный бассейн с песочным фильтр-насосом",
-        price: "52990",
-        originalPrice: "59990",
-        category: "frame-pools",
-        subcategory: "power-steel",
-        brand: "Bestway",
-        volume: "8645л",
-        imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b",
-        images: ["https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b"],
-        specifications: JSON.stringify({
-          "Размер": "412x201x122 см",
-          "Объем": "8645 л",
-          "Материал": "TriTech 3-слоя",
-          "Каркас": "Коррозионностойкий",
-          "Комплектация": "Песочный насос 2006 л/ч, лестница",
-          "Артикул": "56444"
+          "Объем": "6503 л при 90% заполнении",
+          "Вес упаковки": "24,649 кг",
+          "Серия": "Prism Frame",
+          "Артикул": "28712"
         }),
         inStock: true,
         isPopular: true,
-        isNew: true,
-        discount: 12,
-        rating: "4.7",
+        isNew: false,
+        discount: 20,
+        rating: "4.6",
         reviewCount: 28
       },
       {
-        name: "Бассейн каркасный Bestway Steel Pro Max 56416 366x100 см",
-        description: "Круглый каркасный бассейн с картриджным фильтром",
-        price: "18990",
-        originalPrice: "21990",
+        name: "Каркасный бассейн Steel Pro 300х201х66см, 3300л, фил.-насос 1249л/ч, Bestway, 56411 BW",
+        description: "Не требует бетонирования и подготовки ямы, все, что нужно, это плоская, горизонтальная площадка. Сезонный бассейн обладает простой конструкцией - может быть легко разобран и собран заново.",
+        price: "10080",
+        originalPrice: "12600",
         category: "frame-pools",
         subcategory: "steel-pro-max",
         brand: "Bestway",
-        volume: "9150л",
-        imageUrl: "https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c",
-        images: ["https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c"],
+        volume: "3300л",
+        imageUrl: "https://basseyn.ru/upload/iblock/171/tydf0adl1ds9qhvmg6kdl6dc4vn1vu39.jpeg",
+        images: [
+          "https://basseyn.ru/upload/iblock/171/tydf0adl1ds9qhvmg6kdl6dc4vn1vu39.jpeg",
+          "https://basseyn.ru/upload/iblock/da5/xn3wk780mq1335dj3cb298yhoqwaw6p7.jpeg"
+        ],
         specifications: JSON.stringify({
-          "Диаметр": "366 см",
-          "Высота": "100 см",
-          "Объем": "9150 л",
-          "Материал": "TriTech 3-слоя",
-          "Каркас": "Порошковое покрытие",
-          "Комплектация": "Насос 1249 л/ч",
-          "Артикул": "56416"
+          "Размер": "300 х 201 х 66 см",
+          "Максимальные монтажные размеры": "355 x 255 см",
+          "Объем при 90% заполнении": "3300 литров",
+          "Серия": "Steel Pro",
+          "Производительность фильтр-насоса": "1249 л/ч",
+          "Артикул": "56411 BW"
         }),
         inStock: true,
         isPopular: true,
         isNew: false,
-        discount: 14,
+        discount: 20,
         rating: "4.5",
-        reviewCount: 41
-      },
-      
-      // === НАДУВНЫЕ БАССЕЙНЫ ===
-      {
-        name: "Бассейн надувной Intex Easy Set 28120 305x76 см",
-        description: "Надувной бассейн с фильтр-насосом",
-        price: "5990",
-        originalPrice: null,
-        category: "inflatable-pools",
-        subcategory: "easy-set",
-        brand: "Intex",
-        volume: "3853л",
-        imageUrl: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43",
-        images: ["https://images.unsplash.com/photo-1560472354-b33ff0c44a43"],
-        specifications: JSON.stringify({
-          "Диаметр": "305 см",
-          "Высота": "76 см",
-          "Объем": "3853 л",
-          "Материал": "Винил 0.25 мм",
-          "Комплектация": "Насос 1250 л/ч",
-          "Время установки": "10 минут",
-          "Артикул": "28120"
-        }),
-        inStock: true,
-        isPopular: true,
-        isNew: false,
-        discount: 0,
-        rating: "4.4",
-        reviewCount: 67
-      },
-      {
-        name: "Бассейн надувной Bestway Fast Set 57270 366x76 см",
-        description: "Быстроустанавливаемый надувной бассейн",
-        price: "7490",
-        originalPrice: "8490",
-        category: "inflatable-pools",
-        subcategory: "fast-set",
-        brand: "Bestway",
-        volume: "5621л",
-        imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b",
-        images: ["https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b"],
-        specifications: JSON.stringify({
-          "Диаметр": "366 см",
-          "Высота": "76 см",
-          "Объем": "5621 л",
-          "Материал": "Tritech 3-слоя",
-          "Комплектация": "Фильтр-насос 1249 л/ч",
-          "Время установки": "15 минут",
-          "Артикул": "57270"
-        }),
-        inStock: true,
-        isPopular: false,
-        isNew: false,
-        discount: 12,
-        rating: "4.2",
-        reviewCount: 23
-      },
-      
-      // === НАСОСЫ И ФИЛЬТРЫ ===
-      {
-        name: "Песочный фильтр-насос Intex 26644 4000 л/ч",
-        description: "Песочный фильтр с 6-позиционным вентилем",
-        price: "16990",
-        originalPrice: null,
-        category: "pumps-filters",
-        subcategory: "sand-filters",
-        brand: "Intex",
-        volume: null,
-        imageUrl: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7",
-        images: ["https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7"],
-        specifications: JSON.stringify({
-          "Производительность": "4000 л/ч",
-          "Тип фильтра": "Песочный",
-          "Объем песка": "35 кг",
-          "Подключение": "32/38 мм",
-          "Мощность": "150 Вт",
-          "Артикул": "26644"
-        }),
-        inStock: true,
-        isPopular: true,
-        isNew: false,
-        discount: 0,
-        rating: "4.6",
-        reviewCount: 34
-      },
-      {
-        name: "Картриджный фильтр-насос Bestway 58381 1249 л/ч",
-        description: "Компактный картриджный фильтр-насос",
-        price: "4490",
-        originalPrice: null,
-        category: "pumps-filters",
-        subcategory: "cartridge-filters",
-        brand: "Bestway",
-        volume: null,
-        imageUrl: "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3",
-        images: ["https://images.unsplash.com/photo-1581833971358-2c8b550f87b3"],
-        specifications: JSON.stringify({
-          "Производительность": "1249 л/ч",
-          "Тип фильтра": "Картриджный",
-          "Подключение": "32 мм",
-          "Мощность": "16 Вт",
-          "Напряжение": "220-240 В",
-          "Артикул": "58381"
-        }),
-        inStock: true,
-        isPopular: false,
-        isNew: false,
-        discount: 0,
-        rating: "4.3",
-        reviewCount: 15
-      },
-      
-      // === ЛЕСТНИЦЫ ===
-      {
-        name: "Лестница Intex 28066 для бассейнов 132 см",
-        description: "Лестница безопасности с платформой и замком",
-        price: "7990",
-        originalPrice: null,
-        category: "ladders",
-        subcategory: null,
-        brand: "Intex",
-        volume: null,
-        imageUrl: "https://images.unsplash.com/photo-1590736969955-71cc94901144",
-        images: ["https://images.unsplash.com/photo-1590736969955-71cc94901144"],
-        specifications: JSON.stringify({
-          "Высота бассейна": "до 132 см",
-          "Материал": "Нержавеющая сталь",
-          "Ступени": "4 ступени",
-          "Платформа": "Да",
-          "Замок безопасности": "Да",
-          "Артикул": "28066"
-        }),
-        inStock: true,
-        isPopular: true,
-        isNew: false,
-        discount: 0,
-        rating: "4.7",
         reviewCount: 22
       },
       {
-        name: "Лестница Bestway 58331 для бассейнов 107 см",
-        description: "Двухсторонняя лестница с широкими ступенями",
-        price: "5990",
-        originalPrice: "6990",
-        category: "ladders",
+        name: "Чаша каркасного бассейна 366*122см",
+        description: "Запасная чаша для каркасного бассейна диаметром 366 см и высотой 122 см. Высококачественный материал, устойчивый к воздействию хлора и UV-излучения.",
+        price: "9960",
+        originalPrice: "12450",
+        category: "accessories",
+        subcategory: null,
+        brand: "Другие",
+        volume: null,
+        imageUrl: "https://basseyn.ru/upload/iblock/5dd/5ddf4e93cf633b24ebb542708d0d2074.jpg",
+        images: ["https://basseyn.ru/upload/iblock/5dd/5ddf4e93cf633b24ebb542708d0d2074.jpg"],
+        specifications: JSON.stringify({
+          "Диаметр": "366 см",
+          "Высота": "122 см",
+          "Материал": "ПВХ",
+          "Артикул": "56420ASS18"
+        }),
+        inStock: true,
+        isPopular: false,
+        isNew: false,
+        discount: 20,
+        rating: "4.3",
+        reviewCount: 15
+      },
+      {
+        name: "Каркасный бассейн 305х100см, 6148л",
+        description: "Каркасный бассейн Bestway отличается высокой прочностью и устойчивостью. Простая установка без инструментов.",
+        price: "10240",
+        originalPrice: "12800",
+        category: "frame-pools",
         subcategory: null,
         brand: "Bestway",
-        volume: null,
-        imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b",
-        images: ["https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b"],
+        volume: "6148л",
+        imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5",
+        images: ["https://images.unsplash.com/photo-1544551763-46a013bb70d5"],
         specifications: JSON.stringify({
-          "Высота бассейна": "до 107 см",
-          "Материал": "Оцинкованная сталь",
-          "Ступени": "3 ступени",
-          "Вес": "8.5 кг",
-          "Нагрузка": "до 120 кг",
-          "Артикул": "58331"
+          "Диаметр": "305 см",
+          "Высота": "100 см", 
+          "Объем": "6148 л",
+          "Время установки": "30 мин",
+          "Артикул": "5617N BW"
         }),
         inStock: true,
         isPopular: false,
-        isNew: false,
-        discount: 14,
+        isNew: true,
+        discount: 20,
         rating: "4.4",
         reviewCount: 18
-      },
-      
-      // === ТЕНТЫ И ПОДСТИЛКИ ===
-      {
-        name: "Тент солнечный Intex 29022 для бассейнов 457 см",
-        description: "Нагревающий тент с пузырьковым покрытием",
-        price: "3990",
-        originalPrice: null,
-        category: "covers-underlays",
-        subcategory: "solar-covers",
-        brand: "Intex",
-        volume: null,
-        imageUrl: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f",
-        images: ["https://images.unsplash.com/photo-1571902943202-507ec2618e8f"],
-        specifications: JSON.stringify({
-          "Диаметр": "457 см",
-          "Материал": "PE пленка 120 мкм",
-          "Тип": "Пузырьковое покрытие",
-          "Нагрев воды": "до +8°C",
-          "Сохранение тепла": "до 95%",
-          "Артикул": "29022"
-        }),
-        inStock: true,
-        isPopular: true,
-        isNew: false,
-        discount: 0,
-        rating: "4.5",
-        reviewCount: 31
-      },
-      {
-        name: "Подстилка Bestway 58003 для бассейнов 396x396 см",
-        description: "Защитная подстилка под каркасные бассейны",
-        price: "1990",
-        originalPrice: null,
-        category: "covers-underlays",
-        subcategory: "ground-cloths",
-        brand: "Bestway",
-        volume: null,
-        imageUrl: "https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c",
-        images: ["https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c"],
-        specifications: JSON.stringify({
-          "Размер": "396x396 см",
-          "Материал": "Полиэтилен высокой плотности",
-          "Толщина": "0.25 мм",
-          "Защита": "От проколов и повреждений",
-          "Артикул": "58003"
-        }),
-        inStock: true,
-        isPopular: false,
-        isNew: false,
-        discount: 0,
-        rating: "4.2",
-        reviewCount: 12
-      },
-      
-      // === ХИМИЯ ДЛЯ БАССЕЙНОВ ===
-      {
-        name: "Набор химии Intex для ухода за водой стартовый",
-        description: "Комплект средств для дезинфекции и очистки воды",
-        price: "2490",
-        originalPrice: null,
-        category: "chemicals",
-        subcategory: "starter-kits",
-        brand: "Intex",
-        volume: null,
-        imageUrl: "https://images.unsplash.com/photo-1559827260-dc66d52bef19",
-        images: ["https://images.unsplash.com/photo-1559827260-dc66d52bef19"],
-        specifications: JSON.stringify({
-          "Состав": "Хлор, pH+, pH-",
-          "Объем бассейна": "до 10000 л",
-          "Дезинфекция": "Хлорные таблетки",
-          "Регулировка pH": "Включена",
-          "Срок годности": "3 года"
-        }),
-        inStock: true,
-        isPopular: true,
-        isNew: false,
-        discount: 0,
-        rating: "4.6",
-        reviewCount: 45
-      },
-      {
-        name: "Хлор шоковый Маркопул Кемиклс Хлоритэкс 1 кг",
-        description: "Быстрорастворимый хлор для шоковой обработки",
-        price: "890",
-        originalPrice: null,
-        category: "chemicals",
-        subcategory: "chlorine",
-        brand: "Маркопул",
-        volume: "1кг",
-        imageUrl: "https://images.unsplash.com/photo-1583947215259-38e31be8751f",
-        images: ["https://images.unsplash.com/photo-1583947215259-38e31be8751f"],
-        specifications: JSON.stringify({
-          "Вес": "1 кг",
-          "Активный хлор": "56%",
-          "Растворимость": "Быстрорастворимый",
-          "Применение": "Шоковая дезинфекция",
-          "Расход": "20 г на 1000 л"
-        }),
-        inStock: true,
-        isPopular: false,
-        isNew: false,
-        discount: 0,
-        rating: "4.4",
-        reviewCount: 28
-      },
-      
-      // === АКСЕССУАРЫ ===
-      {
-        name: "Набор для чистки Intex 28003 сачок + щетка + шланг",
-        description: "Комплект аксессуаров для уборки бассейна",
-        price: "2990",
-        originalPrice: null,
-        category: "accessories",
-        subcategory: "cleaning-kits",
-        brand: "Intex",
-        volume: null,
-        imageUrl: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f",
-        images: ["https://images.unsplash.com/photo-1571902943202-507ec2618e8f"],
-        specifications: JSON.stringify({
-          "Сачок": "Алюминиевая рукоятка",
-          "Щетка": "Для стенок и дна",
-          "Шланг": "7.5 м для пылесоса",
-          "Комплектация": "3 предмета",
-          "Артикул": "28003"
-        }),
-        inStock: true,
-        isPopular: true,
-        isNew: false,
-        discount: 0,
-        rating: "4.3",
-        reviewCount: 19
-      },
-      {
-        name: "Термометр плавающий Bestway для бассейна",
-        description: "Водонепроницаемый термометр с привязью",
-        price: "590",
-        originalPrice: null,
-        category: "accessories",
-        subcategory: "thermometers",
-        brand: "Bestway",
-        volume: null,
-        imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b",
-        images: ["https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b"],
-        specifications: JSON.stringify({
-          "Тип": "Плавающий",
-          "Диапазон": "-10°C до +50°C",
-          "Материал": "Пластик ABS",
-          "Привязь": "В комплекте",
-          "Размер": "15 см"
-        }),
-        inStock: true,
-        isPopular: false,
-        isNew: false,
-        discount: 0,
-        rating: "4.1",
-        reviewCount: 7
       }
     ];
 
@@ -556,12 +237,23 @@ export class MemStorage implements IStorage {
         results = results.filter(p => 
           p.name.toLowerCase().includes(searchLower) ||
           p.description.toLowerCase().includes(searchLower) ||
-          p.brand.toLowerCase().includes(searchLower)
+          (p.brand && p.brand.toLowerCase().includes(searchLower))
         );
       }
     }
     
-    return results;
+    return results.sort((a, b) => {
+      // Популярные товары сначала
+      if (a.isPopular && !b.isPopular) return -1;
+      if (!a.isPopular && b.isPopular) return 1;
+      
+      // Новые товары сначала среди одинаково популярных
+      if (a.isNew && !b.isNew) return -1;
+      if (!a.isNew && b.isNew) return 1;
+      
+      // По умолчанию по ID
+      return a.id - b.id;
+    });
   }
 
   async getProduct(id: number): Promise<Product | undefined> {
@@ -569,7 +261,10 @@ export class MemStorage implements IStorage {
   }
 
   async getPopularProducts(): Promise<Product[]> {
-    return Array.from(this.products.values()).filter(p => p.isPopular);
+    return Array.from(this.products.values())
+      .filter(p => p.isPopular)
+      .sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating))
+      .slice(0, 8);
   }
 
   async createProduct(insertProduct: InsertProduct): Promise<Product> {
@@ -592,7 +287,10 @@ export class MemStorage implements IStorage {
   async createCategory(insertCategory: InsertCategory): Promise<Category> {
     const category: Category = { 
       id: this.currentCategoryId++, 
-      ...insertCategory 
+      ...insertCategory,
+      description: insertCategory.description || null,
+      imageUrl: insertCategory.imageUrl || null,
+      productCount: insertCategory.productCount || null
     };
     this.categories.set(category.id, category);
     return category;
@@ -601,8 +299,8 @@ export class MemStorage implements IStorage {
   async createOrder(insertOrder: InsertOrder): Promise<Order> {
     const order: Order = { 
       id: this.currentOrderId++, 
-      createdAt: new Date().toISOString(),
-      ...insertOrder 
+      ...insertOrder,
+      createdAt: new Date()
     };
     this.orders.set(order.id, order);
     return order;
@@ -615,8 +313,8 @@ export class MemStorage implements IStorage {
   async createConsultation(insertConsultation: InsertConsultation): Promise<Consultation> {
     const consultation: Consultation = { 
       id: this.currentConsultationId++, 
-      createdAt: new Date().toISOString(),
-      ...insertConsultation 
+      ...insertConsultation,
+      createdAt: new Date()
     };
     this.consultations.set(consultation.id, consultation);
     return consultation;
