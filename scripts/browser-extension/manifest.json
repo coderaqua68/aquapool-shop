@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Intex Pool Scraper",
+  "version": "1.0",
+  "description": "Парсер товаров с сайта intex-bassein.ru",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "downloads"
+  ],
+  "host_permissions": [
+    "https://intex-bassein.ru/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://intex-bassein.ru/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Intex Pool Scraper"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
