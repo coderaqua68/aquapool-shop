@@ -434,4 +434,4 @@ export const storage = new MemStorage();`;
 fs.writeFileSync('../server/storage.ts', storageTemplate, 'utf-8');
 console.log('✅ Storage.ts обновлен с улучшенными описаниями товаров!');
 
-main();
+// Автозапуск выполнен
