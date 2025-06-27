@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -8,11 +9,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Heart, Star, Truck, Shield, ArrowLeft } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { Link } from "wouter";
+import OneClickOrderModal from "@/components/modals/one-click-order-modal";
 import type { Product } from "@shared/schema";
 
 export default function ProductPage() {
   const params = useParams<{ id: string }>();
   const { addItem } = useCart();
+  const [isOneClickModalOpen, setIsOneClickModalOpen] = useState(false);
 
   const { data: product, isLoading } = useQuery<Product>({
     queryKey: [`/api/products/${params.id}`],
@@ -101,7 +104,7 @@ export default function ProductPage() {
             
             {/* Badges */}
             <div className="absolute top-4 left-4 space-y-2">
-              {product.discount > 0 && (
+              {product.discount && product.discount > 0 && (
                 <Badge className="bg-red-500 text-white">
                   -{product.discount}%
                 </Badge>
@@ -111,7 +114,7 @@ export default function ProductPage() {
                   NEW
                 </Badge>
               )}
-              {product.isPopular && !product.isNew && !product.discount && (
+              {product.isPopular && !product.isNew && (!product.discount || product.discount === 0) && (
                 <Badge className="bg-[hsl(207,90%,54%)] text-white">
                   ХИТ
                 </Badge>
@@ -147,9 +150,9 @@ export default function ProductPage() {
                 </span>
               )}
             </div>
-            {product.discount > 0 && (
+            {product.discount && product.discount > 0 && product.originalPrice && (
               <p className="text-green-600 font-medium">
-                Экономия: {(parseInt(product.originalPrice!) - parseInt(product.price)).toLocaleString()} ₽
+                Экономия: {(parseInt(product.originalPrice) - parseInt(product.price)).toLocaleString()} ₽
               </p>
             )}
           </div>
@@ -178,7 +181,12 @@ export default function ProductPage() {
               </Button>
             </div>
             
-            <Button variant="outline" className="w-full" size="lg">
+            <Button 
+              variant="outline" 
+              className="w-full" 
+              size="lg"
+              onClick={() => setIsOneClickModalOpen(true)}
+            >
               Купить в 1 клик
             </Button>
           </div>
@@ -272,6 +280,15 @@ export default function ProductPage() {
             ))}
           </div>
         </div>
+      )}
+
+      {/* One Click Order Modal */}
+      {product && (
+        <OneClickOrderModal
+          isOpen={isOneClickModalOpen}
+          onClose={() => setIsOneClickModalOpen(false)}
+          product={product}
+        />
       )}
     </div>
   );
