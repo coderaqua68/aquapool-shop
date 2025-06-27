@@ -108,8 +108,14 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
 
 ## Changelog
 
-Changelog:
-- June 27, 2025. Initial setup
+- June 27, 2025: Initial setup with e-commerce foundation
+- June 27, 2025: Added expanded catalog structure based on intex-bassein.ru analysis
+  - Created 12 detailed product categories with subcategories
+  - Added 20+ realistic products across different brands (Intex, Bestway)
+  - Implemented detailed product specifications and descriptions
+  - Enhanced cart functionality with localStorage persistence
+  - Added toast notifications for better UX
+  - Created comprehensive delivery information page
 
 ## User Preferences
 
