@@ -10,6 +10,7 @@ import { Heart, Star, Truck, Shield, ArrowLeft } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { Link } from "wouter";
 import OneClickOrderModal from "@/components/modals/one-click-order-modal";
+import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@shared/schema";
 
 export default function ProductPage() {

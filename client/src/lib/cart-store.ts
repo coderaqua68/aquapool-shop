@@ -23,6 +23,34 @@ class CartStoreImpl implements CartStore {
   isOpen = false;
   listeners: (() => void)[] = [];
 
+  constructor() {
+    // Load cart from localStorage on initialization
+    this.loadFromStorage();
+  }
+
+  private loadFromStorage() {
+    if (typeof window !== 'undefined') {
+      try {
+        const savedCart = localStorage.getItem('aquapool-cart');
+        if (savedCart) {
+          this.items = JSON.parse(savedCart);
+        }
+      } catch (error) {
+        console.warn('Failed to load cart from localStorage:', error);
+      }
+    }
+  }
+
+  private saveToStorage() {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('aquapool-cart', JSON.stringify(this.items));
+      } catch (error) {
+        console.warn('Failed to save cart to localStorage:', error);
+      }
+    }
+  }
+
   subscribe(listener: () => void) {
     this.listeners.push(listener);
     return () => {
@@ -32,6 +60,7 @@ class CartStoreImpl implements CartStore {
 
   notify() {
     this.listeners.forEach(listener => listener());
+    this.saveToStorage();
   }
 
   addItem(item: Omit<CartItem, 'quantity'>) {
