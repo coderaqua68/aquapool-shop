@@ -1,7 +1,28 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertOrderSchema, insertConsultationSchema } from "@shared/schema";
+import { insertOrderSchema, insertConsultationSchema, insertProductSchema } from "@shared/schema";
+
+// Простая авторизация для админ панели
+const ADMIN_LOGIN = "admin";
+const ADMIN_PASSWORD = "aquapool2025";
+
+const adminAuth = (req: any, res: any, next: any) => {
+  const authHeader = req.headers.authorization;
+  
+  if (!authHeader || !authHeader.startsWith('Basic ')) {
+    return res.status(401).json({ message: "Необходима авторизация" });
+  }
+  
+  const credentials = Buffer.from(authHeader.slice(6), 'base64').toString();
+  const [login, password] = credentials.split(':');
+  
+  if (login !== ADMIN_LOGIN || password !== ADMIN_PASSWORD) {
+    return res.status(401).json({ message: "Неверный логин или пароль" });
+  }
+  
+  next();
+};
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Products
@@ -89,6 +110,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(consultation);
     } catch (error) {
       res.status(400).json({ message: "Invalid consultation data", error });
+    }
+  });
+
+  // Admin API routes
+  app.post("/api/admin/login", (req, res) => {
+    const { login, password } = req.body;
+    
+    if (login === ADMIN_LOGIN && password === ADMIN_PASSWORD) {
+      const token = Buffer.from(`${login}:${password}`).toString('base64');
+      res.json({ 
+        success: true, 
+        message: "Авторизация успешна",
+        token: `Basic ${token}`
+      });
+    } else {
+      res.status(401).json({ 
+        success: false, 
+        message: "Неверный логин или пароль" 
+      });
+    }
+  });
+
+  // Admin Products CRUD
+  app.post("/api/admin/products", adminAuth, async (req, res) => {
+    try {
+      const productData = insertProductSchema.parse(req.body);
+      const product = await storage.createProduct(productData);
+      res.status(201).json(product);
+    } catch (error) {
+      res.status(400).json({ message: "Ошибка при создании товара", error });
+    }
+  });
+
+  app.put("/api/admin/products/:id", adminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updateData = req.body; // Частичное обновление
+      const product = await storage.updateProduct(id, updateData);
+      
+      if (!product) {
+        return res.status(404).json({ message: "Товар не найден" });
+      }
+      
+      res.json(product);
+    } catch (error) {
+      res.status(400).json({ message: "Ошибка при обновлении товара", error });
+    }
+  });
+
+  app.delete("/api/admin/products/:id", adminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteProduct(id);
+      
+      if (!deleted) {
+        return res.status(404).json({ message: "Товар не найден" });
+      }
+      
+      res.json({ message: "Товар удален успешно" });
+    } catch (error) {
+      res.status(500).json({ message: "Ошибка при удалении товара", error });
     }
   });
 
