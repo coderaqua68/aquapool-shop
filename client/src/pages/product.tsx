@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Heart, Star, Truck, Shield, ArrowLeft } from "lucide-react";
+import { Heart, Star, Truck, Shield, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { Link } from "wouter";
 import OneClickOrderModal from "@/components/modals/one-click-order-modal";
@@ -18,6 +18,7 @@ export default function ProductPage() {
   const { addItem } = useCart();
   const { toast } = useToast();
   const [isOneClickModalOpen, setIsOneClickModalOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const { data: product, isLoading } = useQuery<Product>({
     queryKey: [`/api/products/${params.id}`],
@@ -99,14 +100,32 @@ export default function ProductPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-        {/* Product Images */}
+        {/* Product Images Gallery */}
         <div className="space-y-4">
           <div className="relative">
             <img
-              src={product.imageUrl}
+              src={product.images && product.images.length > 0 ? product.images[selectedImageIndex] : product.imageUrl}
               alt={product.name}
               className="w-full h-96 object-cover rounded-lg"
             />
+            
+            {/* Navigation arrows for multiple images */}
+            {product.images && product.images.length > 1 && (
+              <>
+                <button
+                  onClick={() => setSelectedImageIndex(prev => prev > 0 ? prev - 1 : product.images!.length - 1)}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => setSelectedImageIndex(prev => prev < product.images!.length - 1 ? prev + 1 : 0)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </>
+            )}
             
             {/* Badges */}
             <div className="absolute top-4 left-4 space-y-2">
@@ -126,7 +145,35 @@ export default function ProductPage() {
                 </Badge>
               )}
             </div>
+
+            {/* Image counter */}
+            {product.images && product.images.length > 1 && (
+              <div className="absolute bottom-4 right-4 bg-black/50 text-white px-2 py-1 rounded text-sm">
+                {selectedImageIndex + 1} / {product.images.length}
+              </div>
+            )}
           </div>
+
+          {/* Thumbnail gallery */}
+          {product.images && product.images.length > 1 && (
+            <div className="flex space-x-2 overflow-x-auto">
+              {product.images.map((image, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedImageIndex(index)}
+                  className={`flex-shrink-0 w-16 h-16 rounded border-2 overflow-hidden ${
+                    selectedImageIndex === index ? 'border-[hsl(207,90%,54%)]' : 'border-gray-200'
+                  }`}
+                >
+                  <img
+                    src={image}
+                    alt={`${product.name} - фото ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Product Info */}

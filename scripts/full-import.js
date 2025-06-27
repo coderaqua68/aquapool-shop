@@ -322,7 +322,7 @@ class FullCatalogImporter {
     code += `const productsData = ${JSON.stringify(this.products.slice(0, 50), null, 2)};\n\n`; // Первые 50 для начала
     code += `// ... остальные товары будут добавлены динамически\n`;
 
-    fs.writeFileSync('scripts/storage-generated.js', code, 'utf-8');
+    fs.writeFileSync('./storage-generated.js', code, 'utf-8');
     console.log('💾 Код сохранен в scripts/storage-generated.js');
   }
 }
