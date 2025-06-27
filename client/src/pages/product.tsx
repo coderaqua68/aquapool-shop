@@ -16,6 +16,7 @@ import type { Product } from "@shared/schema";
 export default function ProductPage() {
   const params = useParams<{ id: string }>();
   const { addItem } = useCart();
+  const { toast } = useToast();
   const [isOneClickModalOpen, setIsOneClickModalOpen] = useState(false);
 
   const { data: product, isLoading } = useQuery<Product>({
@@ -34,6 +35,10 @@ export default function ProductPage() {
         name: product.name,
         price: product.price,
         imageUrl: product.imageUrl,
+      });
+      toast({
+        title: "Товар добавлен в корзину",
+        description: `${product.name} успешно добавлен в корзину`,
       });
     }
   };

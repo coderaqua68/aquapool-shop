@@ -3,6 +3,7 @@ import { Heart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/hooks/use-cart";
+import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@shared/schema";
 
 interface ProductCardProps {
@@ -11,6 +12,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCart();
+  const { toast } = useToast();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -19,6 +21,10 @@ export default function ProductCard({ product }: ProductCardProps) {
       name: product.name,
       price: product.price,
       imageUrl: product.imageUrl,
+    });
+    toast({
+      title: "Товар добавлен в корзину",
+      description: `${product.name} успешно добавлен в корзину`,
     });
   };
 
