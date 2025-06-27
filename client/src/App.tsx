@@ -13,6 +13,7 @@ import Checkout from "./pages/checkout";
 import About from "./pages/about";
 import Contacts from "./pages/contacts";
 import Delivery from "./pages/delivery";
+import Payment from "./pages/payment";
 import NotFound from "@/pages/not-found";
 import CallbackModal from "./components/modals/callback-modal";
 import CartSidebar from "./components/cart/cart-sidebar";
@@ -29,6 +30,7 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/contacts" component={Contacts} />
       <Route path="/delivery" component={Delivery} />
+      <Route path="/payment" component={Payment} />
       <Route component={NotFound} />
     </Switch>
   );

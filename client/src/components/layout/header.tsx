@@ -1,10 +1,19 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Heart, ShoppingCart, Menu, Phone, MapPin, Truck } from "lucide-react";
+import { Search, Heart, ShoppingCart, Menu, Phone, MapPin, Truck, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/hooks/use-cart";
 import { cartStore } from "@/lib/cart-store";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
 
 export default function Header() {
   const [, setLocation] = useLocation();
@@ -18,13 +27,84 @@ export default function Header() {
     }
   };
 
-  const categories = [
-    { name: "Каркасные бассейны", slug: "frame-pools" },
-    { name: "Насосы и фильтры", slug: "pumps-filters" },
-    { name: "Лестницы", slug: "ladders" },
-    { name: "Подстилки и тенты", slug: "covers-underlays" },
-    { name: "Аксессуары", slug: "accessories" },
-    { name: "Химия и уход", slug: "chemicals" },
+  const catalogCategories = [
+    { 
+      name: "Каркасные бассейны", 
+      slug: "frame-pools",
+      subcategories: [
+        "Ultra Frame",
+        "Prism Frame", 
+        "Steel Pro Max",
+        "Metal Frame"
+      ]
+    },
+    { 
+      name: "Надувные бассейны", 
+      slug: "inflatable-pools",
+      subcategories: [
+        "Easy Set",
+        "Fast Set",
+        "Snap Set",
+        "Детские бассейны"
+      ]
+    },
+    { 
+      name: "Насосы и фильтры", 
+      slug: "pumps-filters",
+      subcategories: [
+        "Фильтр-насосы",
+        "Песочные фильтры",
+        "Картриджные фильтры",
+        "Скиммеры"
+      ]
+    },
+    { 
+      name: "Лестницы", 
+      slug: "ladders",
+      subcategories: [
+        "Лестницы безопасности",
+        "Стандартные лестницы",
+        "Поручни"
+      ]
+    },
+    { 
+      name: "Тенты и подстилки", 
+      slug: "covers-underlays",
+      subcategories: [
+        "Защитные тенты",
+        "Солнечные покрывала",
+        "Подстилки",
+        "Покрывала"
+      ]
+    },
+    { 
+      name: "Химия для бассейнов", 
+      slug: "chemicals",
+      subcategories: [
+        "Дезинфекция",
+        "pH регуляторы",
+        "Альгициды",
+        "Тест-наборы"
+      ]
+    },
+    { 
+      name: "Аксессуары", 
+      slug: "accessories",
+      subcategories: [
+        "Чаши для бассейнов",
+        "Комплектующие",
+        "Инструменты для чистки",
+        "Игрушки для бассейна"
+      ]
+    }
+  ];
+
+  const navigationPages = [
+    { name: "Главная", href: "/" },
+    { name: "О нас", href: "/about" },
+    { name: "Доставка", href: "/delivery" },
+    { name: "Оплата", href: "/payment" },
+    { name: "Контакты", href: "/contacts" }
   ];
 
   return (
@@ -114,18 +194,58 @@ export default function Header() {
 
         {/* Navigation */}
         <nav className="hidden md:block py-3 border-t border-gray-100">
-          <ul className="flex space-x-8">
-            {categories.map((category) => (
-              <li key={category.slug}>
-                <Link
-                  href={`/catalog/${category.slug}`}
-                  className="text-gray-700 hover:text-[hsl(207,90%,54%)] font-medium transition-colors"
-                >
-                  {category.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <NavigationMenu>
+            <NavigationMenuList className="space-x-6">
+              {/* Catalog Dropdown */}
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="text-gray-700 hover:text-[hsl(207,90%,54%)] font-medium bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent">
+                  <span className="flex items-center">
+                    Каталог
+                    <ChevronDown className="ml-1 h-4 w-4" />
+                  </span>
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="grid w-[800px] grid-cols-2 gap-6 p-6">
+                    {catalogCategories.map((category) => (
+                      <div key={category.slug} className="space-y-3">
+                        <Link
+                          href={`/catalog/${category.slug}`}
+                          className="text-lg font-semibold text-gray-900 hover:text-[hsl(207,90%,54%)] transition-colors block"
+                        >
+                          {category.name}
+                        </Link>
+                        <div className="space-y-1">
+                          {category.subcategories.map((sub) => (
+                            <Link
+                              key={sub}
+                              href={`/catalog/${category.slug}?subcategory=${encodeURIComponent(sub)}`}
+                              className="block text-sm text-gray-600 hover:text-[hsl(207,90%,54%)] transition-colors py-1"
+                            >
+                              {sub}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+
+              {/* Other Navigation Links */}
+              {navigationPages.slice(1).map((page) => (
+                <NavigationMenuItem key={page.href}>
+                  <NavigationMenuLink asChild>
+                    <Link
+                      href={page.href}
+                      className="text-gray-700 hover:text-[hsl(207,90%,54%)] font-medium transition-colors px-3 py-2 rounded-md hover:bg-blue-50"
+                    >
+                      {page.name}
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
         </nav>
       </div>
     </header>
