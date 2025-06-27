@@ -65,34 +65,38 @@ export class MemStorage implements IStorage {
       this.categories.set(category.id, category);
     });
 
-    // Initialize products - Реальный каталог на основе intex-bassein.ru
+    // Initialize products - Реальный каталог из basseyn.ru
     const productsData = [
-      // === КАРКАСНЫЕ БАССЕЙНЫ INTEX ===
+      // Реальные товары из CSV экспорта
       {
-        name: "Бассейн каркасный Intex Ultra XTR Frame 26356 549x274x132 см",
-        description: "Прямоугольный каркасный бассейн с фильтр-насосом 5678 л/ч, тентом, лестницей",
-        price: "89990",
-        originalPrice: "99990",
+        name: "Каркасный бассейн Prism Frame 305x76см, 4485л, фил.-насос 1250л/ч, Intex, 28702",
+        description: "Чаша бассейна изготовлена по запатентованной технологии SUPER-TOUGH из высококачественного трехслойного ПВХ: два слоя плотного винила и один — полиэстер для особой прочности.",
+        price: "10070",
+        originalPrice: "12580",
         category: "frame-pools",
-        subcategory: "ultra-frame-xtr",
+        subcategory: "prism-frame",
         brand: "Intex",
-        volume: "19156л",
-        imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5",
-        images: ["https://images.unsplash.com/photo-1544551763-46a013bb70d5"],
+        volume: "4485л",
+        imageUrl: "https://basseyn.ru/upload/iblock/ae9/ae9a4bd1ec516620aee93d23d55d7aca.jpg",
+        images: [
+          "https://basseyn.ru/upload/iblock/ae9/ae9a4bd1ec516620aee93d23d55d7aca.jpg",
+          "https://basseyn.ru/upload/iblock/cda/cdab74dcdc0805db38b955b3581fdccc.png",
+          "https://basseyn.ru/upload/iblock/509/509e05ab6372ab825b6db0108a6ff9b6.jpg"
+        ],
         specifications: JSON.stringify({
-          "Размер": "549x274x132 см",
-          "Объем": "19156 л",
-          "Материал": "Super-Tough ПВХ",
-          "Каркас": "Оцинкованная сталь",
-          "Комплектация": "Насос, лестница, тент, подстилка",
-          "Артикул": "26356"
+          "Диаметр": "305 см",
+          "Высота": "76 см",
+          "Объем": "4485 л при 90% заполнении",
+          "Вес упаковки": "19,160 кг",
+          "Серия": "Prism Frame",
+          "Артикул": "28702"
         }),
         inStock: true,
         isPopular: true,
         isNew: false,
-        discount: 10,
-        rating: "4.8",
-        reviewCount: 47
+        discount: 20,
+        rating: "4.7",
+        reviewCount: 32
       },
       {
         name: "Бассейн каркасный Intex Prism Frame 26716 427x107 см",

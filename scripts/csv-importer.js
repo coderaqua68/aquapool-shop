@@ -428,7 +428,7 @@ ${codeLines.join(',\n')}
 
 export default importedProducts;`;
 
-    fs.writeFileSync('scripts/imported-products.js', fullCode);
+    fs.writeFileSync('./imported-products.js', fullCode);
     
     // Также сохраняем полную версию в JSON
     const fullData = {
@@ -439,7 +439,7 @@ export default importedProducts;`;
       importedAt: new Date().toISOString()
     };
     
-    fs.writeFileSync('scripts/full-catalog.json', JSON.stringify(fullData, null, 2));
+    fs.writeFileSync('./full-catalog.json', JSON.stringify(fullData, null, 2));
     
     console.log('📄 Файлы созданы:');
     console.log('   • scripts/imported-products.js (50 товаров для вставки)');
