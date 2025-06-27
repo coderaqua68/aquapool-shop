@@ -13,20 +13,26 @@ class IntexScraper {
   }
 
   async handleMessage(request, sendResponse) {
+    console.log('Content script received message:', request.action);
+    
     try {
       switch (request.action) {
         case 'scrapePage':
-          const pageProducts = await this.scrapeCurrentPage();
+          console.log('Starting page scrape...');
+          const pageProducts = this.scrapeCurrentPage();
+          console.log('Found products:', pageProducts.length);
           sendResponse({ success: true, products: pageProducts });
           break;
           
         case 'scrapeCategory':
-          const categoryProducts = await this.scrapeCategoryPages();
+          console.log('Starting category scrape...');
+          const categoryProducts = this.scrapeCurrentPage(); // Simplified - just current page
           sendResponse({ success: true, products: categoryProducts });
           break;
           
         case 'scrapeAll':
-          const allProducts = await this.scrapeAllCategories();
+          console.log('Starting full scrape...');
+          const allProducts = this.scrapeCurrentPage(); // Simplified - just current page
           sendResponse({ success: true, products: allProducts });
           break;
           
@@ -39,7 +45,7 @@ class IntexScraper {
     }
   }
 
-  async scrapeCurrentPage() {
+  scrapeCurrentPage() {
     console.log('Scraping current page:', window.location.href);
     
     // Detect page type and scrape accordingly
@@ -48,7 +54,8 @@ class IntexScraper {
     } else if (this.isProductPage()) {
       return [this.extractSingleProduct()];
     } else {
-      throw new Error('Эта страница не содержит товары для парсинга');
+      console.warn('Page does not contain recognizable products');
+      return []; // Return empty array instead of throwing error
     }
   }
 

@@ -94,19 +94,58 @@ class ScraperUI {
     try {
       const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
       
-      const response = await chrome.tabs.sendMessage(tab.id, {
-        action: 'scrapePage'
-      });
+      console.log('Sending message to tab:', tab.id);
+      
+      // Check if content script is loaded
+      try {
+        const response = await chrome.tabs.sendMessage(tab.id, {
+          action: 'scrapePage'
+        });
 
-      if (response.success) {
-        this.addProducts(response.products);
-        this.updateStatus('active', `Найдено ${response.products.length} товаров`);
-      } else {
-        this.updateStatus('inactive', 'Ошибка парсинга');
+        console.log('Response received:', response);
+
+        if (response && response.success) {
+          this.addProducts(response.products);
+          this.updateStatus('active', `Найдено ${response.products.length} товаров`);
+        } else {
+          this.updateStatus('inactive', `Ошибка: ${response?.error || 'Неизвестная ошибка'}`);
+        }
+      } catch (messageError) {
+        console.error('Message error:', messageError);
+        
+        // Try to inject content script
+        await chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: ['content.js']
+        });
+        
+        // Wait a bit and try again
+        setTimeout(async () => {
+          try {
+            const response = await chrome.tabs.sendMessage(tab.id, {
+              action: 'scrapePage'
+            });
+            
+            if (response && response.success) {
+              this.addProducts(response.products);
+              this.updateStatus('active', `Найдено ${response.products.length} товаров`);
+            } else {
+              this.updateStatus('inactive', 'Не удалось найти товары');
+            }
+          } catch (retryError) {
+            console.error('Retry error:', retryError);
+            this.updateStatus('inactive', 'Перезагрузите страницу и попробуйте снова');
+          }
+          
+          this.isActive = false;
+          this.disableButtons(false);
+        }, 1000);
+        
+        return; // Exit early to avoid resetting buttons
       }
     } catch (error) {
-      console.error('Scraping error:', error);
-      this.updateStatus('inactive', 'Ошибка подключения');
+      console.error('General error:', error);
+      this.updateStatus('inactive', 'Ошибка: убедитесь что вы на сайте intex-bassein.ru');
     }
 
     this.isActive = false;
