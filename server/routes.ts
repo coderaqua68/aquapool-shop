@@ -229,18 +229,19 @@ async function parseProductFromUrl(url: string) {
     // Extract main product image (single best quality image)
     let imageUrl = "/api/placeholder/400/400";
     
-    const imageSelectors = [
-      'img[src*="product"], .product-image img, [class*="image"] img'
-    ];
-    
-    for (const selector of imageSelectors) {
-      const imgElement = document.querySelector(selector);
-      if (imgElement) {
-        const src = imgElement.getAttribute('src');
-        if (src && src.startsWith('http')) {
+    // Try to find any image with upload path (real product images)
+    const allImages = Array.from(document.querySelectorAll('img'));
+    for (const imgElement of allImages) {
+      const src = imgElement.getAttribute('src');
+      if (src && src.includes('upload')) {
+        // Handle relative URLs
+        if (src.startsWith('/')) {
+          imageUrl = 'https://intex-bassein.ru' + src;
+        } else if (src.startsWith('http')) {
           imageUrl = src;
-          break;
         }
+        console.log(`Found product image: ${imageUrl}`);
+        break;
       }
     }
     
