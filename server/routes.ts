@@ -146,6 +146,8 @@ async function parseProductFromUrl(url: string) {
     
     // Look for product detail description text blocks
     const descSelectors = [
+      '[data-value="description"] .toggle_content',  // Конкретно блок описания для intex-bassein.ru
+      '.toggle_content',  // Fallback: любой toggle_content
       '.product-item-detail-text',
       '.product-description',
       '.product-detail-description',
@@ -156,9 +158,18 @@ async function parseProductFromUrl(url: string) {
     for (const selector of descSelectors) {
       const elements = Array.from(document.querySelectorAll(selector));
       if (elements.length > 0) {
-        description = elements.map(el => el.textContent?.trim()).filter(Boolean).join('\n\n');
-        foundDescription = true;
-        break;
+        // Для селекторов с toggle_content извлекаем HTML, для остальных - текст
+        if (selector.includes('toggle_content')) {
+          description = elements.map(el => el.innerHTML?.trim()).filter(Boolean).join('\n\n');
+        } else {
+          description = elements.map(el => el.textContent?.trim()).filter(Boolean).join('\n\n');
+        }
+        
+        if (description && description.length > 10) {
+          foundDescription = true;
+          console.log(`Found description from selector ${selector}: ${description.substring(0, 100)}...`);
+          break;
+        }
       }
     }
     
