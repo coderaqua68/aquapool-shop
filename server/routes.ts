@@ -248,39 +248,27 @@ async function parseProductFromUrl(url: string) {
     // Extract main product image (single best quality image without watermark)
     let imageUrl = "/api/placeholder/400/400";
     
-    // First priority: Look for images in "Рекомендуем добавить к заказу" section (these are without watermark)
+    // First priority: Look for images in "main_product" section (these are without watermark)
     const recommendedSelectors = [
-      '.product-item-detail-tabs-content',
-      '[data-entity="recommended-products"]',
-      '.recommended-products',
-      '.product-recommendations',
-      '.catalog-block-item'
+      '.main_product img',
+      '.main_product .img img',
+      '.catalog-block-item img',
+      '.product-item-detail-tabs-content img'
     ];
     
-    let recommendedSection = null;
+    // Try each selector to find images without watermark
     for (const selector of recommendedSelectors) {
-      recommendedSection = document.querySelector(selector);
-      if (recommendedSection) {
-        console.log(`Found recommended section with selector: ${selector}`);
-        break;
-      }
-    }
-    
-    if (recommendedSection) {
-      const recommendedImages = recommendedSection.querySelectorAll('img');
-      console.log(`Found ${recommendedImages.length} images in recommended section`);
-      
-      for (let i = 0; i < recommendedImages.length; i++) {
-        const imgElement = recommendedImages[i];
+      const imgElement = document.querySelector(selector);
+      if (imgElement) {
         const src = imgElement.getAttribute('src');
-        console.log(`Recommended image ${i}: ${src}`);
+        console.log(`Checking selector ${selector}, found image: ${src}`);
         
-        if (src && src.includes('upload') && !src.includes('thumb') && !src.includes('small')) {
+        if (src && src.includes('upload') && !src.includes('thumb') && !src.includes('small') && !src.includes('watermark')) {
           // Skip generic/common images
           if (src.includes('2f8e6a1cfe55806934aa37cf1f43bb79') || 
               src.includes('no_photo') || 
               src.includes('placeholder')) {
-            console.log(`Skipping generic recommended image: ${src}`);
+            console.log(`Skipping generic image: ${src}`);
             continue;
           }
           
@@ -289,7 +277,7 @@ async function parseProductFromUrl(url: string) {
           } else if (src.startsWith('http')) {
             imageUrl = src;
           }
-          console.log(`Found image from recommended section (without watermark): ${imageUrl}`);
+          console.log(`Found image from main_product section (without watermark): ${imageUrl}`);
           break;
         }
       }
