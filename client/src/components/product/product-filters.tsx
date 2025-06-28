@@ -13,6 +13,11 @@ interface Filters {
   inStock?: boolean;
   search?: string;
   sortBy?: string;
+  brand?: string;
+  poolType?: string;
+  volumeRange?: string;
+  shape?: string;
+  material?: string;
 }
 
 interface ProductFiltersProps {
@@ -100,6 +105,108 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
           <Button onClick={handlePriceFilter} className="w-full" variant="outline">
             Применить
           </Button>
+        </CardContent>
+      </Card>
+
+      {/* Brand Filter */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Бренд</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Select value={filters.brand || "all"} onValueChange={(value) => onFiltersChange({...filters, brand: value === "all" ? undefined : value})}>
+            <SelectTrigger>
+              <SelectValue placeholder="Выберите бренд" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Все бренды</SelectItem>
+              <SelectItem value="Intex">Intex</SelectItem>
+              <SelectItem value="Bestway">Bestway</SelectItem>
+              <SelectItem value="Summer Waves">Summer Waves</SelectItem>
+              <SelectItem value="Jilong">Jilong</SelectItem>
+            </SelectContent>
+          </Select>
+        </CardContent>
+      </Card>
+
+      {/* Pool Type Filter */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Тип бассейна</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Select value={filters.poolType || ""} onValueChange={(value) => onFiltersChange({...filters, poolType: value || undefined})}>
+            <SelectTrigger>
+              <SelectValue placeholder="Тип бассейна" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Все типы</SelectItem>
+              <SelectItem value="Каркасный">Каркасный</SelectItem>
+              <SelectItem value="Надувной">Надувной</SelectItem>
+              <SelectItem value="Детский">Детский</SelectItem>
+            </SelectContent>
+          </Select>
+        </CardContent>
+      </Card>
+
+      {/* Volume Filter */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Объем</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Select value={filters.volumeRange || ""} onValueChange={(value) => onFiltersChange({...filters, volumeRange: value || undefined})}>
+            <SelectTrigger>
+              <SelectValue placeholder="Объем бассейна" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Любой объем</SelectItem>
+              <SelectItem value="small">До 5000 л</SelectItem>
+              <SelectItem value="medium">5000 - 15000 л</SelectItem>
+              <SelectItem value="large">15000 - 30000 л</SelectItem>
+              <SelectItem value="xlarge">Свыше 30000 л</SelectItem>
+            </SelectContent>
+          </Select>
+        </CardContent>
+      </Card>
+
+      {/* Shape Filter */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Форма</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Select value={filters.shape || ""} onValueChange={(value) => onFiltersChange({...filters, shape: value || undefined})}>
+            <SelectTrigger>
+              <SelectValue placeholder="Форма бассейна" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Любая форма</SelectItem>
+              <SelectItem value="Круглый">Круглый</SelectItem>
+              <SelectItem value="Прямоугольный">Прямоугольный</SelectItem>
+              <SelectItem value="Овальный">Овальный</SelectItem>
+            </SelectContent>
+          </Select>
+        </CardContent>
+      </Card>
+
+      {/* Material Filter */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Материал</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Select value={filters.material || ""} onValueChange={(value) => onFiltersChange({...filters, material: value || undefined})}>
+            <SelectTrigger>
+              <SelectValue placeholder="Материал чаши" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Любой материал</SelectItem>
+              <SelectItem value="ПВХ">ПВХ</SelectItem>
+              <SelectItem value="Винил">Винил</SelectItem>
+              <SelectItem value="Полиэстер">Полиэстер</SelectItem>
+            </SelectContent>
+          </Select>
         </CardContent>
       </Card>
 
