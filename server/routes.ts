@@ -431,6 +431,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice as string) : undefined,
         inStock: req.query.inStock ? req.query.inStock === 'true' : undefined,
         search: req.query.search as string,
+        poolType: req.query.poolType as string,
+        volumeRange: req.query.volumeRange as string,
+        shape: req.query.shape as string,
+        material: req.query.material as string,
+        dimensions: req.query.dimensions as string,
       };
       
       const products = await storage.getProducts(filters);
