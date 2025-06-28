@@ -88,6 +88,11 @@ export default function ProductPage() {
   const specifications = JSON.parse(product.specifications);
   const related = relatedProducts.filter(p => p.id !== product.id).slice(0, 4);
   
+  // Создаем полную галерею изображений
+  const allImages = product.imageUrl ? 
+    [product.imageUrl, ...(product.images || [])] : 
+    (product.images || []);
+  
   // Автоматический расчет скидки если не указана
   const calculatedDiscount = product.originalPrice && product.price
     ? Math.round(((parseInt(product.originalPrice) - parseInt(product.price)) / parseInt(product.originalPrice)) * 100)
@@ -111,22 +116,22 @@ export default function ProductPage() {
         <div className="space-y-4">
           <div className="relative">
             <img
-              src={product.images && product.images.length > 0 ? product.images[selectedImageIndex] : product.imageUrl}
+              src={allImages.length > 0 ? allImages[selectedImageIndex] : product.imageUrl}
               alt={product.name}
               className="w-full h-96 object-contain bg-gray-50 rounded-lg"
             />
             
             {/* Navigation arrows for multiple images */}
-            {product.images && product.images.length > 1 && (
+            {allImages.length > 1 && (
               <>
                 <button
-                  onClick={() => setSelectedImageIndex(prev => prev > 0 ? prev - 1 : product.images!.length - 1)}
+                  onClick={() => setSelectedImageIndex(prev => prev > 0 ? prev - 1 : allImages.length - 1)}
                   className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
                 <button
-                  onClick={() => setSelectedImageIndex(prev => prev < product.images!.length - 1 ? prev + 1 : 0)}
+                  onClick={() => setSelectedImageIndex(prev => prev < allImages.length - 1 ? prev + 1 : 0)}
                   className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
                 >
                   <ChevronRight className="w-5 h-5" />
@@ -160,17 +165,17 @@ export default function ProductPage() {
             )}
 
             {/* Image counter */}
-            {product.images && product.images.length > 1 && (
+            {allImages.length > 1 && (
               <div className="absolute bottom-4 right-4 bg-black/50 text-white px-2 py-1 rounded text-sm">
-                {selectedImageIndex + 1} / {product.images.length}
+                {selectedImageIndex + 1} / {allImages.length}
               </div>
             )}
           </div>
 
           {/* Thumbnail gallery */}
-          {product.images && product.images.length > 1 && (
+          {allImages.length > 1 && (
             <div className="flex space-x-2 overflow-x-auto">
-              {product.images.map((image, index) => (
+              {allImages.map((image, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedImageIndex(index)}
