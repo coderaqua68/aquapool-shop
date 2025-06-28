@@ -248,19 +248,73 @@ async function parseProductFromUrl(url: string) {
     // Extract main product image (single best quality image without watermark)
     let imageUrl = "/api/placeholder/400/400";
     
-    // Try to find any image with upload path (real product images)
-    const allImages = Array.from(document.querySelectorAll('img'));
-    for (const imgElement of allImages) {
-      const src = imgElement.getAttribute('src');
-      if (src && src.includes('upload')) {
-        // Handle relative URLs
-        if (src.startsWith('/')) {
-          imageUrl = 'https://intex-bassein.ru' + src;
-        } else if (src.startsWith('http')) {
-          imageUrl = src;
+    // Look for the main product image in typical containers
+    const productImageSelectors = [
+      '.bx-pict-big img',
+      '.product-item-detail-picture img', 
+      '.product-item-picture img',
+      '.product-pictures img',
+      '.product-gallery img:first-child',
+      '.main-image img',
+      'img[itemprop="image"]',
+      '.bx-pict img'
+    ];
+    
+    // Try each selector to find the main product image
+    for (const selector of productImageSelectors) {
+      const imgElement = document.querySelector(selector);
+      if (imgElement) {
+        const src = imgElement.getAttribute('src');
+        if (src && src.includes('upload') && !src.includes('thumb') && !src.includes('small')) {
+          // Skip generic/common images
+          if (src.includes('2f8e6a1cfe55806934aa37cf1f43bb79') || 
+              src.includes('no_photo') || 
+              src.includes('placeholder')) {
+            console.log(`Skipping generic image: ${src}`);
+            continue;
+          }
+          
+          if (src.startsWith('/')) {
+            imageUrl = 'https://intex-bassein.ru' + src;
+          } else if (src.startsWith('http')) {
+            imageUrl = src;
+          }
+          console.log(`Found main product image via selector ${selector}: ${imageUrl}`);
+          break;
         }
-        console.log(`Found product image: ${imageUrl}`);
-        break;
+      }
+    }
+    
+    // Fallback: search all images if specific selectors didn't work  
+    if (imageUrl === "/api/placeholder/400/400") {
+      console.log(`No image found via selectors, scanning all images...`);
+      const allImages = Array.from(document.querySelectorAll('img'));
+      console.log(`Found ${allImages.length} total images on page`);
+      
+      for (let i = 0; i < allImages.length; i++) {
+        const imgElement = allImages[i];
+        const src = imgElement.getAttribute('src');
+        console.log(`Image ${i}: ${src}`);
+        
+        if (src && src.includes('upload') && !src.includes('thumb') && !src.includes('small') && !src.includes('resize')) {
+          // Skip if it contains generic identifiers or common placeholders
+          if (src.includes('2f8e6a1cfe55806934aa37cf1f43bb79') || 
+              src.includes('no_photo') || 
+              src.includes('placeholder') ||
+              src.includes('default') ||
+              imgElement.getAttribute('alt')?.toLowerCase().includes('логотип')) {
+            console.log(`Skipping generic image: ${src}`);
+            continue; // Skip generic/placeholder images
+          }
+          
+          if (src.startsWith('/')) {
+            imageUrl = 'https://intex-bassein.ru' + src;
+          } else if (src.startsWith('http')) {
+            imageUrl = src;
+          }
+          console.log(`Found fallback product image: ${imageUrl}`);
+          break;
+        }
       }
     }
     
