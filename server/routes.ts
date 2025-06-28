@@ -31,15 +31,31 @@ async function parseProductFromUrl(url: string) {
                        document.querySelector('[class*="title"]');
     const name = nameElement?.textContent?.trim() || 'Товар без названия';
     
-    // Extract price
+    // Extract price with better selectors
     let price = "0";
     let originalPrice = null;
-    const priceElement = document.querySelector('.price, [class*="price"], .cost, [class*="cost"]');
-    if (priceElement) {
-      const priceText = priceElement.textContent?.trim() || '';
-      const priceMatch = priceText.match(/(\d+[\s,.]?\d*)/);
-      if (priceMatch) {
-        price = priceMatch[1].replace(/[\s,.]/g, '');
+    
+    const priceSelectors = [
+      '.product-item-price',
+      '.price-current',
+      '.current-price', 
+      '.product-price',
+      '.price',
+      '[class*="price"]',
+      '.cost',
+      '[class*="cost"]'
+    ];
+    
+    for (const selector of priceSelectors) {
+      const priceElement = document.querySelector(selector);
+      if (priceElement) {
+        const priceText = priceElement.textContent?.trim() || '';
+        // Extract numbers from price text
+        const priceMatch = priceText.match(/(\d+[\s,.]?\d*)/);
+        if (priceMatch) {
+          price = priceMatch[1].replace(/[\s,.]/g, '');
+          break;
+        }
       }
     }
     
@@ -48,28 +64,62 @@ async function parseProductFromUrl(url: string) {
     const artikulMatch = url.match(/artikul-([^\/]+)/);
     const sku = artikulMatch ? artikulMatch[1].toUpperCase() : `PROD-${Date.now()}`;
     
-    // Extract description
+    // Extract description from specific product detail areas
     let description = '';
-    const descElements = document.querySelectorAll('.description, [class*="description"], .content, [class*="content"]');
-    if (descElements.length > 0) {
-      description = Array.from(descElements).map(el => el.innerHTML).join('\n');
-    } else {
+    
+    // Look for product detail content areas
+    const detailSelectors = [
+      '.product-item-detail-properties-block',
+      '.product-detail',
+      '.product-description',
+      '.description',
+      '[class*="detail"]',
+      '[class*="description"]'
+    ];
+    
+    let foundDescription = false;
+    for (const selector of detailSelectors) {
+      const elements = document.querySelectorAll(selector);
+      if (elements.length > 0) {
+        description = Array.from(elements).map(el => el.innerHTML).join('\n');
+        foundDescription = true;
+        break;
+      }
+    }
+    
+    if (!foundDescription) {
       description = `<h2>${name}</h2><p>Подробную информацию уточняйте у менеджера.</p>`;
     }
     
-    // Extract specifications
+    // Extract specifications from various table formats
     const specs: Record<string, string> = {};
-    const specElements = document.querySelectorAll('table tr, .specs tr, [class*="spec"] tr');
-    specElements.forEach(row => {
-      const cells = row.querySelectorAll('td, th');
-      if (cells.length >= 2) {
-        const key = cells[0].textContent?.trim() || '';
-        const value = cells[1].textContent?.trim() || '';
-        if (key && value) {
-          specs[key] = value;
+    
+    // Try different specification table selectors
+    const specSelectors = [
+      '.product-item-detail-properties-table tr',
+      '.specifications table tr',
+      '.specs table tr',
+      'table.properties tr',
+      '.properties tr',
+      '[class*="properties"] tr',
+      '[class*="spec"] tr'
+    ];
+    
+    for (const selector of specSelectors) {
+      const specElements = document.querySelectorAll(selector);
+      specElements.forEach(row => {
+        const cells = row.querySelectorAll('td, th');
+        if (cells.length >= 2) {
+          const key = cells[0].textContent?.trim() || '';
+          const value = cells[1].textContent?.trim() || '';
+          if (key && value && key !== value) {
+            specs[key] = value;
+          }
         }
-      }
-    });
+      });
+      
+      if (Object.keys(specs).length > 0) break;
+    }
     
     // Extract brand from name or specs
     let brand = 'Intex';
@@ -105,13 +155,33 @@ async function parseProductFromUrl(url: string) {
       }
     }
     
-    // Extract image
+    // Extract main product image
     let imageUrl = "/api/placeholder/400/400";
-    const imgElement = document.querySelector('img[src*="product"], .product-image img, [class*="image"] img');
-    if (imgElement) {
-      const src = imgElement.getAttribute('src');
-      if (src && src.startsWith('http')) {
-        imageUrl = src;
+    
+    const imageSelectors = [
+      '.product-item-detail-img img',
+      '.product-main-image img',
+      '.product-image img',
+      '.main-image img',
+      '[class*="main"] img',
+      '[class*="product"] img',
+      'img[src*="upload"]',
+      'img[src*="product"]'
+    ];
+    
+    for (const selector of imageSelectors) {
+      const imgElement = document.querySelector(selector);
+      if (imgElement) {
+        const src = imgElement.getAttribute('src');
+        if (src) {
+          // Handle relative URLs
+          if (src.startsWith('/')) {
+            imageUrl = 'https://intex-bassein.ru' + src;
+          } else if (src.startsWith('http')) {
+            imageUrl = src;
+          }
+          break;
+        }
       }
     }
     
