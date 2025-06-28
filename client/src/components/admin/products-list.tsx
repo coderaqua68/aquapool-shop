@@ -220,7 +220,7 @@ export default function ProductsList({ onEdit }: ProductsListProps) {
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => window.open(`/product/${product.id}`, '_blank')}
+                    onClick={() => window.open(`/product/${product.slug || product.id}`, '_blank')}
                     className="flex-1"
                   >
                     <Eye className="w-4 h-4 mr-1" />

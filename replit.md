@@ -132,6 +132,13 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Created bulk import API endpoint for mass product addition
   - Added comprehensive documentation and usage guides for parser
   - Fixed discount display system with proper percentage calculations
+- June 28, 2025: SEO-friendly URLs and image parsing improvements
+  - Implemented slug-based URLs for products (/product/slug instead of /product/id)
+  - Added automatic slug generation from product names with Cyrillic to Latin transliteration
+  - Updated API to support both legacy ID-based and new slug-based product access
+  - Improved image parsing to extract only main product photos, excluding thumbnails and logos
+  - Enhanced admin panel products list to display existing products for editing
+  - Updated product links throughout application to use SEO-friendly slugs
 
 ## User Preferences
 
