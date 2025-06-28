@@ -156,9 +156,27 @@ export function ProductParser() {
             </div>
             
             <div>
+              <p className="text-sm text-muted-foreground font-medium">Цена:</p>
+              <div className="flex gap-2 items-center">
+                <span className="text-lg font-bold text-green-600">{product.price} руб.</span>
+                {product.originalPrice && (
+                  <span className="text-sm text-muted-foreground line-through">{product.originalPrice} руб.</span>
+                )}
+              </div>
+            </div>
+            
+            <div>
+              <p className="text-sm text-muted-foreground font-medium">Описание:</p>
+              <div 
+                className="text-sm prose prose-sm max-w-none" 
+                dangerouslySetInnerHTML={{ __html: product.description }} 
+              />
+            </div>
+            
+            <div>
               <p className="text-sm text-muted-foreground font-medium">Основные характеристики:</p>
               <div className="grid grid-cols-2 gap-2 mt-1">
-                {Object.entries(specs).slice(0, 6).map(([key, value]) => (
+                {Object.entries(specs).slice(0, 8).map(([key, value]) => (
                   <div key={key} className="text-xs">
                     <span className="text-muted-foreground">{key}:</span> {value as string}
                   </div>

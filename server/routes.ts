@@ -31,46 +31,91 @@ async function parseProductFromUrl(url: string) {
                        document.querySelector('[class*="title"]');
     const name = nameElement?.textContent?.trim() || 'Товар без названия';
     
-    // Extract prices from specific intex-bassein.ru structure
+    // Extract prices more aggressively from intex-bassein.ru
     let price = "0";
     let originalPrice = null;
     
-    // Look for the price container in the product page
-    const priceContainer = document.querySelector('.product-item-price, .price-container, [class*="price"]');
-    if (priceContainer) {
-      // Extract current price (usually the larger, discounted price)
-      const currentPriceEl = priceContainer.querySelector('.product-item-price-current, .current-price, .price-current');
-      if (currentPriceEl) {
-        const priceText = currentPriceEl.textContent?.trim() || '';
+    console.log('Looking for prices...');
+    
+    // Try multiple selectors for prices
+    const priceSelectors = [
+      '.product-item-price-current',
+      '.product-item-price',
+      '.price-current',
+      '.current-price',
+      '.price',
+      '[class*="price"]'
+    ];
+    
+    // Look for current price
+    for (const selector of priceSelectors) {
+      const priceEl = document.querySelector(selector);
+      if (priceEl) {
+        const priceText = priceEl.textContent?.trim() || '';
+        console.log(`Found price element (${selector}): ${priceText}`);
         const priceMatch = priceText.match(/(\d+[\s,.]?\d*)/);
         if (priceMatch) {
           price = priceMatch[1].replace(/[\s,.]/g, '');
-        }
-      }
-      
-      // Extract original price (crossed out price)
-      const originalPriceEl = priceContainer.querySelector('.product-item-price-old, .old-price, .price-old');
-      if (originalPriceEl) {
-        const originalPriceText = originalPriceEl.textContent?.trim() || '';
-        const originalPriceMatch = originalPriceText.match(/(\d+[\s,.]?\d*)/);
-        if (originalPriceMatch) {
-          originalPrice = originalPriceMatch[1].replace(/[\s,.]/g, '');
+          console.log(`Extracted current price: ${price}`);
+          break;
         }
       }
     }
     
-    // If no specific price elements found, try to find any element with price numbers
-    if (price === "0") {
-      const allElements = Array.from(document.querySelectorAll('*'));
-      for (const el of allElements) {
-        const text = el.textContent?.trim() || '';
-        if (text.includes('26000') || text.includes('35000')) {
-          if (text.includes('26000')) price = "26000";
-          if (text.includes('35000') && !originalPrice) originalPrice = "35000";
-          if (price !== "0" && originalPrice) break;
+    // Look for old price
+    const oldPriceSelectors = [
+      '.product-item-price-old',
+      '.price-old',
+      '.old-price',
+      '.price-before'
+    ];
+    
+    for (const selector of oldPriceSelectors) {
+      const oldPriceEl = document.querySelector(selector);
+      if (oldPriceEl) {
+        const oldPriceText = oldPriceEl.textContent?.trim() || '';
+        console.log(`Found old price element (${selector}): ${oldPriceText}`);
+        const oldPriceMatch = oldPriceText.match(/(\d+[\s,.]?\d*)/);
+        if (oldPriceMatch) {
+          originalPrice = oldPriceMatch[1].replace(/[\s,.]/g, '');
+          console.log(`Extracted old price: ${originalPrice}`);
+          break;
         }
       }
     }
+    
+    // If still no price found, search in all text content for common price patterns
+    if (price === "0") {
+      console.log('No price found in specific elements, searching in all text...');
+      const allElements = Array.from(document.querySelectorAll('*'));
+      const pricePatterns = [
+        /(\d+)\s*000\s*руб/,  // "26000 руб", "35000 руб"
+        /(\d+)\s*руб/,        // "26000руб", "35000руб"
+        /(\d{4,6})/           // any 4-6 digit number
+      ];
+      
+      for (const el of allElements) {
+        const text = el.textContent?.trim() || '';
+        for (const pattern of pricePatterns) {
+          const match = text.match(pattern);
+          if (match) {
+            const foundPrice = match[1];
+            if (foundPrice.length >= 4) { // reasonable price length
+              if (price === "0") {
+                price = foundPrice;
+                console.log(`Found price in text: ${price} from "${text}"`);
+              } else if (!originalPrice && foundPrice !== price) {
+                originalPrice = foundPrice;
+                console.log(`Found original price in text: ${originalPrice} from "${text}"`);
+              }
+            }
+          }
+        }
+        if (price !== "0" && originalPrice) break;
+      }
+    }
+    
+    console.log(`Final prices - current: ${price}, original: ${originalPrice}`);
     
     // Extract SKU from URL or page
     const urlParts = url.split('/');
