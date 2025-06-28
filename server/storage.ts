@@ -2,8 +2,14 @@ import {
   Product, InsertProduct, 
   Category, InsertCategory, 
   Order, InsertOrder, 
-  Consultation, InsertConsultation 
+  Consultation, InsertConsultation,
+  products,
+  categories,
+  orders,
+  consultations,
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, and, gte, lte, desc, ilike } from "drizzle-orm";
 
 export interface IStorage {
   // Products
@@ -26,6 +32,150 @@ export interface IStorage {
   
   // Consultations
   createConsultation(consultation: InsertConsultation): Promise<Consultation>;
+}
+
+export class DatabaseStorage implements IStorage {
+  async getProducts(filters?: { category?: string; minPrice?: number; maxPrice?: number; inStock?: boolean; search?: string }): Promise<Product[]> {
+    let query = db.select().from(products);
+    
+    if (filters) {
+      const conditions = [];
+      
+      if (filters.category) {
+        conditions.push(eq(products.category, filters.category));
+      }
+      
+      if (filters.minPrice !== undefined) {
+        conditions.push(gte(products.price, filters.minPrice.toString()));
+      }
+      
+      if (filters.maxPrice !== undefined) {
+        conditions.push(lte(products.price, filters.maxPrice.toString()));
+      }
+      
+      if (filters.inStock !== undefined) {
+        conditions.push(eq(products.inStock, filters.inStock));
+      }
+      
+      if (filters.search) {
+        conditions.push(ilike(products.name, `%${filters.search}%`));
+      }
+      
+      if (conditions.length > 0) {
+        query = query.where(and(...conditions));
+      }
+    }
+    
+    return await query.orderBy(desc(products.id));
+  }
+
+  async getProduct(id: number): Promise<Product | undefined> {
+    const [product] = await db.select().from(products).where(eq(products.id, id));
+    return product;
+  }
+
+  async getProductBySlug(slug: string): Promise<Product | undefined> {
+    const [product] = await db.select().from(products).where(eq(products.slug, slug));
+    return product;
+  }
+
+  async getPopularProducts(): Promise<Product[]> {
+    return await db.select().from(products)
+      .where(eq(products.isPopular, true))
+      .orderBy(desc(products.rating))
+      .limit(8);
+  }
+
+  async createProduct(insertProduct: InsertProduct): Promise<Product> {
+    const slug = insertProduct.slug || this.generateSlug(insertProduct.name);
+    
+    const [product] = await db.insert(products)
+      .values({
+        ...insertProduct,
+        slug,
+      })
+      .returning();
+    
+    return product;
+  }
+
+  async updateProduct(id: number, updateData: Partial<InsertProduct>): Promise<Product | undefined> {
+    // Регенерируем slug если изменилось название
+    if (updateData.name) {
+      const existingProduct = await this.getProduct(id);
+      if (existingProduct && updateData.name !== existingProduct.name) {
+        updateData.slug = this.generateSlug(updateData.name);
+      }
+    }
+
+    const [updatedProduct] = await db.update(products)
+      .set(updateData)
+      .where(eq(products.id, id))
+      .returning();
+    
+    return updatedProduct;
+  }
+
+  async deleteProduct(id: number): Promise<boolean> {
+    const result = await db.delete(products).where(eq(products.id, id));
+    return result.rowCount ? result.rowCount > 0 : false;
+  }
+
+  async getCategories(): Promise<Category[]> {
+    return await db.select().from(categories);
+  }
+
+  async getCategory(slug: string): Promise<Category | undefined> {
+    const [category] = await db.select().from(categories).where(eq(categories.slug, slug));
+    return category;
+  }
+
+  async createCategory(insertCategory: InsertCategory): Promise<Category> {
+    const [category] = await db.insert(categories)
+      .values(insertCategory)
+      .returning();
+    
+    return category;
+  }
+
+  async createOrder(insertOrder: InsertOrder): Promise<Order> {
+    const [order] = await db.insert(orders)
+      .values(insertOrder)
+      .returning();
+    
+    return order;
+  }
+
+  async getOrder(id: number): Promise<Order | undefined> {
+    const [order] = await db.select().from(orders).where(eq(orders.id, id));
+    return order;
+  }
+
+  async createConsultation(insertConsultation: InsertConsultation): Promise<Consultation> {
+    const [consultation] = await db.insert(consultations)
+      .values(insertConsultation)
+      .returning();
+    
+    return consultation;
+  }
+
+  private generateSlug(name: string): string {
+    return name
+      .toLowerCase()
+      .replace(/[а-я]/g, (char) => {
+        const cyrillicMap: Record<string, string> = {
+          'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
+          'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
+          'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+          'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch',
+          'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+        };
+        return cyrillicMap[char] || char;
+      })
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .substring(0, 100);
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -291,4 +441,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
