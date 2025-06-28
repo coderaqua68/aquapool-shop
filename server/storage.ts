@@ -9,6 +9,7 @@ export interface IStorage {
   // Products
   getProducts(filters?: { category?: string; minPrice?: number; maxPrice?: number; inStock?: boolean; search?: string }): Promise<Product[]>;
   getProduct(id: number): Promise<Product | undefined>;
+  getProductBySlug(slug: string): Promise<Product | undefined>;
   getPopularProducts(): Promise<Product[]>;
   createProduct(product: InsertProduct): Promise<Product>;
   updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined>;
@@ -115,6 +116,10 @@ export class MemStorage implements IStorage {
 
   async getProduct(id: number): Promise<Product | undefined> {
     return this.products.get(id);
+  }
+
+  async getProductBySlug(slug: string): Promise<Product | undefined> {
+    return Array.from(this.products.values()).find(p => p.slug === slug);
   }
 
   async getPopularProducts(): Promise<Product[]> {

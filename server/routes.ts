@@ -5,6 +5,25 @@ import { insertOrderSchema, insertConsultationSchema, insertProductSchema } from
 import fetch from "node-fetch";
 import { JSDOM } from "jsdom";
 
+// Function to generate URL-friendly slug from product name
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[а-яё]/g, (char) => {
+      const translitMap: { [key: string]: string } = {
+        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e',
+        'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
+        'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+        'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '',
+        'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+      };
+      return translitMap[char] || char;
+    })
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .substring(0, 100);
+}
+
 // Real parser function for intex-bassein.ru
 async function parseProductFromUrl(url: string) {
   try {
@@ -254,6 +273,7 @@ async function parseProductFromUrl(url: string) {
     
     return {
       name,
+      slug: generateSlug(name),
       sku,
       description,
       shortDescription,
