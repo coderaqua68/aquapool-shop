@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { X, Plus } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { parseHTMLSpecs, convertSpecsToKeyValue, formatSpecsAsTable, extractBrandFromSpecs, extractCategoryFromSpecs, extractDimensionsFromSpecs, extractVolumeFromSpecs } from '@/lib/html-parser';
+import { parseHTMLSpecs, convertSpecsToKeyValue, formatSpecsAsTable, extractAllFieldsFromSpecs } from '@/lib/html-parser';
 
 interface ProductFormProps {
   product?: any;
@@ -41,7 +41,18 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
     isNew: false,
     discount: 0,
     rating: "4.0",
-    reviewCount: 0
+    reviewCount: 0,
+    // Дополнительные поля для фильтрации
+    weight: "",
+    dimensions: "",
+    material: "",
+    color: "",
+    frameType: "",
+    pumpType: "",
+    pumpCapacity: "",
+    shape: "",
+    installationType: "",
+    countryOrigin: ""
   });
 
   const [newImage, setNewImage] = useState("");
@@ -139,7 +150,17 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
         isNew: product.isNew || false,
         discount: product.discount || 0,
         rating: product.rating || "4.0",
-        reviewCount: product.reviewCount || 0
+        reviewCount: product.reviewCount || 0,
+        weight: product.weight || "",
+        dimensions: product.dimensions || "",
+        material: product.material || "",
+        color: product.color || "",
+        frameType: product.frameType || "",
+        pumpType: product.pumpType || "",
+        pumpCapacity: product.pumpCapacity || "",
+        shape: product.shape || "",
+        installationType: product.installationType || "",
+        countryOrigin: product.countryOrigin || ""
       });
 
       // Парсим характеристики
@@ -174,7 +195,17 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
         isNew: false,
         discount: 0,
         rating: "4.0",
-        reviewCount: 0
+        reviewCount: 0,
+        weight: "",
+        dimensions: "",
+        material: "",
+        color: "",
+        frameType: "",
+        pumpType: "",
+        pumpCapacity: "",
+        shape: "",
+        installationType: "",
+        countryOrigin: ""
       });
       setSpecificationsArray([]);
     }
@@ -502,9 +533,8 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
                     const parsedSpecs = parseHTMLSpecs(htmlInput);
                     const convertedSpecs = convertSpecsToKeyValue(parsedSpecs);
                     
-                    // Автоматически заполняем поля из характеристик
-                    const extractedBrand = extractBrandFromSpecs(parsedSpecs);
-                    const extractedVolume = extractVolumeFromSpecs(parsedSpecs);
+                    // Автоматически извлекаем все поля из характеристик
+                    const extractedFields = extractAllFieldsFromSpecs(parsedSpecs);
                     
                     // Обновляем характеристики
                     setSpecificationsArray(prev => {
@@ -517,18 +547,35 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
                       return newSpecs;
                     });
                     
-                    // Автоматически заполняем поля товара
+                    // Автоматически заполняем все поля товара
                     setFormData(prev => ({
                       ...prev,
-                      brand: extractedBrand || prev.brand,
-                      volume: extractedVolume || prev.volume
+                      brand: extractedFields.brand || prev.brand,
+                      volume: extractedFields.volume || prev.volume,
+                      weight: extractedFields.weight || prev.weight,
+                      dimensions: extractedFields.dimensions || prev.dimensions,
+                      material: extractedFields.material || prev.material,
+                      color: extractedFields.color || prev.color,
+                      frameType: extractedFields.frameType || prev.frameType,
+                      pumpType: extractedFields.pumpType || prev.pumpType,
+                      pumpCapacity: extractedFields.pumpCapacity || prev.pumpCapacity,
+                      shape: extractedFields.shape || prev.shape,
+                      installationType: extractedFields.installationType || prev.installationType,
+                      countryOrigin: extractedFields.countryOrigin || prev.countryOrigin
                     }));
                     
                     setHtmlInput('');
                     
                     let updateMessage = `Добавлено ${convertedSpecs.length} характеристик`;
-                    if (extractedBrand) updateMessage += `, бренд: ${extractedBrand}`;
-                    if (extractedVolume) updateMessage += `, объем: ${extractedVolume}`;
+                    const filledFields = [];
+                    if (extractedFields.brand) filledFields.push(`бренд: ${extractedFields.brand}`);
+                    if (extractedFields.volume) filledFields.push(`объем: ${extractedFields.volume}`);
+                    if (extractedFields.weight) filledFields.push(`вес: ${extractedFields.weight}`);
+                    if (extractedFields.dimensions) filledFields.push(`размеры: ${extractedFields.dimensions}`);
+                    if (extractedFields.material) filledFields.push(`материал: ${extractedFields.material}`);
+                    if (filledFields.length > 0) {
+                      updateMessage += `. Заполнено: ${filledFields.join(', ')}`;
+                    }
                     
                     toast({
                       title: "Успешно!",
