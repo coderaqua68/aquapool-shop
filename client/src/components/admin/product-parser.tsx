@@ -270,7 +270,7 @@ https://intex-bassein.ru/catalog/product-3/`}
               <SelectContent>
                 {categories.map((category) => (
                   <SelectItem key={category.slug} value={category.slug}>
-                    {category.name}
+                    {category.level > 0 ? '  └ ' : ''}{category.name}
                   </SelectItem>
                 ))}
               </SelectContent>

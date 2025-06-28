@@ -153,11 +153,20 @@ async function parseProductFromUrl(url: string) {
       return html.replace(/<a[^>]*>(.*?)<\/a>/gi, '$1');
     };
     
+    // Function to replace package images with local icon
+    const replacePackageImages = (html: string): string => {
+      return html.replace(
+        /<img[^>]*src="[^"]*ac672c30d0d9dc49688f1ab82d73261d[^"]*"[^>]*>/gi,
+        '<img width="90" alt="Размер упаковки" src="/package-icon.png" height="82" align="left" style="margin-right: 15px" title="Размер упаковки">'
+      );
+    };
+    
     // 1. Get composition (комплектация)
     const compositionElement = document.querySelector('[data-value="free-tab"] .toggle_content');
     if (compositionElement) {
       const rawComposition = compositionElement.innerHTML?.trim() || '';
       composition = removeClickableLinks(rawComposition);
+      composition = replacePackageImages(composition);
       console.log(`Found composition: ${composition.substring(0, 100)}...`);
     }
     
@@ -166,6 +175,7 @@ async function parseProductFromUrl(url: string) {
     if (descriptionElement) {
       const rawDescription = descriptionElement.innerHTML?.trim() || '';
       description = removeClickableLinks(rawDescription);
+      description = replacePackageImages(description);
       foundDescription = true;
       console.log(`Found main description: ${description.substring(0, 100)}...`);
     }
