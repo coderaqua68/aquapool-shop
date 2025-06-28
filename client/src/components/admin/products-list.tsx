@@ -19,9 +19,9 @@ export default function ProductsList({ onEdit }: ProductsListProps) {
 
   // Состояние фильтров
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedBrand, setSelectedBrand] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedBrand, setSelectedBrand] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("all");
 
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
@@ -51,17 +51,17 @@ export default function ProductsList({ onEdit }: ProductsListProps) {
       }
 
       // Фильтр по категории
-      if (selectedCategory && product.category !== selectedCategory) {
+      if (selectedCategory && selectedCategory !== "all" && product.category !== selectedCategory) {
         return false;
       }
 
       // Фильтр по бренду
-      if (selectedBrand && product.brand !== selectedBrand) {
+      if (selectedBrand && selectedBrand !== "all" && product.brand !== selectedBrand) {
         return false;
       }
 
       // Фильтр по статусу
-      if (selectedStatus) {
+      if (selectedStatus && selectedStatus !== "all") {
         switch (selectedStatus) {
           case "in-stock":
             if (!product.inStock) return false;
@@ -88,13 +88,16 @@ export default function ProductsList({ onEdit }: ProductsListProps) {
   // Функция очистки фильтров
   const clearFilters = () => {
     setSearchTerm("");
-    setSelectedCategory("");
-    setSelectedBrand("");
-    setSelectedStatus("");
+    setSelectedCategory("all");
+    setSelectedBrand("all");
+    setSelectedStatus("all");
   };
 
   // Проверяем, есть ли активные фильтры
-  const hasActiveFilters = searchTerm || selectedCategory || selectedBrand || selectedStatus;
+  const hasActiveFilters = searchTerm || 
+    (selectedCategory && selectedCategory !== "all") || 
+    (selectedBrand && selectedBrand !== "all") || 
+    (selectedStatus && selectedStatus !== "all");
 
   const deleteMutation = useMutation({
     mutationFn: async (productId: number) => {
@@ -243,7 +246,7 @@ export default function ProductsList({ onEdit }: ProductsListProps) {
                   <SelectValue placeholder="Все категории" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Все категории</SelectItem>
+                  <SelectItem value="all">Все категории</SelectItem>
                   {categories.map((category) => (
                     <SelectItem key={category.slug} value={category.slug}>
                       {category.name}
@@ -261,7 +264,7 @@ export default function ProductsList({ onEdit }: ProductsListProps) {
                   <SelectValue placeholder="Все бренды" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Все бренды</SelectItem>
+                  <SelectItem value="all">Все бренды</SelectItem>
                   {availableBrands.map((brand) => (
                     <SelectItem key={brand} value={brand}>
                       {brand}
@@ -279,7 +282,7 @@ export default function ProductsList({ onEdit }: ProductsListProps) {
                   <SelectValue placeholder="Все статусы" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Все статусы</SelectItem>
+                  <SelectItem value="all">Все статусы</SelectItem>
                   <SelectItem value="in-stock">В наличии</SelectItem>
                   <SelectItem value="out-of-stock">Нет в наличии</SelectItem>
                   <SelectItem value="popular">Популярные</SelectItem>
