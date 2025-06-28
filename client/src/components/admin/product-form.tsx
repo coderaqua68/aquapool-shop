@@ -22,6 +22,7 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
   const queryClient = useQueryClient();
   
   const [formData, setFormData] = useState({
+    sku: "",
     name: "",
     description: "",
     shortDescription: "",
@@ -45,6 +46,65 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
   const [newImage, setNewImage] = useState("");
   const [specificationsArray, setSpecificationsArray] = useState<Array<{key: string, value: string}>>([]);
 
+  // Генерация автоматического артикула
+  const generateSKU = () => {
+    const brand = (formData.brand || "POOL").toUpperCase().substring(0, 4);
+    const category = (formData.category || "GEN").toUpperCase().substring(0, 3);
+    const timestamp = Date.now().toString().slice(-6);
+    return `${brand}-${category}-${timestamp}`;
+  };
+
+  // Автоматическое извлечение характеристик из описания
+  const extractSpecsFromDescription = (description: string) => {
+    if (!description) return [];
+    
+    const specs: Array<{key: string, value: string}> = [];
+    const lines = description.split('\n');
+    
+    for (const line of lines) {
+      // Ищем строки с двоеточием (Размер: 488x122 см)
+      const colonMatch = line.match(/^[•\-\d\.\s]*([^:]+):\s*(.+)$/);
+      if (colonMatch) {
+        const key = colonMatch[1].trim().replace(/^\*\*|\*\*$/g, '').replace(/^\*|\*$/g, '');
+        const value = colonMatch[2].trim().replace(/^\*\*|\*\*$/g, '').replace(/^\*|\*$/g, '');
+        if (key && value && key.length > 2 && value.length > 0) {
+          specs.push({ key, value });
+        }
+      }
+      
+      // Ищем размеры в тексте
+      const sizeMatch = line.match(/(\d+)\s*[xх×]\s*(\d+)(?:\s*[xх×]\s*(\d+))?\s*(см|м|мм)/i);
+      if (sizeMatch && !specs.some(s => s.key.toLowerCase().includes('размер'))) {
+        const size = sizeMatch[3] ? 
+          `${sizeMatch[1]} × ${sizeMatch[2]} × ${sizeMatch[3]} ${sizeMatch[4]}` :
+          `${sizeMatch[1]} × ${sizeMatch[2]} ${sizeMatch[4]}`;
+        specs.push({ key: 'Размеры', value: size });
+      }
+      
+      // Ищем объем
+      const volumeMatch = line.match(/(\d+(?:\.\d+)?)\s*(л|литр|м³|куб)/i);
+      if (volumeMatch && !specs.some(s => s.key.toLowerCase().includes('объем'))) {
+        specs.push({ key: 'Объем', value: `${volumeMatch[1]} ${volumeMatch[2] === 'л' ? 'литров' : volumeMatch[2]}` });
+      }
+      
+      // Ищем материал
+      if (line.toLowerCase().includes('материал') || line.toLowerCase().includes('pvc') || line.toLowerCase().includes('винил')) {
+        const materialMatch = line.match(/материал[:\-\s]*([\w\s,]+)/i);
+        if (materialMatch && !specs.some(s => s.key.toLowerCase().includes('материал'))) {
+          specs.push({ key: 'Материал', value: materialMatch[1].trim() });
+        }
+      }
+      
+      // Ищем толщину
+      const thicknessMatch = line.match(/толщин[аеуы][:\-\s]*(\d+(?:\.\d+)?)\s*(мм|см)/i);
+      if (thicknessMatch && !specs.some(s => s.key.toLowerCase().includes('толщин'))) {
+        specs.push({ key: 'Толщина', value: `${thicknessMatch[1]} ${thicknessMatch[2]}` });
+      }
+    }
+    
+    return specs.slice(0, 8); // Максимум 8 характеристик
+  };
+
   const categories = [
     { value: "frame-pools", label: "Каркасные бассейны" },
     { value: "inflatable-pools", label: "Надувные бассейны" },
@@ -59,6 +119,7 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
   useEffect(() => {
     if (product && product.id) {
       setFormData({
+        sku: product.sku || "",
         name: product.name || "",
         description: product.description || "",
         shortDescription: product.shortDescription || "",
@@ -93,6 +154,7 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
     } else {
       // Сброс формы для нового товара
       setFormData({
+        sku: "",
         name: "",
         description: "",
         shortDescription: "",
