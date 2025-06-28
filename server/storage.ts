@@ -126,7 +126,19 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCategories(): Promise<Category[]> {
-    return await db.select().from(categories);
+    return await db.select().from(categories).orderBy(categories.level, categories.sortOrder);
+  }
+
+  async getMainCategories(): Promise<Category[]> {
+    return await db.select().from(categories)
+      .where(eq(categories.level, 0))
+      .orderBy(categories.sortOrder);
+  }
+
+  async getSubcategories(parentId: number): Promise<Category[]> {
+    return await db.select().from(categories)
+      .where(eq(categories.parentId, parentId))
+      .orderBy(categories.sortOrder);
   }
 
   async getCategory(slug: string): Promise<Category | undefined> {

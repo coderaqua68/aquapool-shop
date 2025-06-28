@@ -44,6 +44,9 @@ export const categories = pgTable("categories", {
   description: text("description"),
   imageUrl: text("image_url"),
   productCount: integer("product_count").default(0),
+  parentId: integer("parent_id").references(() => categories.id),
+  level: integer("level").default(0), // 0 for main categories, 1 for subcategories
+  sortOrder: integer("sort_order").default(0),
 });
 
 export const orders = pgTable("orders", {
