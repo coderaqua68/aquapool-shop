@@ -23,6 +23,17 @@ export const products = pgTable("products", {
   discount: integer("discount").default(0),
   rating: decimal("rating", { precision: 2, scale: 1 }).default("0"),
   reviewCount: integer("review_count").default(0),
+  // Дополнительные поля для фильтрации
+  weight: text("weight"), // Вес
+  dimensions: text("dimensions"), // Размеры
+  material: text("material"), // Материал
+  color: text("color"), // Цвет
+  frameType: text("frame_type"), // Тип каркаса
+  pumpType: text("pump_type"), // Тип насоса
+  pumpCapacity: text("pump_capacity"), // Производительность насоса
+  shape: text("shape"), // Форма (круглый, прямоугольный)
+  installationType: text("installation_type"), // Тип установки (наземный, встраиваемый)
+  countryOrigin: text("country_origin"), // Страна производитель
 });
 
 export const categories = pgTable("categories", {

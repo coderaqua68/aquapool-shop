@@ -143,7 +143,18 @@ export class MemStorage implements IStorage {
       isNew: insertProduct.isNew || false,
       discount: insertProduct.discount || 0,
       rating: insertProduct.rating || "4.0",
-      reviewCount: insertProduct.reviewCount || 0
+      reviewCount: insertProduct.reviewCount || 0,
+      // Дополнительные поля
+      weight: insertProduct.weight || null,
+      dimensions: insertProduct.dimensions || null,
+      material: insertProduct.material || null,
+      color: insertProduct.color || null,
+      frameType: insertProduct.frameType || null,
+      pumpType: insertProduct.pumpType || null,
+      pumpCapacity: insertProduct.pumpCapacity || null,
+      shape: insertProduct.shape || null,
+      installationType: insertProduct.installationType || null,
+      countryOrigin: insertProduct.countryOrigin || null
     };
     this.products.set(product.id, product);
     return product;
@@ -174,7 +185,18 @@ export class MemStorage implements IStorage {
       isNew: updateData.isNew !== undefined ? updateData.isNew : existingProduct.isNew,
       discount: updateData.discount !== undefined ? updateData.discount : existingProduct.discount,
       rating: updateData.rating || existingProduct.rating,
-      reviewCount: updateData.reviewCount !== undefined ? updateData.reviewCount : existingProduct.reviewCount
+      reviewCount: updateData.reviewCount !== undefined ? updateData.reviewCount : existingProduct.reviewCount,
+      // Дополнительные поля
+      weight: updateData.weight || existingProduct.weight || null,
+      dimensions: updateData.dimensions || existingProduct.dimensions || null,
+      material: updateData.material || existingProduct.material || null,
+      color: updateData.color || existingProduct.color || null,
+      frameType: updateData.frameType || existingProduct.frameType || null,
+      pumpType: updateData.pumpType || existingProduct.pumpType || null,
+      pumpCapacity: updateData.pumpCapacity || existingProduct.pumpCapacity || null,
+      shape: updateData.shape || existingProduct.shape || null,
+      installationType: updateData.installationType || existingProduct.installationType || null,
+      countryOrigin: updateData.countryOrigin || existingProduct.countryOrigin || null
     };
 
     this.products.set(id, updatedProduct);

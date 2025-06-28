@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { X, Plus } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { parseHTMLSpecs, convertSpecsToKeyValue, formatSpecsAsTable } from '@/lib/html-parser';
+import { parseHTMLSpecs, convertSpecsToKeyValue, formatSpecsAsTable, extractBrandFromSpecs, extractCategoryFromSpecs, extractDimensionsFromSpecs, extractVolumeFromSpecs } from '@/lib/html-parser';
 
 interface ProductFormProps {
   product?: any;
@@ -501,6 +501,12 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
                   if (htmlInput.trim()) {
                     const parsedSpecs = parseHTMLSpecs(htmlInput);
                     const convertedSpecs = convertSpecsToKeyValue(parsedSpecs);
+                    
+                    // Автоматически заполняем поля из характеристик
+                    const extractedBrand = extractBrandFromSpecs(parsedSpecs);
+                    const extractedVolume = extractVolumeFromSpecs(parsedSpecs);
+                    
+                    // Обновляем характеристики
                     setSpecificationsArray(prev => {
                       const newSpecs = [...prev];
                       convertedSpecs.forEach(spec => {
@@ -510,10 +516,23 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
                       });
                       return newSpecs;
                     });
+                    
+                    // Автоматически заполняем поля товара
+                    setFormData(prev => ({
+                      ...prev,
+                      brand: extractedBrand || prev.brand,
+                      volume: extractedVolume || prev.volume
+                    }));
+                    
                     setHtmlInput('');
+                    
+                    let updateMessage = `Добавлено ${convertedSpecs.length} характеристик`;
+                    if (extractedBrand) updateMessage += `, бренд: ${extractedBrand}`;
+                    if (extractedVolume) updateMessage += `, объем: ${extractedVolume}`;
+                    
                     toast({
                       title: "Успешно!",
-                      description: `Добавлено ${convertedSpecs.length} характеристик`,
+                      description: updateMessage,
                     });
                   }
                 }} 
@@ -521,7 +540,7 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
                 variant="default"
                 disabled={!htmlInput.trim()}
               >
-                📋 Импортировать из HTML
+                📋 Импортировать + заполнить поля
               </Button>
               <Button 
                 type="button" 
