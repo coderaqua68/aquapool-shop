@@ -106,7 +106,7 @@ export default function ProductPage() {
             <img
               src={product.images && product.images.length > 0 ? product.images[selectedImageIndex] : product.imageUrl}
               alt={product.name}
-              className="w-full h-96 object-cover rounded-lg"
+              className="w-full h-96 object-contain bg-gray-50 rounded-lg"
             />
             
             {/* Navigation arrows for multiple images */}
@@ -168,7 +168,7 @@ export default function ProductPage() {
                   <img
                     src={image}
                     alt={`${product.name} - фото ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain bg-gray-50"
                   />
                 </button>
               ))}
@@ -184,7 +184,7 @@ export default function ProductPage() {
           </div>
 
           {/* Rating */}
-          {product.reviewCount > 0 && (
+          {(product.reviewCount || 0) > 0 && (
             <div className="flex items-center space-x-2">
               <div className="flex">
                 {renderRating(product.rating || "0")}
