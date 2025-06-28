@@ -124,6 +124,14 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Cleared existing catalog for manual product management
   - Added admin routes: /admin/login and /admin for management interface
   - Implemented proper authorization middleware for admin API endpoints
+- June 28, 2025: Automated product parser implementation
+  - Created specialized parser for intex-bassein.ru website structure
+  - Implemented automatic extraction of product names, SKUs, descriptions, and specifications
+  - Added intelligent category and brand detection from product data
+  - Enhanced filter system with brand, type, volume, shape, and material filters
+  - Created bulk import API endpoint for mass product addition
+  - Added comprehensive documentation and usage guides for parser
+  - Fixed discount display system with proper percentage calculations
 
 ## User Preferences
 

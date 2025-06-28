@@ -209,9 +209,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({
         success: true,
         imported: results.length,
-        errors: errors.length,
-        results,
-        errors
+        errorCount: errors.length,
+        results: results,
+        errorsList: errors
       });
     } catch (error) {
       console.error("Error importing products:", error);
