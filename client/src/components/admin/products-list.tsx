@@ -147,41 +147,47 @@ export default function ProductsList({ onEdit }: ProductsListProps) {
 
   if (products.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Package className="w-5 h-5" />
-            <span>Список товаров</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="text-center py-8">
-          <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            Пока нет товаров
-          </h3>
-          <p className="text-gray-500 mb-4">
-            Начните добавлять товары в ваш каталог
-          </p>
-          <Button
-            onClick={() => onEdit(null as any)}
-            className="inline-flex items-center space-x-2"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Добавить первый товар</span>
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Package className="w-5 h-5" />
+              <span>Список товаров</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-center py-8">
+            <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              Пока нет товаров
+            </h3>
+            <p className="text-gray-500 mb-4">
+              Начните добавлять товары в ваш каталог
+            </p>
+            <Button
+              onClick={() => onEdit(null as any)}
+              className="inline-flex items-center space-x-2"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Добавить первый товар</span>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   return (
     <div className="space-y-6">
+      {/* Заголовок и кнопка добавления */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Package className="w-5 h-5" />
-              <span>Список товаров ({products.length})</span>
+              <span>
+                Список товаров ({filteredProducts.length}
+                {filteredProducts.length !== products.length && ` из ${products.length}`})
+              </span>
             </div>
             <Button
               onClick={() => onEdit(null as any)}
@@ -194,139 +200,258 @@ export default function ProductsList({ onEdit }: ProductsListProps) {
         </CardHeader>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.map((product) => (
-          <Card key={product.id} className="overflow-hidden">
-            <CardContent className="p-0">
-              {/* Изображение товара */}
-              <div className="aspect-square bg-gray-100 relative overflow-hidden">
-                {product.imageUrl ? (
-                  <img
-                    src={product.imageUrl}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src = '/api/placeholder/300/300';
-                    }}
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                    <Package className="w-16 h-16 text-gray-400" />
-                  </div>
-                )}
-                
-                {/* Статусы товара */}
-                <div className="absolute top-2 left-2 space-y-1">
-                  {!product.inStock && (
-                    <Badge variant="destructive">Нет в наличии</Badge>
-                  )}
-                  {product.isPopular && (
-                    <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
-                      Популярный
-                    </Badge>
-                  )}
-                  {product.isNew && (
-                    <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
-                      Новинка
-                    </Badge>
-                  )}
-                </div>
+      {/* Панель фильтров */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Filter className="w-5 h-5" />
+            <span>Фильтры</span>
+            {hasActiveFilters && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearFilters}
+                className="ml-auto text-red-600 hover:text-red-700"
+              >
+                <X className="w-4 h-4 mr-1" />
+                Очистить
+              </Button>
+            )}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Поиск */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Поиск по названию</label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Input
+                  placeholder="Введите название товара..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
               </div>
+            </div>
 
-              {/* Информация о товаре */}
-              <div className="p-4 space-y-3">
-                <div>
-                  <h3 className="font-medium text-gray-900 line-clamp-2 mb-1">
-                    {product.name}
-                  </h3>
-                  {product.brand && (
-                    <p className="text-sm text-gray-500">{product.brand}</p>
-                  )}
-                </div>
+            {/* Категория */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Категория</label>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Все категории" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Все категории</SelectItem>
+                  {categories.map((category) => (
+                    <SelectItem key={category.slug} value={category.slug}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-                {/* Категория */}
-                <div>
-                  <Badge variant="outline" className="text-xs">
-                    {product.category}
-                  </Badge>
-                </div>
+            {/* Бренд */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Бренд</label>
+              <Select value={selectedBrand} onValueChange={setSelectedBrand}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Все бренды" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Все бренды</SelectItem>
+                  {availableBrands.map((brand) => (
+                    <SelectItem key={brand} value={brand}>
+                      {brand}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-                {/* Цена */}
-                <div className="space-y-1">
-                  <div className="flex items-center space-x-2">
-                    <span className="font-bold text-lg text-[hsl(207,90%,54%)]">
-                      {parseInt(product.price).toLocaleString()} ₽
-                    </span>
-                  </div>
-                  {product.originalPrice && parseInt(product.originalPrice) > parseInt(product.price) && (
-                    <div className="text-sm text-gray-500 line-through">
-                      {parseInt(product.originalPrice).toLocaleString()} ₽
+            {/* Статус */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Статус</label>
+              <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Все статусы" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Все статусы</SelectItem>
+                  <SelectItem value="in-stock">В наличии</SelectItem>
+                  <SelectItem value="out-of-stock">Нет в наличии</SelectItem>
+                  <SelectItem value="popular">Популярные</SelectItem>
+                  <SelectItem value="new">Новинки</SelectItem>
+                  <SelectItem value="discounted">Со скидкой</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Результаты фильтрации */}
+      {filteredProducts.length === 0 ? (
+        <Card>
+          <CardContent className="text-center py-8">
+            <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              {hasActiveFilters ? "Товары не найдены" : "Пока нет товаров"}
+            </h3>
+            <p className="text-gray-500 mb-4">
+              {hasActiveFilters
+                ? "Попробуйте изменить условия фильтрации"
+                : "Начните добавлять товары в ваш каталог"}
+            </p>
+            {hasActiveFilters ? (
+              <Button onClick={clearFilters} variant="outline">
+                Сбросить фильтры
+              </Button>
+            ) : (
+              <Button onClick={() => onEdit(null as any)}>
+                <Plus className="w-4 h-4 mr-2" />
+                Добавить первый товар
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProducts.map((product) => (
+            <Card key={product.id} className="overflow-hidden">
+              <CardContent className="p-0">
+                {/* Изображение товара */}
+                <div className="aspect-square bg-gray-100 relative overflow-hidden">
+                  {product.imageUrl ? (
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = '/api/placeholder/300/300';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                      <Package className="w-16 h-16 text-gray-400" />
                     </div>
                   )}
-                  {product.discount && product.discount > 0 && (
-                    <Badge className="bg-red-100 text-red-800 hover:bg-red-200 mt-1">
-                      -{product.discount}%
-                    </Badge>
-                  )}
-                </div>
-
-                {/* Дополнительная информация */}
-                {product.description && (
-                  <p className="text-sm text-gray-600 line-clamp-2">
-                    {product.description}
-                  </p>
-                )}
-
-                {/* Характеристики (если есть) */}
-                {product.specifications && (
-                  <div className="text-xs text-gray-500">
-                    {(() => {
-                      try {
-                        const specs = JSON.parse(product.specifications);
-                        const specCount = Object.keys(specs).length;
-                        return `${specCount} характеристик`;
-                      } catch {
-                        return '';
-                      }
-                    })()}
+                  
+                  {/* Статусы товара */}
+                  <div className="absolute top-2 left-2 space-y-1">
+                    {!product.inStock && (
+                      <Badge variant="destructive">Нет в наличии</Badge>
+                    )}
+                    {product.isPopular && (
+                      <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
+                        Популярный
+                      </Badge>
+                    )}
+                    {product.isNew && (
+                      <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
+                        Новинка
+                      </Badge>
+                    )}
                   </div>
-                )}
-
-                {/* Кнопки действий */}
-                <div className="flex space-x-2 pt-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => window.open(`/product/${product.slug || product.id}`, '_blank')}
-                    className="flex-1"
-                  >
-                    <Eye className="w-4 h-4 mr-1" />
-                    Просмотр
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => onEdit(product)}
-                    className="flex-1"
-                  >
-                    <Edit2 className="w-4 h-4 mr-1" />
-                    Изменить
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleDelete(product)}
-                    disabled={deleteMutation.isPending}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+
+                {/* Информация о товаре */}
+                <div className="p-4 space-y-3">
+                  <div>
+                    <h3 className="font-medium text-gray-900 line-clamp-2 mb-1">
+                      {product.name}
+                    </h3>
+                    {product.brand && (
+                      <p className="text-sm text-gray-500">{product.brand}</p>
+                    )}
+                  </div>
+
+                  {/* Категория */}
+                  <div>
+                    <Badge variant="outline" className="text-xs">
+                      {product.category}
+                    </Badge>
+                  </div>
+
+                  {/* Цена */}
+                  <div className="space-y-1">
+                    <div className="flex items-center space-x-2">
+                      <span className="font-bold text-lg text-[hsl(207,90%,54%)]">
+                        {parseInt(product.price).toLocaleString()} ₽
+                      </span>
+                    </div>
+                    {product.originalPrice && parseInt(product.originalPrice) > parseInt(product.price) && (
+                      <div className="text-sm text-gray-500 line-through">
+                        {parseInt(product.originalPrice).toLocaleString()} ₽
+                      </div>
+                    )}
+                    {product.discount && product.discount > 0 && (
+                      <Badge className="bg-red-100 text-red-800 hover:bg-red-200 mt-1">
+                        -{product.discount}%
+                      </Badge>
+                    )}
+                  </div>
+
+                  {/* Дополнительная информация */}
+                  {product.description && (
+                    <p className="text-sm text-gray-600 line-clamp-2">
+                      {product.description}
+                    </p>
+                  )}
+
+                  {/* Характеристики (если есть) */}
+                  {product.specifications && (
+                    <div className="text-xs text-gray-500">
+                      {(() => {
+                        try {
+                          const specs = JSON.parse(product.specifications);
+                          const specCount = Object.keys(specs).length;
+                          return `${specCount} характеристик`;
+                        } catch {
+                          return '';
+                        }
+                      })()}
+                    </div>
+                  )}
+
+                  {/* Кнопки действий */}
+                  <div className="flex space-x-2 pt-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => window.open(`/product/${product.slug || product.id}`, '_blank')}
+                      className="flex-1"
+                    >
+                      <Eye className="w-4 h-4 mr-1" />
+                      Просмотр
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => onEdit(product)}
+                      className="flex-1"
+                    >
+                      <Edit2 className="w-4 h-4 mr-1" />
+                      Изменить
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleDelete(product)}
+                      disabled={deleteMutation.isPending}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
