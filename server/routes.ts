@@ -226,25 +226,22 @@ async function parseProductFromUrl(url: string) {
       }
     }
     
-    // Extract main product image
+    // Extract main product image and additional images
     let imageUrl = "/api/placeholder/400/400";
+    const images: string[] = [];
     
-    const imageSelectors = [
+    // First, try to find the main product image
+    const mainImageSelectors = [
       '.product-item-detail-img img',
       '.product-main-image img',
-      '.product-image img',
-      '.main-image img',
-      '[class*="main"] img',
-      '[class*="product"] img',
-      'img[src*="upload"]',
-      'img[src*="product"]'
+      '.main-product-image img'
     ];
     
-    for (const selector of imageSelectors) {
+    for (const selector of mainImageSelectors) {
       const imgElement = document.querySelector(selector);
       if (imgElement) {
         const src = imgElement.getAttribute('src');
-        if (src) {
+        if (src && src.includes('upload')) {
           // Handle relative URLs
           if (src.startsWith('/')) {
             imageUrl = 'https://intex-bassein.ru' + src;
@@ -255,6 +252,36 @@ async function parseProductFromUrl(url: string) {
         }
       }
     }
+    
+    // Extract additional images from gallery
+    const gallerySelectors = [
+      '.product-item-detail-img-container img',
+      '.product-gallery img',
+      '.product-images img',
+      '[class*="gallery"] img',
+      '[class*="slider"] img'
+    ];
+    
+    const foundImages = new Set<string>(); // Use Set to avoid duplicates
+    
+    for (const selector of gallerySelectors) {
+      const imgElements = Array.from(document.querySelectorAll(selector));
+      for (const imgElement of imgElements) {
+        const src = imgElement.getAttribute('src');
+        if (src && src.includes('upload') && src !== imageUrl.replace('https://intex-bassein.ru', '')) {
+          let fullUrl = src;
+          if (src.startsWith('/')) {
+            fullUrl = 'https://intex-bassein.ru' + src;
+          }
+          foundImages.add(fullUrl);
+        }
+      }
+    }
+    
+    // Convert Set to Array and limit to 10 images maximum
+    images.push(...Array.from(foundImages).slice(0, 10));
+    
+    console.log(`Found images: main=${imageUrl}, additional=${images.length}`);
     
     // Generate short description
     const shortDescription = [
@@ -283,7 +310,7 @@ async function parseProductFromUrl(url: string) {
       installationType: 'Наземный',
       countryOrigin: specs['Страна-производитель'] || 'Китай',
       imageUrl,
-      images: [],
+      images,
       specifications: JSON.stringify(specs),
       inStock: true,
       isPopular: false,
@@ -534,7 +561,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
             throw new Error("Product name is required");
           }
 
+          console.log(`Creating product: ${productData.name} with price: ${productData.price}, originalPrice: ${productData.originalPrice}`);
+          
           const product = await storage.createProduct(productData);
+          console.log(`Created product with id: ${product.id}, price: ${product.price}, originalPrice: ${product.originalPrice}`);
           results.push(product);
         } catch (error) {
           errors.push({
