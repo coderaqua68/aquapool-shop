@@ -174,6 +174,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Bulk import products from parser
+  app.post("/api/admin/import-products", adminAuth, async (req, res) => {
+    try {
+      const { products } = req.body;
+      
+      if (!Array.isArray(products)) {
+        return res.status(400).json({ message: "Products must be an array" });
+      }
+
+      const results = [];
+      const errors = [];
+
+      for (let i = 0; i < products.length; i++) {
+        try {
+          const productData = products[i];
+          
+          // Validate required fields
+          if (!productData.name) {
+            throw new Error("Product name is required");
+          }
+
+          const product = await storage.createProduct(productData);
+          results.push(product);
+        } catch (error) {
+          errors.push({
+            index: i,
+            product: products[i]?.name || `Product ${i}`,
+            error: error instanceof Error ? error.message : String(error)
+          });
+        }
+      }
+
+      res.json({
+        success: true,
+        imported: results.length,
+        errors: errors.length,
+        results,
+        errors
+      });
+    } catch (error) {
+      console.error("Error importing products:", error);
+      res.status(500).json({ message: "Failed to import products" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
