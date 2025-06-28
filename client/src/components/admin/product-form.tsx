@@ -334,6 +334,9 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
                 placeholder="Краткое описание для отображения рядом с ценой..."
                 rows={3}
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Форматирование: **жирный**, *курсив*, новые строки для абзацев
+              </p>
             </div>
             
             <div>
@@ -343,8 +346,18 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                 placeholder="Подробное описание товара..."
-                rows={3}
+                rows={6}
               />
+              <div className="text-xs text-gray-500 mt-1">
+                <p><strong>Форматирование:</strong></p>
+                <div className="grid grid-cols-2 gap-2 mt-1">
+                  <div>**жирный** → <strong>жирный</strong></div>
+                  <div>*курсив* → <em>курсив</em></div>
+                  <div>- список → • список</div>
+                  <div>1. номер → 1. номер</div>
+                </div>
+                <p className="mt-1">Пустая строка = новый абзац</p>
+              </div>
             </div>
           </div>
 

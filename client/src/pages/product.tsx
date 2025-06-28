@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FormattedText } from "@/components/ui/formatted-text";
 import { Heart, Star, Truck, Shield, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { Link } from "wouter";
@@ -252,7 +253,7 @@ export default function ProductPage() {
           {/* Short Description */}
           {product.shortDescription && (
             <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-gray-700">{product.shortDescription}</p>
+              <FormattedText text={product.shortDescription} />
             </div>
           )}
 
@@ -339,7 +340,7 @@ export default function ProductPage() {
           <Card>
             <CardContent className="p-6">
               <h3 className="text-xl font-semibold mb-4">Описание товара</h3>
-              <p className="text-gray-600 leading-relaxed">{product.description}</p>
+              <FormattedText text={product.description} />
             </CardContent>
           </Card>
         </TabsContent>
