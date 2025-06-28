@@ -33,7 +33,10 @@ async function testParser() {
     
     if (parser.errors.length > 0) {
       console.log('\n⚠️ Ошибки:');
-      parser.errors.forEach(error => console.log(error));
+      parser.errors.forEach(error => {
+        console.log(`URL: ${error.url || 'неизвестен'}`);
+        console.log(`Ошибка: ${error.error || error}`);
+      });
     }
     
   } catch (error) {

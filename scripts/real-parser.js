@@ -5,6 +5,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import { JSDOM } from 'jsdom';
 
 // Для реального парсинга понадобятся эти пакеты:
 // npm install jsdom node-fetch
@@ -103,13 +104,15 @@ class RealParser {
    */
   extractProductData(html, url) {
     // Используем реальный jsdom для парсинга
-    const { JSDOM } = require('jsdom');
     const dom = new JSDOM(html);
     const document = dom.window.document;
     
     // Извлекаем основные данные
     const name = this.getTextContent(document, this.selectors.title) || 'Товар без названия';
     const sku = this.getTextContent(document, this.selectors.sku) || this.generateSKU();
+    
+    console.log(`🔍 Найденное название: "${name}"`);
+    console.log(`🔍 Найденный SKU: "${sku}"`);
     
     // Цены
     const priceText = this.getTextContent(document, this.selectors.price) || '0';
@@ -124,7 +127,9 @@ class RealParser {
     
     // Извлекаем реальное описание
     const descriptionHtml = this.getElementHtml(document, this.selectors.description);
+    console.log(`🔍 Найденный HTML описания: ${descriptionHtml.length} символов`);
     const description = this.extractDescription(descriptionHtml, name, specs);
+    console.log(`🔍 Обработанное описание: ${description.length} символов`);
     
     // Создаем объект товара
     const product = {
