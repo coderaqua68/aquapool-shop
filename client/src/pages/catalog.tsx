@@ -25,6 +25,10 @@ export default function Catalog() {
       newFilters.search = params.get('search');
     }
     
+    if (params.get('brand')) {
+      newFilters.brand = params.get('brand');
+    }
+    
     if (params.get('minPrice')) {
       newFilters.minPrice = parseInt(params.get('minPrice')!);
     }
@@ -46,6 +50,7 @@ export default function Catalog() {
       const params = new URLSearchParams();
       
       if (filters.category) params.append('category', filters.category);
+      if (filters.brand) params.append('brand', filters.brand);
       if (filters.search) params.append('search', filters.search);
       if (filters.minPrice) params.append('minPrice', filters.minPrice.toString());
       if (filters.maxPrice) params.append('maxPrice', filters.maxPrice.toString());
