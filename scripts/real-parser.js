@@ -111,9 +111,6 @@ class RealParser {
     const name = this.getTextContent(document, this.selectors.title) || 'Товар без названия';
     const sku = this.getTextContent(document, this.selectors.sku) || this.generateSKU();
     
-    console.log(`🔍 Найденное название: "${name}"`);
-    console.log(`🔍 Найденный SKU: "${sku}"`);
-    
     // Цены
     const priceText = this.getTextContent(document, this.selectors.price) || '0';
     const originalPriceText = this.getTextContent(document, this.selectors.originalPrice);
@@ -127,9 +124,7 @@ class RealParser {
     
     // Извлекаем реальное описание
     const descriptionHtml = this.getElementHtml(document, this.selectors.description);
-    console.log(`🔍 Найденный HTML описания: ${descriptionHtml.length} символов`);
     const description = this.extractDescription(descriptionHtml, name, specs);
-    console.log(`🔍 Обработанное описание: ${description.length} символов`);
     
     // Создаем объект товара
     const product = {
@@ -140,7 +135,7 @@ class RealParser {
       price: price,
       originalPrice: originalPrice,
       category: this.determineCategory(url, name),
-      brand: this.extractBrandFromSpecs(specs) || this.determineBrand(name),
+      brand: this.determineBrand(name) || this.extractBrandFromSpecs(specs),
       volume: this.extractVolumeFromSpecs(specs),
       imageUrl: "/api/placeholder/400/400", // Заглушка
       images: [],

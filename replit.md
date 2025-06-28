@@ -139,6 +139,14 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Improved image parsing to extract only main product photos, excluding thumbnails and logos
   - Enhanced admin panel products list to display existing products for editing
   - Updated product links throughout application to use SEO-friendly slugs
+- June 28, 2025: Fixed product description parsing in automated parser
+  - Resolved critical issue where parser generated identical generic descriptions for all products
+  - Updated parser to extract real product descriptions from source website HTML content
+  - Configured proper selectors for intex-bassein.ru website structure (.toggle_content)
+  - Implemented jsdom for authentic DOM parsing instead of mock data
+  - Fixed ES module imports and exports for modern Node.js compatibility
+  - Parser now extracts specific product details like actual specifications and included items
+  - Successfully tested with real product: extracts proper complication (pump 1249 l/h, filter cartridge, chemical dispenser, repair patch)
 
 ## User Preferences
 
