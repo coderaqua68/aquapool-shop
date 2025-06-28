@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Edit2, Trash2, Eye, Package, Plus } from "lucide-react";
-import type { Product } from "@shared/schema";
+import { Edit2, Trash2, Eye, Package, Plus, Search, Filter, X } from "lucide-react";
+import type { Product, Category } from "@shared/schema";
 
 interface ProductsListProps {
   onEdit: (product: Product) => void;
@@ -15,9 +17,84 @@ export default function ProductsList({ onEdit }: ProductsListProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // Состояние фильтров
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
+
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
   });
+
+  const { data: categories = [] } = useQuery<Category[]>({
+    queryKey: ["/api/categories"],
+  });
+
+  // Получаем уникальные бренды из товаров
+  const availableBrands = useMemo(() => {
+    const brands = new Set<string>();
+    products.forEach(product => {
+      if (product.brand) {
+        brands.add(product.brand);
+      }
+    });
+    return Array.from(brands).sort();
+  }, [products]);
+
+  // Фильтрованные товары
+  const filteredProducts = useMemo(() => {
+    return products.filter(product => {
+      // Поиск по названию
+      if (searchTerm && !product.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+        return false;
+      }
+
+      // Фильтр по категории
+      if (selectedCategory && product.category !== selectedCategory) {
+        return false;
+      }
+
+      // Фильтр по бренду
+      if (selectedBrand && product.brand !== selectedBrand) {
+        return false;
+      }
+
+      // Фильтр по статусу
+      if (selectedStatus) {
+        switch (selectedStatus) {
+          case "in-stock":
+            if (!product.inStock) return false;
+            break;
+          case "out-of-stock":
+            if (product.inStock) return false;
+            break;
+          case "popular":
+            if (!product.isPopular) return false;
+            break;
+          case "new":
+            if (!product.isNew) return false;
+            break;
+          case "discounted":
+            if (!product.originalPrice || parseInt(product.originalPrice) <= parseInt(product.price)) return false;
+            break;
+        }
+      }
+
+      return true;
+    });
+  }, [products, searchTerm, selectedCategory, selectedBrand, selectedStatus]);
+
+  // Функция очистки фильтров
+  const clearFilters = () => {
+    setSearchTerm("");
+    setSelectedCategory("");
+    setSelectedBrand("");
+    setSelectedStatus("");
+  };
+
+  // Проверяем, есть ли активные фильтры
+  const hasActiveFilters = searchTerm || selectedCategory || selectedBrand || selectedStatus;
 
   const deleteMutation = useMutation({
     mutationFn: async (productId: number) => {
