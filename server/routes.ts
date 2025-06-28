@@ -426,6 +426,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const filters = {
         category: req.query.category as string,
+        brand: req.query.brand as string,
         minPrice: req.query.minPrice ? parseFloat(req.query.minPrice as string) : undefined,
         maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice as string) : undefined,
         inStock: req.query.inStock ? req.query.inStock === 'true' : undefined,

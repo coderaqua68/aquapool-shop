@@ -13,7 +13,7 @@ import { eq, and, gte, lte, desc, ilike } from "drizzle-orm";
 
 export interface IStorage {
   // Products
-  getProducts(filters?: { category?: string; minPrice?: number; maxPrice?: number; inStock?: boolean; search?: string }): Promise<Product[]>;
+  getProducts(filters?: { category?: string; brand?: string; minPrice?: number; maxPrice?: number; inStock?: boolean; search?: string }): Promise<Product[]>;
   getProduct(id: number): Promise<Product | undefined>;
   getProductBySlug(slug: string): Promise<Product | undefined>;
   getPopularProducts(): Promise<Product[]>;
@@ -35,7 +35,7 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  async getProducts(filters?: { category?: string; minPrice?: number; maxPrice?: number; inStock?: boolean; search?: string }): Promise<Product[]> {
+  async getProducts(filters?: { category?: string; brand?: string; minPrice?: number; maxPrice?: number; inStock?: boolean; search?: string }): Promise<Product[]> {
     let query = db.select().from(products);
     
     if (filters) {
@@ -43,6 +43,10 @@ export class DatabaseStorage implements IStorage {
       
       if (filters.category) {
         conditions.push(eq(products.category, filters.category));
+      }
+      
+      if (filters.brand) {
+        conditions.push(eq(products.brand, filters.brand));
       }
       
       if (filters.minPrice !== undefined) {
