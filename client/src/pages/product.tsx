@@ -250,12 +250,20 @@ export default function ProductPage() {
             </div>
           )}
 
-          {/* Short Description */}
-          {product.shortDescription && (
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <FormattedText text={product.shortDescription} />
-            </div>
-          )}
+          {/* SKU and Short Description */}
+          <div className="space-y-3">
+            {product.sku && (
+              <div className="text-sm text-gray-500">
+                <span className="font-medium">Артикул:</span> {product.sku}
+              </div>
+            )}
+            
+            {product.shortDescription && (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <FormattedText text={product.shortDescription} />
+              </div>
+            )}
+          </div>
 
           {/* Price */}
           <div className="space-y-2">

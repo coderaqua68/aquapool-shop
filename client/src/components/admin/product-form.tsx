@@ -303,6 +303,29 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
               </div>
 
               <div>
+                <Label htmlFor="sku">Артикул</Label>
+                <div className="flex space-x-2">
+                  <Input
+                    id="sku"
+                    value={formData.sku}
+                    onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))}
+                    placeholder="AUTO-GEN-123456"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setFormData(prev => ({ ...prev, sku: generateSKU() }))}
+                    size="sm"
+                  >
+                    Авто
+                  </Button>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Оставьте пустым для автоматической генерации
+                </p>
+              </div>
+
+              <div>
                 <Label htmlFor="price">Цена *</Label>
                 <Input
                   id="price"
@@ -463,10 +486,30 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
           <div>
             <div className="flex justify-between items-center mb-2">
               <Label>Характеристики товара</Label>
-              <Button type="button" onClick={addSpecification} size="sm" variant="outline">
-                <Plus className="w-4 h-4 mr-2" />
-                Добавить
-              </Button>
+              <div className="flex space-x-2">
+                <Button 
+                  type="button" 
+                  onClick={() => {
+                    const extractedSpecs = extractSpecsFromDescription(formData.description);
+                    const newSpecs = [...specificationsArray];
+                    extractedSpecs.forEach(spec => {
+                      if (!newSpecs.some(existing => existing.key.toLowerCase() === spec.key.toLowerCase())) {
+                        newSpecs.push(spec);
+                      }
+                    });
+                    setSpecificationsArray(newSpecs);
+                  }} 
+                  size="sm" 
+                  variant="secondary"
+                  disabled={!formData.description}
+                >
+                  🔍 Извлечь из описания
+                </Button>
+                <Button type="button" onClick={addSpecification} size="sm" variant="outline">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Добавить
+                </Button>
+              </div>
             </div>
             
             <div className="space-y-2">

@@ -125,9 +125,14 @@ export class MemStorage implements IStorage {
   }
 
   async createProduct(insertProduct: InsertProduct): Promise<Product> {
+    // Автогенерация SKU если не указан
+    const sku = insertProduct.sku || this.generateSKU(insertProduct.brand, insertProduct.category);
+    
     const product: Product = { 
       id: this.currentProductId++, 
       ...insertProduct,
+      sku,
+      shortDescription: insertProduct.shortDescription || null,
       originalPrice: insertProduct.originalPrice || null,
       brand: insertProduct.brand || null,
       subcategory: insertProduct.subcategory || null,
@@ -142,6 +147,13 @@ export class MemStorage implements IStorage {
     };
     this.products.set(product.id, product);
     return product;
+  }
+
+  private generateSKU(brand?: string | null, category?: string): string {
+    const brandCode = (brand || "POOL").toUpperCase().substring(0, 4);
+    const categoryCode = (category || "GEN").toUpperCase().substring(0, 3);
+    const timestamp = Date.now().toString().slice(-6);
+    return `${brandCode}-${categoryCode}-${timestamp}`;
   }
 
   async updateProduct(id: number, updateData: Partial<InsertProduct>): Promise<Product | undefined> {
