@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Play, Eye, Plus, AlertCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -34,7 +35,26 @@ export function ProductParser() {
   const [progress, setProgress] = useState(0);
   const [currentUrl, setCurrentUrl] = useState("");
   const [isImporting, setIsImporting] = useState(false);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const { toast } = useToast();
+
+  // Загрузка категорий при монтировании компонента
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/categories');
+        if (response.ok) {
+          const categoriesData = await response.json();
+          setCategories(categoriesData);
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    
+    fetchCategories();
+  }, []);
 
   const handleParse = async () => {
     const urlList = urls.split('\n').filter(url => url.trim()).map(url => url.trim());
@@ -91,10 +111,26 @@ export function ProductParser() {
 
   const handleImport = async () => {
     if (!parseResults?.products.length) return;
+    
+    if (!selectedCategory) {
+      toast({
+        title: "Выберите категорию",
+        description: "Необходимо выбрать категорию для импортируемых товаров",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsImporting(true);
     try {
       const token = localStorage.getItem("adminToken");
+      
+      // Обновляем категорию для всех товаров
+      const productsWithCategory = parseResults.products.map(product => ({
+        ...product,
+        category: selectedCategory
+      }));
+      
       const response = await fetch('/api/admin/import-products', {
         method: 'POST',
         headers: {
@@ -102,7 +138,7 @@ export function ProductParser() {
           'Authorization': token || '',
         },
         credentials: 'include',
-        body: JSON.stringify({ products: parseResults.products }),
+        body: JSON.stringify({ products: productsWithCategory }),
       });
 
       if (!response.ok) {
@@ -220,6 +256,30 @@ https://intex-bassein.ru/catalog/product-3/`}
             Количество URL: {urls.split('\n').filter(url => url.trim()).length}
           </p>
         </div>
+
+        {/* Выбор категории для импорта */}
+        {parseResults && (
+          <div>
+            <label className="text-sm font-medium mb-2 block">
+              Выберите категорию для товаров:
+            </label>
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Выберите категорию..." />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category.slug} value={category.slug}>
+                    {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground mt-1">
+              Все товары будут добавлены в выбранную категорию
+            </p>
+          </div>
+        )}
 
         {/* Прогресс парсинга */}
         {isParsingNow && (
