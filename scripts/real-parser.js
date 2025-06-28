@@ -250,20 +250,67 @@ class RealParser {
     const urlLower = url.toLowerCase();
     const nameLower = name.toLowerCase();
     
+    // Определяем бренд для более точной категоризации
+    const brand = this.determineBrand(name);
+    
+    // Каркасные бассейны
     if (urlLower.includes('karkasnye') || nameLower.includes('каркасный')) {
-      return 'frame-pools';
-    }
-    if (urlLower.includes('naduvnye') || nameLower.includes('надувной')) {
-      return 'inflatable-pools';
-    }
-    if (urlLower.includes('detskie') || nameLower.includes('детский')) {
-      return 'inflatable-pools';
-    }
-    if (urlLower.includes('nasos') || nameLower.includes('насос')) {
-      return 'pumps-filters';
+      if (brand === 'Intex') {
+        return 'intex-karkasnye'; // INTEX подкатегория
+      } else if (brand === 'Bestway') {
+        return 'bestway-karkasnye'; // Bestway подкатегория
+      }
+      return 'karkasnye-basseyny'; // Общая категория каркасных
     }
     
-    return 'frame-pools';
+    // Детские центры (проверяем раньше надувных)
+    if (nameLower.includes('центр') || nameLower.includes('игровой')) {
+      return 'detskie-centry'; // Детские центры
+    }
+    
+    // Надувные бассейны
+    if (urlLower.includes('naduvnye') || nameLower.includes('надувной')) {
+      if (nameLower.includes('детский') || nameLower.includes('детей')) {
+        return 'detskie-basseyny'; // Детские бассейны
+      }
+      if (nameLower.includes('easy set') || nameLower.includes('изи сет')) {
+        return 'intex-easy-set'; // INTEX Easy Set
+      }
+      return 'naduvnye-basseyny'; // Общая категория надувных
+    }
+    
+    // Джакузи
+    if (nameLower.includes('джакузи') || nameLower.includes('spa') || nameLower.includes('спа')) {
+      if (brand === 'Intex') {
+        return 'dzjakuzi-intex';
+      } else if (brand === 'Bestway') {
+        return 'dzjakuzi-bestway';
+      }
+    }
+    
+    // Морозоустойчивые бассейны
+    if (nameLower.includes('морозоустойчив') || urlLower.includes('morozostojkie')) {
+      if (brand === 'Лагуна') return 'laguna';
+      if (brand === 'Summer Fun') return 'summer-fun';
+      if (brand === 'Magic Pool') return 'magic-pool';
+      if (brand === 'GRE') return 'gre';
+      return 'morozostojkie-basseyny';
+    }
+    
+    // Запасные чаши
+    if (nameLower.includes('чаша') || nameLower.includes('лайнер')) {
+      if (brand === 'Bestway') return 'chashi-bestway';
+      if (brand === 'Intex') return 'chashi-intex';
+      if (brand === 'Лагуна') return 'chashi-laguna';
+      if (brand === 'Azuro') return 'chashi-azuro';
+      if (brand === 'GRE') return 'chashi-gre';
+      if (brand === 'Atlantic Pool') return 'chashi-atlantic-pool';
+      if (brand === 'Larimar') return 'chashi-larimar';
+      return 'zapasnye-chashi';
+    }
+    
+    // По умолчанию каркасные бассейны
+    return 'karkasnye-basseyny';
   }
 
   /**
@@ -272,8 +319,22 @@ class RealParser {
   determineBrand(name) {
     const nameLower = name.toLowerCase();
     
+    // Основные бренды каркасных и надувных бассейнов
     if (nameLower.includes('intex')) return 'Intex';
     if (nameLower.includes('bestway')) return 'Bestway';
+    
+    // Морозоустойчивые бассейны
+    if (nameLower.includes('лагуна') || nameLower.includes('laguna')) return 'Лагуна';
+    if (nameLower.includes('summer fun')) return 'Summer Fun';
+    if (nameLower.includes('magic pool')) return 'Magic Pool';
+    if (nameLower.includes('gre')) return 'GRE';
+    
+    // Чаши
+    if (nameLower.includes('azuro')) return 'Azuro';
+    if (nameLower.includes('atlantic pool')) return 'Atlantic Pool';
+    if (nameLower.includes('larimar')) return 'Larimar';
+    
+    // Дополнительные бренды
     if (nameLower.includes('summer waves')) return 'Summer Waves';
     if (nameLower.includes('jilong')) return 'Jilong';
     
