@@ -100,6 +100,25 @@ export default function ProductPage() {
   
   const actualDiscount = (product.discount && product.discount > 0) ? product.discount : calculatedDiscount;
 
+  // Функция для получения названия категории
+  const getCategoryName = (categorySlug: string) => {
+    const categoryMap: { [key: string]: string } = {
+      "frame-pools": "Каркасные бассейны",
+      "inflatable-pools": "Надувные бассейны", 
+      "pumps-filters": "Насосы и фильтры",
+      "ladders": "Лестницы",
+      "covers": "Тенты и покрытия",
+      "chemistry": "Химия для бассейнов",
+      "accessories": "Аксессуары",
+      "lighting": "Освещение",
+      "heating": "Подогрев",
+      "cleaning": "Очистка",
+      "above-ground": "Наземные бассейны",
+      "spas": "СПА и джакузи"
+    };
+    return categoryMap[categorySlug] || categorySlug;
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Breadcrumb */}
@@ -107,6 +126,26 @@ export default function ProductPage() {
         <Link href="/" className="hover:text-[hsl(207,90%,54%)]">Главная</Link>
         <span>/</span>
         <Link href="/catalog" className="hover:text-[hsl(207,90%,54%)]">Каталог</Link>
+        <span>/</span>
+        <Link href={`/catalog?category=${product.category}`} className="hover:text-[hsl(207,90%,54%)]">
+          {getCategoryName(product.category)}
+        </Link>
+        {product.subcategory && (
+          <>
+            <span>/</span>
+            <Link href={`/catalog?category=${product.category}&subcategory=${product.subcategory}`} className="hover:text-[hsl(207,90%,54%)]">
+              {product.subcategory}
+            </Link>
+          </>
+        )}
+        {product.brand && (
+          <>
+            <span>/</span>
+            <Link href={`/catalog?brand=${product.brand}`} className="hover:text-[hsl(207,90%,54%)]">
+              {product.brand}
+            </Link>
+          </>
+        )}
         <span>/</span>
         <span className="text-gray-900">{product.name}</span>
       </div>
