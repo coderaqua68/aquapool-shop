@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { X, Plus } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface ProductFormProps {
   product?: any;
@@ -18,7 +19,7 @@ interface ProductFormProps {
 
 export default function ProductForm({ product, onSave, onCancel }: ProductFormProps) {
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
   
   const [formData, setFormData] = useState({
     name: "",
@@ -48,11 +49,12 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
     { value: "inflatable-pools", label: "Надувные бассейны" },
     { value: "pumps-filters", label: "Насосы и фильтры" },
     { value: "ladders", label: "Лестницы" },
-    { value: "covers-underlays", label: "Тенты и подстилки" },
-    { value: "chemicals", label: "Химия для бассейнов" },
+    { value: "covers", label: "Тенты и покрытия" },
+    { value: "chemistry", label: "Химия для бассейнов" },
     { value: "accessories", label: "Аксессуары" }
   ];
 
+  // Инициализация формы при редактировании
   useEffect(() => {
     if (product) {
       setFormData({
@@ -89,30 +91,8 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
     }
   }, [product]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      // Собираем характеристики в JSON
-      const specifications = specificationsArray.reduce((acc, spec) => {
-        if (spec.key.trim() && spec.value.trim()) {
-          acc[spec.key.trim()] = spec.value.trim();
-        }
-        return acc;
-      }, {} as Record<string, string>);
-
-      const productData = {
-        ...formData,
-        specifications: JSON.stringify(specifications),
-        price: formData.price.toString(),
-        originalPrice: formData.originalPrice || null,
-        brand: formData.brand || null,
-        subcategory: formData.subcategory || null,
-        volume: formData.volume || null,
-        images: formData.images.length > 0 ? formData.images : null
-      };
-
+  const saveMutation = useMutation({
+    mutationFn: async (productData: any) => {
       const token = localStorage.getItem("adminToken");
       const url = product 
         ? `/api/admin/products/${product.id}`
@@ -129,25 +109,86 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
         body: JSON.stringify(productData)
       });
 
-      if (response.ok) {
-        onSave();
-      } else {
+      if (!response.ok) {
         const error = await response.json();
-        toast({
-          title: "Ошибка",
-          description: error.message || "Не удалось сохранить товар",
-          variant: "destructive"
-        });
+        throw new Error(error.message || "Не удалось сохранить товар");
       }
-    } catch (error) {
+
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
+      toast({
+        title: "Успешно",
+        description: product ? "Товар обновлен" : "Товар добавлен",
+      });
+      onSave();
+    },
+    onError: (error: Error) => {
       toast({
         title: "Ошибка",
-        description: "Не удалось отправить данные",
+        description: error.message,
         variant: "destructive"
       });
-    } finally {
-      setIsLoading(false);
     }
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Собираем характеристики в JSON
+    const specifications = specificationsArray.reduce((acc, spec) => {
+      if (spec.key.trim() && spec.value.trim()) {
+        acc[spec.key.trim()] = spec.value.trim();
+      }
+      return acc;
+    }, {} as Record<string, string>);
+
+    const productData = {
+      ...formData,
+      specifications: JSON.stringify(specifications),
+      price: formData.price.toString(),
+      originalPrice: formData.originalPrice || null,
+      brand: formData.brand || null,
+      subcategory: formData.subcategory || null,
+      volume: formData.volume || null,
+      images: formData.images.length > 0 ? formData.images : null
+    };
+
+    saveMutation.mutate(productData);
+  };
+
+  const addImage = () => {
+    if (newImage.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        images: [...prev.images, newImage.trim()]
+      }));
+      setNewImage("");
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index)
+    }));
+  };
+
+  const addSpecification = () => {
+    setSpecificationsArray(prev => [...prev, { key: "", value: "" }]);
+  };
+
+  const updateSpecification = (index: number, field: 'key' | 'value', value: string) => {
+    setSpecificationsArray(prev => 
+      prev.map((spec, i) => 
+        i === index ? { ...spec, [field]: value } : spec
+      )
+    );
+  };
+
+  const removeSpecification = (index: number) => {
+    setSpecificationsArray(prev => prev.filter((_, i) => i !== index));
   };
 
   return (
@@ -257,85 +298,101 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
             </div>
           </div>
 
-          <Separator />
-
           {/* Описание */}
           <div>
-            <Label htmlFor="description">Описание товара *</Label>
+            <Label htmlFor="description">Описание товара</Label>
             <Textarea
               id="description"
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
               placeholder="Подробное описание товара..."
-              className="min-h-32"
-              required
+              rows={4}
             />
           </div>
 
-          <Separator />
+          {/* Дополнительные изображения */}
+          <div>
+            <Label>Дополнительные изображения</Label>
+            <div className="space-y-2">
+              <div className="flex space-x-2">
+                <Input
+                  value={newImage}
+                  onChange={(e) => setNewImage(e.target.value)}
+                  placeholder="https://example.com/image.jpg"
+                  type="url"
+                />
+                <Button type="button" onClick={addImage} size="sm">
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </div>
+              
+              {formData.images.length > 0 && (
+                <div className="space-y-2">
+                  {formData.images.map((img, index) => (
+                    <div key={index} className="flex items-center space-x-2 p-2 bg-gray-50 rounded">
+                      <span className="flex-1 text-sm">{img}</span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeImage(index)}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* Характеристики */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Label>Характеристики</Label>
-              <Button 
-                type="button" 
-                onClick={() => setSpecificationsArray(prev => [...prev, { key: "", value: "" }])} 
-                variant="outline" 
-                size="sm"
-              >
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <Label>Характеристики товара</Label>
+              <Button type="button" onClick={addSpecification} size="sm" variant="outline">
                 <Plus className="w-4 h-4 mr-2" />
                 Добавить
               </Button>
             </div>
             
-            {specificationsArray.map((spec, index) => (
-              <div key={index} className="grid grid-cols-2 gap-2">
-                <Input
-                  placeholder="Название характеристики"
-                  value={spec.key}
-                  onChange={(e) => {
-                    const newSpecs = [...specificationsArray];
-                    newSpecs[index] = { ...newSpecs[index], key: e.target.value };
-                    setSpecificationsArray(newSpecs);
-                  }}
-                />
-                <div className="flex space-x-2">
+            <div className="space-y-2">
+              {specificationsArray.map((spec, index) => (
+                <div key={index} className="grid grid-cols-5 gap-2 items-center">
                   <Input
-                    placeholder="Значение"
-                    value={spec.value}
-                    onChange={(e) => {
-                      const newSpecs = [...specificationsArray];
-                      newSpecs[index] = { ...newSpecs[index], value: e.target.value };
-                      setSpecificationsArray(newSpecs);
-                    }}
+                    placeholder="Название"
+                    value={spec.key}
+                    onChange={(e) => updateSpecification(index, 'key', e.target.value)}
                   />
+                  <div className="col-span-3">
+                    <Input
+                      placeholder="Значение"
+                      value={spec.value}
+                      onChange={(e) => updateSpecification(index, 'value', e.target.value)}
+                    />
+                  </div>
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    onClick={() => setSpecificationsArray(prev => prev.filter((_, i) => i !== index))}
+                    onClick={() => removeSpecification(index)}
                   >
                     <X className="w-4 h-4" />
                   </Button>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
           <Separator />
 
-          {/* Кнопки */}
+          {/* Кнопки действий */}
           <div className="flex justify-end space-x-4">
             <Button type="button" variant="outline" onClick={onCancel}>
               Отмена
             </Button>
-            <Button 
-              type="submit" 
-              disabled={isLoading}
-              className="bg-[hsl(207,90%,54%)] hover:bg-[hsl(207,89%,40%)]"
-            >
-              {isLoading ? "Сохранение..." : (product ? "Обновить" : "Создать")}
+            <Button type="submit" disabled={saveMutation.isPending}>
+              {saveMutation.isPending ? "Сохраняем..." : "Сохранить товар"}
             </Button>
           </div>
         </form>
