@@ -11,21 +11,23 @@ import {
 import { db } from "./db";
 import { eq, and, gte, lte, desc, ilike, or } from "drizzle-orm";
 
+interface ProductFilters {
+  category?: string; 
+  brand?: string; 
+  minPrice?: number; 
+  maxPrice?: number; 
+  inStock?: boolean; 
+  search?: string;
+  poolType?: string;
+  volumeRange?: string;
+  shape?: string;
+  material?: string;
+  dimensions?: string;
+}
+
 export interface IStorage {
   // Products
-  getProducts(filters?: { 
-    category?: string; 
-    brand?: string; 
-    minPrice?: number; 
-    maxPrice?: number; 
-    inStock?: boolean; 
-    search?: string;
-    poolType?: string;
-    volumeRange?: string;
-    shape?: string;
-    material?: string;
-    dimensions?: string;
-  }): Promise<Product[]>;
+  getProducts(filters?: ProductFilters): Promise<Product[]>;
   getProduct(id: number): Promise<Product | undefined>;
   getProductBySlug(slug: string): Promise<Product | undefined>;
   getPopularProducts(): Promise<Product[]>;
@@ -47,19 +49,7 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  async getProducts(filters?: { 
-    category?: string; 
-    brand?: string; 
-    minPrice?: number; 
-    maxPrice?: number; 
-    inStock?: boolean; 
-    search?: string;
-    poolType?: string;
-    volumeRange?: string;
-    shape?: string;
-    material?: string;
-    dimensions?: string;
-  }): Promise<Product[]> {
+  async getProducts(filters?: ProductFilters): Promise<Product[]> {
     let query = db.select().from(products);
     
     if (filters) {
@@ -365,19 +355,7 @@ export class MemStorage implements IStorage {
     // Каталог товаров очищен - будет заполняться через админ панель
   }
 
-  async getProducts(filters?: { 
-    category?: string; 
-    brand?: string; 
-    minPrice?: number; 
-    maxPrice?: number; 
-    inStock?: boolean; 
-    search?: string;
-    poolType?: string;
-    volumeRange?: string;
-    shape?: string;
-    material?: string;
-    dimensions?: string;
-  }): Promise<Product[]> {
+  async getProducts(filters?: ProductFilters): Promise<Product[]> {
     let results = Array.from(this.products.values());
     
     if (filters) {

@@ -109,6 +109,28 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
         </CardContent>
       </Card>
 
+      {/* Dimensions Filter */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Размеры</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div>
+            <Label htmlFor="dimensions">Поиск по размерам</Label>
+            <Input
+              id="dimensions"
+              type="text"
+              placeholder="Например: 549x274, 366x122"
+              value={filters.dimensions || ""}
+              onChange={(e) => onFiltersChange({...filters, dimensions: e.target.value || undefined})}
+            />
+            <p className="text-sm text-muted-foreground mt-1">
+              Введите размеры через "x" или поиск по части размера
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Brand Filter */}
       <Card>
         <CardHeader>
