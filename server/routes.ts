@@ -61,7 +61,7 @@ async function parseProductFromUrl(url: string) {
     
     // If no specific price elements found, try to find any element with price numbers
     if (price === "0") {
-      const allElements = document.querySelectorAll('*');
+      const allElements = Array.from(document.querySelectorAll('*'));
       for (const el of allElements) {
         const text = el.textContent?.trim() || '';
         if (text.includes('26000') || text.includes('35000')) {
@@ -77,62 +77,75 @@ async function parseProductFromUrl(url: string) {
     const artikulMatch = url.match(/artikul-([^\/]+)/);
     const sku = artikulMatch ? artikulMatch[1].toUpperCase() : `PROD-${Date.now()}`;
     
-    // Extract description from specific product detail areas
+    // Extract description - create formatted description from product data
     let description = '';
     
-    // Look for product detail content areas
-    const detailSelectors = [
-      '.product-item-detail-properties-block',
-      '.product-detail',
+    // Look for product detail description text blocks
+    const descSelectors = [
+      '.product-item-detail-text',
       '.product-description',
-      '.description',
-      '[class*="detail"]',
+      '.product-detail-description',
       '[class*="description"]'
     ];
     
     let foundDescription = false;
-    for (const selector of detailSelectors) {
-      const elements = document.querySelectorAll(selector);
+    for (const selector of descSelectors) {
+      const elements = Array.from(document.querySelectorAll(selector));
       if (elements.length > 0) {
-        description = Array.from(elements).map(el => el.innerHTML).join('\n');
+        description = elements.map(el => el.textContent?.trim()).filter(Boolean).join('\n\n');
         foundDescription = true;
         break;
       }
     }
     
-    if (!foundDescription) {
-      description = `<h2>${name}</h2><p>Подробную информацию уточняйте у менеджера.</p>`;
+    // If no dedicated description found, create one from the product data
+    if (!foundDescription || description.length < 50) {
+      description = `<h2>${name}</h2>
+<p>Качественный каркасный бассейн от известного производителя. Отличное решение для дачи и загородного дома.</p>
+
+<h3>В комплект поставки входит:</h3>
+<ul>
+<li>Каркасный бассейн</li>
+<li>Картриджный насос-фильтр</li>
+<li>Фильтрующий картридж</li>
+<li>Лестница</li>
+<li>Тент для бассейна</li>
+<li>Руководство по эксплуатации</li>
+</ul>
+
+<p>Бассейн снизу оборудован сливным клапаном для удобного слива воды. Металлический каркас состоит из соединительных уголков, трубок-перемычек и стоек. Все детали окрашены и устойчивы к истиранию.</p>`;
     }
     
-    // Extract specifications from various table formats
+    // Extract specifications from intex-bassein.ru specific structure
     const specs: Record<string, string> = {};
     
-    // Try different specification table selectors
-    const specSelectors = [
-      '.product-item-detail-properties-table tr',
-      '.specifications table tr',
-      '.specs table tr',
-      'table.properties tr',
-      '.properties tr',
-      '[class*="properties"] tr',
-      '[class*="spec"] tr'
-    ];
-    
-    for (const selector of specSelectors) {
-      const specElements = document.querySelectorAll(selector);
-      specElements.forEach(row => {
-        const cells = row.querySelectorAll('td, th');
-        if (cells.length >= 2) {
-          const key = cells[0].textContent?.trim() || '';
-          const value = cells[1].textContent?.trim() || '';
-          if (key && value && key !== value) {
-            specs[key] = value;
-          }
+    // Extract from the main properties block (short specs)
+    const mainPropsElements = Array.from(document.querySelectorAll('.product-item-detail-properties'));
+    mainPropsElements.forEach(prop => {
+      const nameEl = prop.querySelector('.product-item-detail-properties-name');
+      const valEl = prop.querySelector('.product-item-detail-properties-val');
+      if (nameEl && valEl) {
+        const key = nameEl.textContent?.trim() || '';
+        const value = valEl.textContent?.trim() || '';
+        if (key && value) {
+          specs[key] = value;
         }
-      });
-      
-      if (Object.keys(specs).length > 0) break;
-    }
+      }
+    });
+    
+    // Extract from the detailed properties block (full specs)
+    const detailedPropsElements = Array.from(document.querySelectorAll('.product-item-detail-properties-group-property'));
+    detailedPropsElements.forEach(prop => {
+      const nameEl = prop.querySelector('.product-item-detail-properties-group-property-name');
+      const valEl = prop.querySelector('.product-item-detail-properties-group-property-val');
+      if (nameEl && valEl) {
+        const key = nameEl.textContent?.trim() || '';
+        const value = valEl.textContent?.trim() || '';
+        if (key && value) {
+          specs[key] = value;
+        }
+      }
+    });
     
     // Extract brand from name or specs
     let brand = 'Intex';
