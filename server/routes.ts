@@ -2,68 +2,160 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertOrderSchema, insertConsultationSchema, insertProductSchema } from "@shared/schema";
+import fetch from "node-fetch";
+import { JSDOM } from "jsdom";
 
-// Helper function to generate mock products for parser demo
-function generateMockProduct(url: string, index: number) {
-  const brands = ['Intex', 'Bestway', 'Summer Waves', 'Jilong'];
-  const types = ['Каркасный', 'Надувной', 'Детский'];
-  const shapes = ['Круглый', 'Прямоугольный', 'Овальный'];
-  const materials = ['ПВХ', 'Винил', 'Полиэстер'];
-  
-  const brand = brands[index % brands.length];
-  const type = types[index % types.length];
-  const shape = shapes[index % shapes.length];
-  const material = materials[index % materials.length];
-  
-  const diameter = (3 + Math.random() * 2).toFixed(2);
-  const height = (1 + Math.random() * 0.5).toFixed(2);
-  const volume = (parseFloat(diameter) * parseFloat(diameter) * parseFloat(height) * 1000).toFixed(0);
-  const weight = (20 + Math.random() * 30).toFixed(1);
-  
-  const sku = `${brand.toUpperCase()}-${type.charAt(0)}${shape.charAt(0)}-${(10000 + index).toString()}`;
-  
-  const specs = {
-    "Бренд": brand,
-    "Диаметр (м)": diameter,
-    "Высота (м)": height,
-    "Объем (л)": volume,
-    "Вес (кг)": weight,
-    "Материал чаши": material,
-    "Форма бассейна": shape,
-    "Тип бассейна": type,
-    "Страна-производитель": "Китай",
-    "Артикул": sku
-  };
-  
-  return {
-    name: `${type} бассейн ${brand} ${shape.toLowerCase()} ${diameter} x ${height} м, артикул ${sku}`,
-    sku: sku,
-    description: `<h2>${type} бассейн ${brand}</h2><p>Качественный ${type.toLowerCase()} бассейн от ${brand} с размерами ${diameter}x${height} м. Изготовлен из прочного материала ${material}.</p><ul><li>Объем: ${volume} литров</li><li>Вес: ${weight} кг</li><li>Форма: ${shape}</li></ul>`,
-    shortDescription: `Диаметр: ${diameter} • Высота: ${height} • Объем: ${volume}`,
-    price: "0",
-    originalPrice: null,
-    category: type === 'Каркасный' ? 'frame-pools' : 'inflatable-pools',
-    brand: brand,
-    volume: volume,
-    weight: weight,
-    dimensions: `${diameter} x ${height}`,
-    material: material,
-    color: "Голубой",
-    frameType: type === 'Каркасный' ? "Металлический" : null,
-    pumpType: "Картриджный",
-    shape: shape,
-    installationType: "Наземный",
-    countryOrigin: "Китай",
-    imageUrl: "/api/placeholder/400/400",
-    images: [],
-    specifications: JSON.stringify(specs),
-    inStock: true,
-    isPopular: false,
-    isNew: false,
-    discount: 0,
-    rating: "4.5",
-    reviewCount: Math.floor(Math.random() * 50) + 10
-  };
+// Real parser function for intex-bassein.ru
+async function parseProductFromUrl(url: string) {
+  try {
+    console.log(`Parsing product from: ${url}`);
+    
+    // Fetch the page
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const html = await response.text();
+    const dom = new JSDOM(html);
+    const document = dom.window.document;
+    
+    // Extract product name
+    const nameElement = document.querySelector('h1') || 
+                       document.querySelector('.product-title') ||
+                       document.querySelector('[class*="title"]');
+    const name = nameElement?.textContent?.trim() || 'Товар без названия';
+    
+    // Extract price
+    let price = "0";
+    let originalPrice = null;
+    const priceElement = document.querySelector('.price, [class*="price"], .cost, [class*="cost"]');
+    if (priceElement) {
+      const priceText = priceElement.textContent?.trim() || '';
+      const priceMatch = priceText.match(/(\d+[\s,.]?\d*)/);
+      if (priceMatch) {
+        price = priceMatch[1].replace(/[\s,.]/g, '');
+      }
+    }
+    
+    // Extract SKU from URL or page
+    const urlParts = url.split('/');
+    const artikulMatch = url.match(/artikul-([^\/]+)/);
+    const sku = artikulMatch ? artikulMatch[1].toUpperCase() : `PROD-${Date.now()}`;
+    
+    // Extract description
+    let description = '';
+    const descElements = document.querySelectorAll('.description, [class*="description"], .content, [class*="content"]');
+    if (descElements.length > 0) {
+      description = Array.from(descElements).map(el => el.innerHTML).join('\n');
+    } else {
+      description = `<h2>${name}</h2><p>Подробную информацию уточняйте у менеджера.</p>`;
+    }
+    
+    // Extract specifications
+    const specs: Record<string, string> = {};
+    const specElements = document.querySelectorAll('table tr, .specs tr, [class*="spec"] tr');
+    specElements.forEach(row => {
+      const cells = row.querySelectorAll('td, th');
+      if (cells.length >= 2) {
+        const key = cells[0].textContent?.trim() || '';
+        const value = cells[1].textContent?.trim() || '';
+        if (key && value) {
+          specs[key] = value;
+        }
+      }
+    });
+    
+    // Extract brand from name or specs
+    let brand = 'Intex';
+    if (name.toLowerCase().includes('bestway')) brand = 'Bestway';
+    else if (name.toLowerCase().includes('intex')) brand = 'Intex';
+    else if (specs['Бренд']) brand = specs['Бренд'];
+    
+    // Determine category
+    let category = 'frame-pools';
+    if (name.toLowerCase().includes('надувной')) category = 'inflatable-pools';
+    else if (name.toLowerCase().includes('детский')) category = 'kids-pools';
+    else if (url.includes('karkasnye')) category = 'frame-pools';
+    
+    // Extract dimensions and volume
+    const dimensionMatch = name.match(/(\d+[,.]?\d*)\s*[xх×]\s*(\d+[,.]?\d*)\s*[xх×]?\s*(\d+[,.]?\d*)?/);
+    let dimensions = '';
+    let volume = '';
+    
+    if (dimensionMatch) {
+      const width = dimensionMatch[1].replace(',', '.');
+      const length = dimensionMatch[2].replace(',', '.');
+      const height = dimensionMatch[3]?.replace(',', '.') || '';
+      dimensions = height ? `${width} x ${length} x ${height}` : `${width} x ${length}`;
+    }
+    
+    // Extract volume from specs or name
+    if (specs['Объем']) {
+      volume = specs['Объем'].replace(/[^\d]/g, '');
+    } else {
+      const volumeMatch = name.match(/(\d+[\s,.]?\d*)\s*л/);
+      if (volumeMatch) {
+        volume = volumeMatch[1].replace(/[\s,.]/g, '');
+      }
+    }
+    
+    // Extract image
+    let imageUrl = "/api/placeholder/400/400";
+    const imgElement = document.querySelector('img[src*="product"], .product-image img, [class*="image"] img');
+    if (imgElement) {
+      const src = imgElement.getAttribute('src');
+      if (src && src.startsWith('http')) {
+        imageUrl = src;
+      }
+    }
+    
+    // Generate short description
+    const shortDescription = [
+      dimensions ? `Размер: ${dimensions}` : '',
+      volume ? `Объем: ${volume} л` : '',
+      brand ? `Бренд: ${brand}` : ''
+    ].filter(Boolean).join(' • ');
+    
+    return {
+      name,
+      sku,
+      description,
+      shortDescription,
+      price,
+      originalPrice,
+      category,
+      brand,
+      volume,
+      weight: specs['Вес'] || '',
+      dimensions,
+      material: specs['Материал'] || specs['Материал чаши'] || 'ПВХ',
+      color: specs['Цвет'] || 'Голубой',
+      frameType: category === 'frame-pools' ? 'Металлический' : null,
+      pumpType: specs['Тип насоса'] || 'Картриджный',
+      shape: specs['Форма'] || (name.toLowerCase().includes('круг') ? 'Круглый' : 'Прямоугольный'),
+      installationType: 'Наземный',
+      countryOrigin: specs['Страна-производитель'] || 'Китай',
+      imageUrl,
+      images: [],
+      specifications: JSON.stringify(specs),
+      inStock: true,
+      isPopular: false,
+      isNew: false,
+      discount: 0,
+      rating: "4.5",
+      reviewCount: Math.floor(Math.random() * 50) + 10
+    };
+    
+  } catch (error) {
+    console.error(`Error parsing ${url}:`, error);
+    throw error;
+  }
 }
 
 // Простая авторизация для админ панели
@@ -246,7 +338,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "URLs must be an array" });
       }
 
-      // Симуляция парсинга для демонстрации
+      // Реальный парсинг товаров с сайта
       const results = [];
       const errors = [];
 
@@ -254,13 +346,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const url = urls[i];
         
         try {
-          // Генерируем тестовый товар на основе URL
-          const mockProduct = generateMockProduct(url, i);
-          results.push(mockProduct);
+          console.log(`Parsing product ${i + 1}/${urls.length}: ${url}`);
+          const product = await parseProductFromUrl(url);
+          results.push(product);
           
-          // Имитируем время парсинга
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          // Небольшая пауза между запросами чтобы не перегружать сервер
+          await new Promise(resolve => setTimeout(resolve, 500));
         } catch (error) {
+          console.error(`Error parsing ${url}:`, error);
           errors.push({
             url,
             error: "Ошибка парсинга: " + (error instanceof Error ? error.message : String(error))
