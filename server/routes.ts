@@ -226,11 +226,19 @@ async function parseProductFromUrl(url: string) {
       }
     }
     
-    // Extract main product image and additional images
+    // Extract high-quality product images without watermarks
     let imageUrl = "/api/placeholder/400/400";
     const images: string[] = [];
     
-    // First, try to find the main product image
+    // Function to check if image is high quality (no watermarks, good size)
+    const isHighQualityImage = (src: string): boolean => {
+      if (!src || !src.includes('upload')) return false;
+      // Avoid images with typical watermark indicators
+      const lowQualityIndicators = ['watermark', 'logo', 'thumb', 'small', '_s.', '_xs.', '_sm.'];
+      return !lowQualityIndicators.some(indicator => src.toLowerCase().includes(indicator));
+    };
+    
+    // First, try to find the main product image (highest quality, largest)
     const mainImageSelectors = [
       '.product-item-detail-img img',
       '.product-main-image img',
@@ -241,19 +249,37 @@ async function parseProductFromUrl(url: string) {
       const imgElement = document.querySelector(selector);
       if (imgElement) {
         const src = imgElement.getAttribute('src');
-        if (src && src.includes('upload')) {
+        if (src && isHighQualityImage(src)) {
           // Handle relative URLs
           if (src.startsWith('/')) {
             imageUrl = 'https://intex-bassein.ru' + src;
           } else if (src.startsWith('http')) {
             imageUrl = src;
           }
+          console.log(`Found main image: ${imageUrl}`);
           break;
         }
       }
     }
     
-    // Extract additional images from gallery
+    // If no main image found, try any high-quality image
+    if (imageUrl === "/api/placeholder/400/400") {
+      const allImages = Array.from(document.querySelectorAll('img'));
+      for (const imgElement of allImages) {
+        const src = imgElement.getAttribute('src');
+        if (src && isHighQualityImage(src)) {
+          if (src.startsWith('/')) {
+            imageUrl = 'https://intex-bassein.ru' + src;
+          } else if (src.startsWith('http')) {
+            imageUrl = src;
+          }
+          console.log(`Found fallback main image: ${imageUrl}`);
+          break;
+        }
+      }
+    }
+    
+    // Extract additional high-quality images from gallery
     const gallerySelectors = [
       '.product-item-detail-img-container img',
       '.product-gallery img',
@@ -268,18 +294,21 @@ async function parseProductFromUrl(url: string) {
       const imgElements = Array.from(document.querySelectorAll(selector));
       for (const imgElement of imgElements) {
         const src = imgElement.getAttribute('src');
-        if (src && src.includes('upload') && src !== imageUrl.replace('https://intex-bassein.ru', '')) {
-          let fullUrl = src;
-          if (src.startsWith('/')) {
-            fullUrl = 'https://intex-bassein.ru' + src;
+        if (src && isHighQualityImage(src)) {
+          const currentImagePath = imageUrl.replace('https://intex-bassein.ru', '');
+          if (src !== currentImagePath) { // Don't include main image in additional images
+            let fullUrl = src;
+            if (src.startsWith('/')) {
+              fullUrl = 'https://intex-bassein.ru' + src;
+            }
+            foundImages.add(fullUrl);
           }
-          foundImages.add(fullUrl);
         }
       }
     }
     
-    // Convert Set to Array and limit to 10 images maximum
-    images.push(...Array.from(foundImages).slice(0, 10));
+    // Convert Set to Array and limit to 5 high-quality images maximum
+    images.push(...Array.from(foundImages).slice(0, 5));
     
     console.log(`Found images: main=${imageUrl}, additional=${images.length}`);
     
