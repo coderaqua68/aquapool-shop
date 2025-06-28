@@ -144,31 +144,60 @@ async function parseProductFromUrl(url: string) {
     // Extract description - create formatted description from product data
     let description = '';
     
-    // Look for product detail description text blocks
-    const descSelectors = [
-      '[data-value="description"] .toggle_content',  // Конкретно блок описания для intex-bassein.ru
-      '.toggle_content',  // Fallback: любой toggle_content
-      '.product-item-detail-text',
-      '.product-description',
-      '.product-detail-description',
-      '[class*="description"]'
-    ];
-    
+    // Extract complete description from intex-bassein.ru including both composition and description
     let foundDescription = false;
-    for (const selector of descSelectors) {
-      const elements = Array.from(document.querySelectorAll(selector));
-      if (elements.length > 0) {
-        // Для селекторов с toggle_content извлекаем HTML, для остальных - текст
-        if (selector.includes('toggle_content')) {
+    
+    // 1. Get composition (комплектация)
+    const compositionElement = document.querySelector('[data-value="free-tab"] .toggle_content');
+    let composition = '';
+    if (compositionElement) {
+      composition = compositionElement.innerHTML?.trim() || '';
+      console.log(`Found composition: ${composition.substring(0, 100)}...`);
+    }
+    
+    // 2. Get main description
+    const descriptionElement = document.querySelector('[data-value="description"] .toggle_content');
+    let mainDescription = '';
+    if (descriptionElement) {
+      mainDescription = descriptionElement.innerHTML?.trim() || '';
+      console.log(`Found main description: ${mainDescription.substring(0, 100)}...`);
+    }
+    
+    // 3. Combine both parts
+    if (mainDescription || composition) {
+      if (mainDescription && composition) {
+        // Both found - combine them
+        description = mainDescription + '\n\n<h3>Комплектация</h3>\n' + composition;
+      } else if (mainDescription) {
+        // Only main description found
+        description = mainDescription;
+      } else if (composition) {
+        // Only composition found
+        description = '<h2>' + name + '</h2>\n' + composition;
+      }
+      foundDescription = true;
+      console.log(`Combined description length: ${description.length}`);
+    }
+    
+    // Fallback: try other selectors if nothing found
+    if (!foundDescription) {
+      const fallbackSelectors = [
+        '.toggle_content',
+        '.product-item-detail-text',
+        '.product-description',
+        '.product-detail-description',
+        '[class*="description"]'
+      ];
+      
+      for (const selector of fallbackSelectors) {
+        const elements = Array.from(document.querySelectorAll(selector));
+        if (elements.length > 0) {
           description = elements.map(el => el.innerHTML?.trim()).filter(Boolean).join('\n\n');
-        } else {
-          description = elements.map(el => el.textContent?.trim()).filter(Boolean).join('\n\n');
-        }
-        
-        if (description && description.length > 10) {
-          foundDescription = true;
-          console.log(`Found description from selector ${selector}: ${description.substring(0, 100)}...`);
-          break;
+          if (description && description.length > 10) {
+            foundDescription = true;
+            console.log(`Found description from fallback selector ${selector}: ${description.substring(0, 100)}...`);
+            break;
+          }
         }
       }
     }
