@@ -87,6 +87,13 @@ export default function ProductPage() {
 
   const specifications = JSON.parse(product.specifications);
   const related = relatedProducts.filter(p => p.id !== product.id).slice(0, 4);
+  
+  // Автоматический расчет скидки если не указана
+  const calculatedDiscount = product.originalPrice && product.price
+    ? Math.round(((parseInt(product.originalPrice) - parseInt(product.price)) / parseInt(product.originalPrice)) * 100)
+    : 0;
+  
+  const actualDiscount = (product.discount && product.discount > 0) ? product.discount : calculatedDiscount;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -129,14 +136,14 @@ export default function ProductPage() {
             
             {/* Badges */}
             {(
-              (product.discount && product.discount > 0) ||
+              (actualDiscount || 0) > 0 ||
               product.isNew ||
-              (product.isPopular && !product.isNew && (product.discount === null || product.discount === undefined || product.discount <= 0))
+              (product.isPopular && !product.isNew && (actualDiscount || 0) <= 0)
             ) && (
               <div className="absolute top-4 left-4 space-y-2">
-                {product.discount && product.discount > 0 && (
+                {(actualDiscount || 0) > 0 && (
                   <Badge className="bg-red-500 text-white">
-                    -{product.discount}%
+                    -{actualDiscount}%
                   </Badge>
                 )}
                 {product.isNew && (
@@ -144,7 +151,7 @@ export default function ProductPage() {
                     NEW
                   </Badge>
                 )}
-                {product.isPopular && !product.isNew && (product.discount === null || product.discount === undefined || product.discount <= 0) && (
+                {product.isPopular && !product.isNew && (actualDiscount || 0) <= 0 && (
                   <Badge className="bg-[hsl(207,90%,54%)] text-white">
                     ХИТ
                   </Badge>
@@ -218,9 +225,9 @@ export default function ProductPage() {
                 </span>
               )}
             </div>
-            {product.discount && product.discount > 0 && product.originalPrice && (
+            {(actualDiscount || 0) > 0 && product.originalPrice && (
               <p className="text-green-600 font-medium">
-                Экономия: {(parseInt(product.originalPrice) - parseInt(product.price)).toLocaleString()} ₽
+                Экономия: {(parseInt(product.originalPrice) - parseInt(product.price)).toLocaleString()} ₽ ({actualDiscount}%)
               </p>
             )}
           </div>
