@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,6 +17,7 @@ import {
 import ProductForm from "@/components/admin/product-form";
 import ProductsList from "@/components/admin/products-list";
 import { ProductParser } from "@/components/admin/product-parser";
+import type { Product, Category } from "@shared/schema";
 
 export default function Admin() {
   const [, setLocation] = useLocation();
@@ -23,6 +25,21 @@ export default function Admin() {
   const [activeTab, setActiveTab] = useState("products");
   const [editingProduct, setEditingProduct] = useState(null);
   const { toast } = useToast();
+
+  // Получаем статистику
+  const { data: products = [] } = useQuery<Product[]>({
+    queryKey: ["/api/products"],
+  });
+
+  const { data: categories = [] } = useQuery<Category[]>({
+    queryKey: ["/api/categories"],
+  });
+
+  // Вычисляем статистику
+  const totalProducts = products.length;
+  const inStockProducts = products.filter(p => p.inStock).length;
+  const totalCategories = categories.length;
+  const popularProducts = products.filter(p => p.isPopular).length;
 
   useEffect(() => {
     // Проверяем авторизацию
@@ -122,9 +139,9 @@ export default function Admin() {
                   <Package className="w-4 h-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">0</div>
+                  <div className="text-2xl font-bold">{totalProducts}</div>
                   <p className="text-xs text-muted-foreground">
-                    Начните добавлять товары
+                    {totalProducts === 0 ? "Начните добавлять товары" : "товаров в каталоге"}
                   </p>
                 </CardContent>
               </Card>
@@ -135,9 +152,9 @@ export default function Admin() {
                   <ShoppingBag className="w-4 h-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">0</div>
+                  <div className="text-2xl font-bold">{inStockProducts}</div>
                   <p className="text-xs text-muted-foreground">
-                    Товаров доступно для продажи
+                    товаров доступно для продажи
                   </p>
                 </CardContent>
               </Card>
@@ -148,9 +165,9 @@ export default function Admin() {
                   <TrendingUp className="w-4 h-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">7</div>
+                  <div className="text-2xl font-bold">{totalCategories}</div>
                   <p className="text-xs text-muted-foreground">
-                    Категорий товаров
+                    категорий товаров
                   </p>
                 </CardContent>
               </Card>
@@ -161,9 +178,9 @@ export default function Admin() {
                   <TrendingUp className="w-4 h-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">0</div>
+                  <div className="text-2xl font-bold">{popularProducts}</div>
                   <p className="text-xs text-muted-foreground">
-                    Популярных товаров
+                    популярных товаров
                   </p>
                 </CardContent>
               </Card>
