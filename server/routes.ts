@@ -3,6 +3,69 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertOrderSchema, insertConsultationSchema, insertProductSchema } from "@shared/schema";
 
+// Helper function to generate mock products for parser demo
+function generateMockProduct(url: string, index: number) {
+  const brands = ['Intex', 'Bestway', 'Summer Waves', 'Jilong'];
+  const types = ['Каркасный', 'Надувной', 'Детский'];
+  const shapes = ['Круглый', 'Прямоугольный', 'Овальный'];
+  const materials = ['ПВХ', 'Винил', 'Полиэстер'];
+  
+  const brand = brands[index % brands.length];
+  const type = types[index % types.length];
+  const shape = shapes[index % shapes.length];
+  const material = materials[index % materials.length];
+  
+  const diameter = (3 + Math.random() * 2).toFixed(2);
+  const height = (1 + Math.random() * 0.5).toFixed(2);
+  const volume = (parseFloat(diameter) * parseFloat(diameter) * parseFloat(height) * 1000).toFixed(0);
+  const weight = (20 + Math.random() * 30).toFixed(1);
+  
+  const sku = `${brand.toUpperCase()}-${type.charAt(0)}${shape.charAt(0)}-${(10000 + index).toString()}`;
+  
+  const specs = {
+    "Бренд": brand,
+    "Диаметр (м)": diameter,
+    "Высота (м)": height,
+    "Объем (л)": volume,
+    "Вес (кг)": weight,
+    "Материал чаши": material,
+    "Форма бассейна": shape,
+    "Тип бассейна": type,
+    "Страна-производитель": "Китай",
+    "Артикул": sku
+  };
+  
+  return {
+    name: `${type} бассейн ${brand} ${shape.toLowerCase()} ${diameter} x ${height} м, артикул ${sku}`,
+    sku: sku,
+    description: `<h2>${type} бассейн ${brand}</h2><p>Качественный ${type.toLowerCase()} бассейн от ${brand} с размерами ${diameter}x${height} м. Изготовлен из прочного материала ${material}.</p><ul><li>Объем: ${volume} литров</li><li>Вес: ${weight} кг</li><li>Форма: ${shape}</li></ul>`,
+    shortDescription: `Диаметр: ${diameter} • Высота: ${height} • Объем: ${volume}`,
+    price: "0",
+    originalPrice: null,
+    category: type === 'Каркасный' ? 'frame-pools' : 'inflatable-pools',
+    brand: brand,
+    volume: volume,
+    weight: weight,
+    dimensions: `${diameter} x ${height}`,
+    material: material,
+    color: "Голубой",
+    frameType: type === 'Каркасный' ? "Металлический" : null,
+    pumpType: "Картриджный",
+    shape: shape,
+    installationType: "Наземный",
+    countryOrigin: "Китай",
+    imageUrl: "/api/placeholder/400/400",
+    images: [],
+    specifications: JSON.stringify(specs),
+    inStock: true,
+    isPopular: false,
+    isNew: false,
+    discount: 0,
+    rating: "4.5",
+    reviewCount: Math.floor(Math.random() * 50) + 10
+  };
+}
+
 // Простая авторизация для админ панели
 const ADMIN_LOGIN = "admin";
 const ADMIN_PASSWORD = "aquapool2025";
@@ -200,7 +263,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         } catch (error) {
           errors.push({
             url,
-            error: "Ошибка парсинга: " + error.message
+            error: "Ошибка парсинга: " + (error instanceof Error ? error.message : String(error))
           });
         }
       }
