@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { X, Plus } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { parseHTMLSpecs, convertSpecsToKeyValue, formatSpecsAsTable } from '@/lib/html-parser';
 
 interface ProductFormProps {
   product?: any;
@@ -45,6 +46,7 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
 
   const [newImage, setNewImage] = useState("");
   const [specificationsArray, setSpecificationsArray] = useState<Array<{key: string, value: string}>>([]);
+  const [htmlInput, setHtmlInput] = useState('');
 
   // Генерация автоматического артикула
   const generateSKU = () => {
@@ -482,29 +484,77 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
             </div>
           </div>
 
+          {/* HTML импорт характеристик */}
+          <div className="space-y-4">
+            <Label>Импорт характеристик из HTML</Label>
+            <Textarea
+              placeholder="Вставьте HTML код с характеристиками товара..."
+              value={htmlInput}
+              onChange={(e) => setHtmlInput(e.target.value)}
+              rows={4}
+              className="font-mono text-sm"
+            />
+            <div className="flex space-x-2">
+              <Button 
+                type="button" 
+                onClick={() => {
+                  if (htmlInput.trim()) {
+                    const parsedSpecs = parseHTMLSpecs(htmlInput);
+                    const convertedSpecs = convertSpecsToKeyValue(parsedSpecs);
+                    setSpecificationsArray(prev => {
+                      const newSpecs = [...prev];
+                      convertedSpecs.forEach(spec => {
+                        if (!newSpecs.some(existing => existing.key.toLowerCase() === spec.key.toLowerCase())) {
+                          newSpecs.push(spec);
+                        }
+                      });
+                      return newSpecs;
+                    });
+                    setHtmlInput('');
+                    toast({
+                      title: "Успешно!",
+                      description: `Добавлено ${convertedSpecs.length} характеристик`,
+                    });
+                  }
+                }} 
+                size="sm" 
+                variant="default"
+                disabled={!htmlInput.trim()}
+              >
+                📋 Импортировать из HTML
+              </Button>
+              <Button 
+                type="button" 
+                onClick={() => {
+                  if (htmlInput.trim()) {
+                    const parsedSpecs = parseHTMLSpecs(htmlInput);
+                    const tableFormat = formatSpecsAsTable(parsedSpecs);
+                    setFormData(prev => ({ 
+                      ...prev, 
+                      shortDescription: tableFormat 
+                    }));
+                    toast({
+                      title: "Добавлено!",
+                      description: "Характеристики добавлены в короткое описание как таблица",
+                    });
+                  }
+                }} 
+                size="sm" 
+                variant="secondary"
+                disabled={!htmlInput.trim()}
+              >
+                📊 В короткое описание
+              </Button>
+            </div>
+          </div>
+
+          <Separator />
+
           {/* Характеристики */}
           <div>
             <div className="flex justify-between items-center mb-2">
               <Label>Характеристики товара</Label>
               <div className="flex space-x-2">
-                <Button 
-                  type="button" 
-                  onClick={() => {
-                    const extractedSpecs = extractSpecsFromDescription(formData.description);
-                    const newSpecs = [...specificationsArray];
-                    extractedSpecs.forEach(spec => {
-                      if (!newSpecs.some(existing => existing.key.toLowerCase() === spec.key.toLowerCase())) {
-                        newSpecs.push(spec);
-                      }
-                    });
-                    setSpecificationsArray(newSpecs);
-                  }} 
-                  size="sm" 
-                  variant="secondary"
-                  disabled={!formData.description}
-                >
-                  🔍 Извлечь из описания
-                </Button>
                 <Button type="button" onClick={addSpecification} size="sm" variant="outline">
                   <Plus className="w-4 h-4 mr-2" />
                   Добавить

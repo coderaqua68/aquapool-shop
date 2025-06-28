@@ -8,56 +8,156 @@ interface FormattedTextProps {
 export function FormattedText({ text, className = "" }: FormattedTextProps) {
   if (!text) return null;
 
-  // Разбиваем текст на абзацы
-  const paragraphs = text.split('\n').filter(paragraph => paragraph.trim() !== '');
+  const formatText = (text: string) => {
+    const lines = text.split('\n');
+    const elements: React.ReactNode[] = [];
+    
+    let inTable = false;
+    let tableRows: string[] = [];
+    
+    lines.forEach((line, index) => {
+      const trimmedLine = line.trim();
+      
+      if (!trimmedLine) {
+        if (inTable) {
+          elements.push(renderTable(tableRows, index));
+          tableRows = [];
+          inTable = false;
+        }
+        elements.push(<br key={`br-${index}`} />);
+        return;
+      }
+      
+      // Проверяем табличную строку (содержит |)
+      if (trimmedLine.includes('|') && trimmedLine.split('|').length >= 3) {
+        if (!inTable) {
+          inTable = true;
+        }
+        tableRows.push(trimmedLine);
+        return;
+      } else if (inTable) {
+        elements.push(renderTable(tableRows, index));
+        tableRows = [];
+        inTable = false;
+      }
+      
+      // Заголовки **текст**
+      if (trimmedLine.startsWith('**') && trimmedLine.endsWith('**')) {
+        const headerText = trimmedLine.slice(2, -2);
+        elements.push(
+          <h3 key={`header-${index}`} className="font-bold text-lg mb-3 mt-4 first:mt-0 text-blue-600">
+            {headerText}
+          </h3>
+        );
+        return;
+      }
+      
+      // Элементы списка
+      if (trimmedLine.startsWith('- ')) {
+        const listItem = trimmedLine.slice(2);
+        elements.push(
+          <div key={`list-${index}`} className="flex items-start mb-1">
+            <span className="text-blue-500 mr-2">•</span>
+            <span>{processInlineFormatting(listItem)}</span>
+          </div>
+        );
+        return;
+      }
+      
+      // Обычные параграфы
+      elements.push(
+        <p key={`p-${index}`} className="mb-2 text-gray-700 leading-relaxed">
+          {processInlineFormatting(trimmedLine)}
+        </p>
+      );
+    });
+    
+    if (inTable && tableRows.length > 0) {
+      elements.push(renderTable(tableRows, lines.length));
+    }
+    
+    return elements;
+  };
 
-  const formatLine = (line: string) => {
-    // Заменяем **текст** на жирный
-    line = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  const renderTable = (rows: string[], key: number) => {
+    if (rows.length === 0) return null;
     
-    // Заменяем *текст* на курсив
-    line = line.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    return (
+      <div key={`table-${key}`} className="my-4 overflow-hidden rounded-lg border border-gray-200">
+        <table className="w-full bg-white">
+          <tbody>
+            {rows.map((row, rowIndex) => {
+              const cells = row.split('|').map(cell => cell.trim()).filter(cell => cell !== '');
+              return (
+                <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                  {cells.map((cell, cellIndex) => (
+                    <td 
+                      key={cellIndex} 
+                      className={`px-4 py-2 text-sm ${
+                        cellIndex === 0 
+                          ? 'font-medium text-gray-700 bg-gray-100 w-1/3' 
+                          : 'text-gray-900'
+                      }`}
+                    >
+                      {processInlineFormatting(cell)}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  const processInlineFormatting = (text: string): React.ReactNode => {
+    const boldRegex = /\*\*(.*?)\*\*/g;
+    let processedText: React.ReactNode[] = [];
+    let lastIndex = 0;
+    let match;
     
-    // Заменяем - список на • список
-    line = line.replace(/^-\s+/gm, '• ');
+    const boldMatches: { start: number; end: number; text: string }[] = [];
+    while ((match = boldRegex.exec(text)) !== null) {
+      boldMatches.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        text: match[1]
+      });
+    }
     
-    // Заменяем 1. 2. 3. на красивые номера
-    line = line.replace(/^(\d+)\.\s+/gm, '<span class="font-medium text-blue-600">$1.</span> ');
+    boldMatches.sort((a, b) => a.start - b.start);
     
-    return line;
+    let currentPos = 0;
+    boldMatches.forEach((boldMatch, index) => {
+      if (boldMatch.start > currentPos) {
+        const beforeText = text.slice(currentPos, boldMatch.start);
+        processedText.push(beforeText);
+      }
+      
+      processedText.push(
+        <strong key={`bold-${index}`} className="font-bold">
+          {boldMatch.text}
+        </strong>
+      );
+      
+      currentPos = boldMatch.end;
+    });
+    
+    if (currentPos < text.length) {
+      processedText.push(text.slice(currentPos));
+    }
+    
+    if (boldMatches.length === 0) {
+      return text;
+    }
+    
+    return processedText;
   };
 
   return (
     <div className={className}>
-      {paragraphs.map((paragraph, index) => {
-        const formattedParagraph = formatLine(paragraph);
-        
-        // Проверяем, является ли это списком
-        const isList = paragraph.includes('•') || /^\d+\./.test(paragraph);
-        
-        if (isList) {
-          const listItems = paragraph.split(/(?=•|(?=\d+\.))/g).filter(item => item.trim());
-          return (
-            <ul key={index} className="space-y-1 mb-4 last:mb-0">
-              {listItems.map((item, itemIndex) => (
-                <li 
-                  key={itemIndex} 
-                  className="text-gray-700 leading-relaxed"
-                  dangerouslySetInnerHTML={{ __html: formatLine(item.trim()) }}
-                />
-              ))}
-            </ul>
-          );
-        }
-        
-        return (
-          <p 
-            key={index} 
-            className="text-gray-700 leading-relaxed mb-4 last:mb-0"
-            dangerouslySetInnerHTML={{ __html: formattedParagraph }}
-          />
-        );
-      })}
+      {formatText(text)}
     </div>
   );
 }
