@@ -132,11 +132,14 @@ export class MemStorage implements IStorage {
   async createProduct(insertProduct: InsertProduct): Promise<Product> {
     // Автогенерация SKU если не указан
     const sku = insertProduct.sku || this.generateSKU(insertProduct.brand, insertProduct.category);
+    // Автогенерация slug если не указан
+    const slug = insertProduct.slug || this.generateSlug(insertProduct.name);
     
     const product: Product = { 
       id: this.currentProductId++, 
       ...insertProduct,
       sku,
+      slug,
       shortDescription: insertProduct.shortDescription || null,
       originalPrice: insertProduct.originalPrice || null,
       brand: insertProduct.brand || null,
@@ -194,10 +197,16 @@ export class MemStorage implements IStorage {
     const existingProduct = this.products.get(id);
     if (!existingProduct) return undefined;
 
+    // Регенерируем slug если изменилось название
+    const slug = updateData.name && updateData.name !== existingProduct.name 
+      ? this.generateSlug(updateData.name)
+      : (updateData.slug || existingProduct.slug);
+
     const updatedProduct: Product = {
       ...existingProduct,
       ...updateData,
       id: existingProduct.id,
+      slug,
       originalPrice: updateData.originalPrice || existingProduct.originalPrice,
       brand: updateData.brand || existingProduct.brand,
       subcategory: updateData.subcategory || existingProduct.subcategory,
