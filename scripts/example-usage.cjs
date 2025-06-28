@@ -3,7 +3,7 @@
  * Запустите этот файл после настройки списка товаров
  */
 
-const IntexParser = require('./intex-parser');
+const IntexParser = require('./intex-parser.cjs');
 const fs = require('fs');
 const path = require('path');
 

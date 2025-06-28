@@ -2,7 +2,7 @@
  * Тестовый запуск парсера на одном товаре
  */
 
-const IntexParser = require('./intex-parser');
+const IntexParser = require('./intex-parser.cjs');
 
 async function testParser() {
   console.log('🧪 Тестирование парсера на одном товаре...\n');

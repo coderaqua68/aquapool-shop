@@ -1,0 +1,48 @@
+{
+  "site": "intex-bassein.ru",
+  "summary": {
+    "total": 1,
+    "success": 1,
+    "errors": 0,
+    "timestamp": "2025-06-28T12:46:27.195Z"
+  },
+  "products": [
+    {
+      "name": "Каркасный бассейн Bestway Steel Pro MAX 366 x 122 см, артикул 56420",
+      "sku": "56420",
+      "description": "<h3>В комплект поставки бассейна входит</h3><br><ul><li>Каркасный бассейн Bestway Steel Pro Max 3.66 x 1.22 м</li><li>Картриджный насос-фильтр 2006 л/ч</li><li>Фильтрующий картридж тип II</li><li>Лестница без площадки</li><li>Тент для бассейна</li><li>Руководство по эксплуатации</li></ul><p></p><!-- РАЗМЕРЫ УПАКОВКИ И ВЕС --><p><img width=\"90\" alt=\"Размер упаковки\" src=\"/upload/medialibrary/ac6/ac672c30d0d9dc49688f1ab82d73261d.png\" height=\"82\" align=\"left\" style=\"margin-right: 15px\" title=\"Размер упаковки\"> Размер упаковки: 55.5 х 32.5 х 124 см<br> Объем упаковки: 0.23 m<sup>3</sup><br> Вес: 47.8 кг. </p>",
+      "shortDescription": "Диаметр: 3.66 • Высота: 1.22 • Объем: 10250",
+      "price": "0",
+      "originalPrice": null,
+      "category": "frame-pools",
+      "brand": "Bestway",
+      "volume": "10250",
+      "weight": "47.8",
+      "dimensions": "366 x 122",
+      "material": "ПВХ",
+      "color": "Серый",
+      "frameType": "Металлический",
+      "pumpType": "Картриджный",
+      "shape": "Круглый",
+      "installationType": "Наземный",
+      "countryOrigin": "Китай",
+      "diameter": "3.66",
+      "height": "1.22",
+      "poolType": "Каркасный",
+      "pumpCapacity": "2006",
+      "packageSize": "55.5 х 32.5 х 124",
+      "imageUrl": "/api/placeholder/400/400",
+      "images": [],
+      "specifications": "{\"Бренд\":\"Bestway\",\"Диаметр (м)\":\"3.66\",\"Страна-производитель\":\"Китай\",\"Артикул\":\"56420\",\"Высота (м)\":\"1.22\",\"Вес (кг)\":\"47.8\",\"Размеры (см)\":\"366 x 122\",\"Объем (л)\":\"10250\",\"Размер упаковки (см)\":\"55.5 х 32.5 х 124\",\"Тип бассейна\":\"Каркасный\",\"Форма бассейна\":\"Круглый\",\"Насос-фильтр\":\"Картриджный\",\"Насос-фильтр (л/ч)\":\"2006\",\"Материал чаши\":\"ПВХ\",\"Каркас\":\"Металлический\",\"Тип установки\":\"Наземный\",\"Цвет чаши\":\"Серый\"}",
+      "inStock": true,
+      "isPopular": false,
+      "isNew": false,
+      "discount": 0,
+      "rating": "4.5",
+      "reviewCount": 59,
+      "sourceUrl": "https://intex-bassein.ru/catalog/bestway-karkasnye-basseyny/karkasnyy-basseyn-bestway-round-steel-pro-max-krug-3-66-x-1-22-m-artikul-56420/",
+      "parsedAt": "2025-06-28T12:46:27.190Z"
+    }
+  ],
+  "errors": []
+}
