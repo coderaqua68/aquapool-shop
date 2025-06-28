@@ -14,6 +14,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
+import CategoryMenu from "@/components/layout/category-menu";
 
 export default function Header() {
   const [, setLocation] = useLocation();
@@ -196,40 +197,8 @@ export default function Header() {
         <nav className="hidden md:block py-3 border-t border-gray-100">
           <NavigationMenu>
             <NavigationMenuList className="space-x-6">
-              {/* Catalog Dropdown */}
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-gray-700 hover:text-[hsl(207,90%,54%)] font-medium bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent">
-                  <span className="flex items-center">
-                    Каталог
-                    <ChevronDown className="ml-1 h-4 w-4" />
-                  </span>
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <div className="grid w-[800px] grid-cols-2 gap-6 p-6">
-                    {catalogCategories.map((category) => (
-                      <div key={category.slug} className="space-y-3">
-                        <Link
-                          href={`/catalog/${category.slug}`}
-                          className="text-lg font-semibold text-gray-900 hover:text-[hsl(207,90%,54%)] transition-colors block"
-                        >
-                          {category.name}
-                        </Link>
-                        <div className="space-y-1">
-                          {category.subcategories.map((sub) => (
-                            <Link
-                              key={sub}
-                              href={`/catalog/${category.slug}?subcategory=${encodeURIComponent(sub)}`}
-                              className="block text-sm text-gray-600 hover:text-[hsl(207,90%,54%)] transition-colors py-1"
-                            >
-                              {sub}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
+              {/* Hierarchical Catalog Menu */}
+              <CategoryMenu />
 
               {/* Other Navigation Links */}
               {navigationPages.slice(1).map((page) => (
