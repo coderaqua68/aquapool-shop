@@ -174,6 +174,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Parse products from URLs (mock implementation for demo)
+  app.post("/api/admin/parse-products", adminAuth, async (req, res) => {
+    try {
+      const { urls } = req.body;
+      
+      if (!Array.isArray(urls)) {
+        return res.status(400).json({ message: "URLs must be an array" });
+      }
+
+      // Симуляция парсинга для демонстрации
+      const results = [];
+      const errors = [];
+
+      for (let i = 0; i < urls.length; i++) {
+        const url = urls[i];
+        
+        try {
+          // Генерируем тестовый товар на основе URL
+          const mockProduct = generateMockProduct(url, i);
+          results.push(mockProduct);
+          
+          // Имитируем время парсинга
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        } catch (error) {
+          errors.push({
+            url,
+            error: "Ошибка парсинга: " + error.message
+          });
+        }
+      }
+      
+      res.json({
+        success: true,
+        products: results,
+        errors
+      });
+    } catch (error) {
+      console.error("Error parsing products:", error);
+      res.status(500).json({ message: "Failed to parse products" });
+    }
+  });
+
   // Bulk import products from parser
   app.post("/api/admin/import-products", adminAuth, async (req, res) => {
     try {

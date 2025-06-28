@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import ProductForm from "@/components/admin/product-form";
 import ProductsList from "@/components/admin/products-list";
+import { ProductParser } from "@/components/admin/product-parser";
 
 export default function Admin() {
   const [, setLocation] = useLocation();
@@ -93,7 +94,7 @@ export default function Admin() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:grid-cols-4">
             <TabsTrigger value="dashboard" className="flex items-center space-x-2">
               <TrendingUp className="w-4 h-4" />
               <span>Статистика</span>
@@ -105,6 +106,10 @@ export default function Admin() {
             <TabsTrigger value="add-product" className="flex items-center space-x-2">
               <Plus className="w-4 h-4" />
               <span>{editingProduct ? "Редактировать" : "Добавить товар"}</span>
+            </TabsTrigger>
+            <TabsTrigger value="parser" className="flex items-center space-x-2">
+              <Package className="w-4 h-4" />
+              <span>Парсер</span>
             </TabsTrigger>
           </TabsList>
 
@@ -180,6 +185,11 @@ export default function Admin() {
                 setActiveTab("products");
               }}
             />
+          </TabsContent>
+
+          {/* Product Parser */}
+          <TabsContent value="parser" className="space-y-6">
+            <ProductParser />
           </TabsContent>
         </Tabs>
       </main>
