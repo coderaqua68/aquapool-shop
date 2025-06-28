@@ -2,7 +2,7 @@
  * Тест нового парсера для проверки извлечения описаний
  */
 
-const RealParser = require('./scripts/real-parser.js');
+import RealParser from './scripts/real-parser.js';
 
 async function testParser() {
   const parser = new RealParser();

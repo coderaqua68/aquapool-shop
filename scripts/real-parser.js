@@ -3,8 +3,8 @@
  * Использует jsdom для парсинга HTML страниц
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 // Для реального парсинга понадобятся эти пакеты:
 // npm install jsdom node-fetch
@@ -525,9 +525,9 @@ async function parseProductsFromUrls() {
   }
 }
 
-module.exports = RealParser;
+export default RealParser;
 
 // Запуск если файл вызван напрямую
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   parseProductsFromUrls();
 }
