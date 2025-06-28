@@ -18,6 +18,7 @@ interface Filters {
   volumeRange?: string;
   shape?: string;
   material?: string;
+  dimensions?: string;
 }
 
 interface ProductFiltersProps {

@@ -13,7 +13,19 @@ import { eq, and, gte, lte, desc, ilike, or } from "drizzle-orm";
 
 export interface IStorage {
   // Products
-  getProducts(filters?: { category?: string; brand?: string; minPrice?: number; maxPrice?: number; inStock?: boolean; search?: string }): Promise<Product[]>;
+  getProducts(filters?: { 
+    category?: string; 
+    brand?: string; 
+    minPrice?: number; 
+    maxPrice?: number; 
+    inStock?: boolean; 
+    search?: string;
+    poolType?: string;
+    volumeRange?: string;
+    shape?: string;
+    material?: string;
+    dimensions?: string;
+  }): Promise<Product[]>;
   getProduct(id: number): Promise<Product | undefined>;
   getProductBySlug(slug: string): Promise<Product | undefined>;
   getPopularProducts(): Promise<Product[]>;
@@ -35,7 +47,19 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  async getProducts(filters?: { category?: string; brand?: string; minPrice?: number; maxPrice?: number; inStock?: boolean; search?: string }): Promise<Product[]> {
+  async getProducts(filters?: { 
+    category?: string; 
+    brand?: string; 
+    minPrice?: number; 
+    maxPrice?: number; 
+    inStock?: boolean; 
+    search?: string;
+    poolType?: string;
+    volumeRange?: string;
+    shape?: string;
+    material?: string;
+    dimensions?: string;
+  }): Promise<Product[]> {
     let query = db.select().from(products);
     
     if (filters) {
@@ -81,6 +105,89 @@ export class DatabaseStorage implements IStorage {
       
       if (filters.search) {
         conditions.push(ilike(products.name, `%${filters.search}%`));
+      }
+
+      // Фильтр по типу бассейна (на основе названия и характеристик)
+      if (filters.poolType) {
+        const poolType = filters.poolType;
+        if (poolType === 'Каркасный') {
+          conditions.push(or(
+            ilike(products.name, '%каркасный%'),
+            ilike(products.specifications, '%каркасный%')
+          ));
+        } else if (poolType === 'Надувной') {
+          conditions.push(or(
+            ilike(products.name, '%надувной%'),
+            ilike(products.specifications, '%надувной%')
+          ));
+        } else if (poolType === 'Морозоустойчивый') {
+          conditions.push(or(
+            ilike(products.name, '%морозоустойчив%'),
+            ilike(products.specifications, '%морозоустойчив%')
+          ));
+        } else if (poolType === 'Джакузи') {
+          conditions.push(or(
+            ilike(products.name, '%джакузи%'),
+            ilike(products.specifications, '%джакузи%'),
+            ilike(products.name, '%spa%'),
+            ilike(products.specifications, '%spa%')
+          ));
+        } else if (poolType === 'Детский') {
+          conditions.push(or(
+            ilike(products.name, '%детский%'),
+            ilike(products.specifications, '%детский%')
+          ));
+        } else if (poolType === 'Запасные чаши') {
+          conditions.push(or(
+            ilike(products.name, '%чаша%'),
+            ilike(products.specifications, '%чаша%'),
+            ilike(products.name, '%лайнер%')
+          ));
+        }
+      }
+
+      // Фильтр по объему
+      if (filters.volumeRange) {
+        if (filters.volumeRange === 'small') {
+          conditions.push(lte(products.volume, '5000'));
+        } else if (filters.volumeRange === 'medium') {
+          conditions.push(and(
+            gte(products.volume, '5000'),
+            lte(products.volume, '15000')
+          ));
+        } else if (filters.volumeRange === 'large') {
+          conditions.push(and(
+            gte(products.volume, '15000'),
+            lte(products.volume, '30000')
+          ));
+        } else if (filters.volumeRange === 'xlarge') {
+          conditions.push(gte(products.volume, '30000'));
+        }
+      }
+
+      // Фильтр по форме
+      if (filters.shape) {
+        conditions.push(or(
+          ilike(products.shape, `%${filters.shape}%`),
+          ilike(products.specifications, `%${filters.shape}%`)
+        ));
+      }
+
+      // Фильтр по материалу
+      if (filters.material) {
+        conditions.push(or(
+          ilike(products.material, `%${filters.material}%`),
+          ilike(products.specifications, `%${filters.material}%`)
+        ));
+      }
+
+      // Фильтр по размерам
+      if (filters.dimensions) {
+        conditions.push(or(
+          ilike(products.dimensions, `%${filters.dimensions}%`),
+          ilike(products.name, `%${filters.dimensions}%`),
+          ilike(products.specifications, `%${filters.dimensions}%`)
+        ));
       }
       
       if (conditions.length > 0) {
@@ -258,7 +365,19 @@ export class MemStorage implements IStorage {
     // Каталог товаров очищен - будет заполняться через админ панель
   }
 
-  async getProducts(filters?: { category?: string; minPrice?: number; maxPrice?: number; inStock?: boolean; search?: string }): Promise<Product[]> {
+  async getProducts(filters?: { 
+    category?: string; 
+    brand?: string; 
+    minPrice?: number; 
+    maxPrice?: number; 
+    inStock?: boolean; 
+    search?: string;
+    poolType?: string;
+    volumeRange?: string;
+    shape?: string;
+    material?: string;
+    dimensions?: string;
+  }): Promise<Product[]> {
     let results = Array.from(this.products.values());
     
     if (filters) {
