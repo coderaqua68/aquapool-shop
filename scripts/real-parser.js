@@ -14,17 +14,16 @@ class RealParser {
     this.results = [];
     this.errors = [];
     this.selectors = {
-      // Настройки селекторов для конкретного сайта
-      // ВЫ МОЖЕТЕ ИЗМЕНИТЬ ЭТИ СЕЛЕКТОРЫ ПОД ВАШ САЙТ
-      title: 'h1, .product-title, .product-name',
+      // Настройки селекторов для intex-bassein.ru
+      title: 'h1, .catalog-element-detail-name, .product-title',
       sku: '.product-article, .sku, [data-sku]',
-      price: '.price-current, .product-price, .price',
-      originalPrice: '.price-old, .original-price, .price-before',
+      price: '.catalog-price, .price-current, .product-price',
+      originalPrice: '.catalog-price-old, .price-old, .original-price',
       brand: '.product-brand, .brand, [data-brand]',
-      description: '.product-description, .description, .product-content',
-      mainImage: '.product-image img, .main-image img, .gallery-main img',
+      description: '.toggle_content, .product-description, .description',
+      mainImage: '.product-gallery img, .main-image img, .catalog-element-picture img',
       additionalImages: '.product-gallery img, .additional-images img',
-      specifications: '.product-item-detail-properties-block, .specifications, .properties',
+      specifications: '.product-item-detail-properties-block, .toggle_content, .specifications',
       availability: '.availability, .in-stock, .product-availability'
     };
   }
@@ -103,13 +102,10 @@ class RealParser {
    * Извлечение данных товара из HTML
    */
   extractProductData(html, url) {
-    // Для реального парсинга нужен jsdom
-    // const { JSDOM } = require('jsdom');
-    // const dom = new JSDOM(html);
-    // const document = dom.window.document;
-    
-    // Пока эмулируем работу с DOM
-    const document = this.createMockDocument(html);
+    // Используем реальный jsdom для парсинга
+    const { JSDOM } = require('jsdom');
+    const dom = new JSDOM(html);
+    const document = dom.window.document;
     
     // Извлекаем основные данные
     const name = this.getTextContent(document, this.selectors.title) || 'Товар без названия';
@@ -126,11 +122,15 @@ class RealParser {
     const specificationsHtml = this.getElementHtml(document, this.selectors.specifications);
     const specs = this.parseSpecifications(specificationsHtml);
     
+    // Извлекаем реальное описание
+    const descriptionHtml = this.getElementHtml(document, this.selectors.description);
+    const description = this.extractDescription(descriptionHtml, name, specs);
+    
     // Создаем объект товара
     const product = {
       name: name.trim(),
       sku: sku,
-      description: this.generateDescription(name, specs),
+      description: description,
       shortDescription: this.generateShortDescription(specs),
       price: price,
       originalPrice: originalPrice,
@@ -379,15 +379,37 @@ class RealParser {
   }
 
   /**
-   * Генерация описания товара
+   * Извлечение реального описания с сайта
+   */
+  extractDescription(descriptionHtml, name, specs) {
+    // Если HTML описание найдено, используем его
+    if (descriptionHtml && descriptionHtml.trim()) {
+      // Убираем лишние пробелы и форматируем
+      let description = descriptionHtml
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Удаляем скрипты
+        .replace(/\s+/g, ' ') // Заменяем множественные пробелы
+        .trim();
+      
+      return description;
+    }
+    
+    // Fallback: генерируем описание на основе характеристик
+    return this.generateDescription(name, specs);
+  }
+
+  /**
+   * Генерация описания товара (fallback)
    */
   generateDescription(name, specs) {
-    let description = `${name}\n\n`;
-    description += "Основные характеристики:\n";
+    let description = `<h2>${name}</h2>\n<p>Качественный товар от известного производителя. Отличное решение для дачи и загородного дома.</p>\n\n`;
     
-    Object.entries(specs).forEach(([key, value]) => {
-      description += `• ${key}: ${value}\n`;
-    });
+    if (Object.keys(specs).length > 0) {
+      description += "<h3>Основные характеристики:</h3>\n<ul>\n";
+      Object.entries(specs).forEach(([key, value]) => {
+        description += `<li><strong>${key}:</strong> ${value}</li>\n`;
+      });
+      description += "</ul>";
+    }
     
     return description;
   }
