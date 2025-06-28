@@ -143,7 +143,10 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
               <SelectItem value="all">Все типы</SelectItem>
               <SelectItem value="Каркасный">Каркасный</SelectItem>
               <SelectItem value="Надувной">Надувной</SelectItem>
+              <SelectItem value="Морозоустойчивый">Морозоустойчивый</SelectItem>
+              <SelectItem value="Джакузи">Джакузи</SelectItem>
               <SelectItem value="Детский">Детский</SelectItem>
+              <SelectItem value="Запасные чаши">Запасные чаши</SelectItem>
             </SelectContent>
           </Select>
         </CardContent>
