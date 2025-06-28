@@ -15,14 +15,14 @@ import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@shared/schema";
 
 export default function ProductPage() {
-  const params = useParams<{ id: string }>();
+  const params = useParams<{ identifier: string }>();
   const { addItem } = useCart();
   const { toast } = useToast();
   const [isOneClickModalOpen, setIsOneClickModalOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const { data: product, isLoading } = useQuery<Product>({
-    queryKey: [`/api/products/${params.id}`],
+    queryKey: [`/api/products/${params.identifier}`],
   });
 
   const { data: relatedProducts = [] } = useQuery<Product[]>({

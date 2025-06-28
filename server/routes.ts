@@ -357,10 +357,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/products/:id", async (req, res) => {
+  app.get("/api/products/:identifier", async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
-      const product = await storage.getProduct(id);
+      const identifier = req.params.identifier;
+      let product;
+      
+      // Check if identifier is numeric (ID) or string (slug)
+      if (/^\d+$/.test(identifier)) {
+        const productId = parseInt(identifier);
+        product = await storage.getProduct(productId);
+      } else {
+        product = await storage.getProductBySlug(identifier);
+      }
       
       if (!product) {
         return res.status(404).json({ message: "Product not found" });
