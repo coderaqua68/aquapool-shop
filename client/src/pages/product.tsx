@@ -128,23 +128,25 @@ export default function ProductPage() {
             )}
             
             {/* Badges */}
-            <div className="absolute top-4 left-4 space-y-2">
-              {product.discount && product.discount > 0 && (
-                <Badge className="bg-red-500 text-white">
-                  -{product.discount}%
-                </Badge>
-              )}
-              {product.isNew && (
-                <Badge className="bg-green-500 text-white">
-                  NEW
-                </Badge>
-              )}
-              {product.isPopular && !product.isNew && (!product.discount || product.discount === 0) && (
-                <Badge className="bg-[hsl(207,90%,54%)] text-white">
-                  ХИТ
-                </Badge>
-              )}
-            </div>
+            {((product.discount && product.discount > 0) || product.isNew || (product.isPopular && !product.isNew && (!product.discount || product.discount === 0))) && (
+              <div className="absolute top-4 left-4 space-y-2">
+                {product.discount && product.discount > 0 && (
+                  <Badge className="bg-red-500 text-white">
+                    -{product.discount}%
+                  </Badge>
+                )}
+                {product.isNew && (
+                  <Badge className="bg-green-500 text-white">
+                    NEW
+                  </Badge>
+                )}
+                {product.isPopular && !product.isNew && (!product.discount || product.discount === 0) && (
+                  <Badge className="bg-[hsl(207,90%,54%)] text-white">
+                    ХИТ
+                  </Badge>
+                )}
+              </div>
+            )}
 
             {/* Image counter */}
             {product.images && product.images.length > 1 && (
