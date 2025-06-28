@@ -144,39 +144,30 @@ async function parseProductFromUrl(url: string) {
     // Extract description - create formatted description from product data
     let description = '';
     
-    // Extract complete description from intex-bassein.ru including both composition and description
+    // Extract separate description and composition from intex-bassein.ru
     let foundDescription = false;
+    let composition = '';
+    
+    // Function to remove clickable links while keeping text content
+    const removeClickableLinks = (html: string): string => {
+      return html.replace(/<a[^>]*>(.*?)<\/a>/gi, '$1');
+    };
     
     // 1. Get composition (комплектация)
     const compositionElement = document.querySelector('[data-value="free-tab"] .toggle_content');
-    let composition = '';
     if (compositionElement) {
       composition = compositionElement.innerHTML?.trim() || '';
+      composition = removeClickableLinks(composition);
       console.log(`Found composition: ${composition.substring(0, 100)}...`);
     }
     
-    // 2. Get main description
+    // 2. Get main description (only description, no composition)
     const descriptionElement = document.querySelector('[data-value="description"] .toggle_content');
-    let mainDescription = '';
     if (descriptionElement) {
-      mainDescription = descriptionElement.innerHTML?.trim() || '';
-      console.log(`Found main description: ${mainDescription.substring(0, 100)}...`);
-    }
-    
-    // 3. Combine both parts
-    if (mainDescription || composition) {
-      if (mainDescription && composition) {
-        // Both found - combine them
-        description = mainDescription + '\n\n<h3>Комплектация</h3>\n' + composition;
-      } else if (mainDescription) {
-        // Only main description found
-        description = mainDescription;
-      } else if (composition) {
-        // Only composition found
-        description = '<h2>' + name + '</h2>\n' + composition;
-      }
+      description = descriptionElement.innerHTML?.trim() || '';
+      description = removeClickableLinks(description);
       foundDescription = true;
-      console.log(`Combined description length: ${description.length}`);
+      console.log(`Found main description: ${description.substring(0, 100)}...`);
     }
     
     // Fallback: try other selectors if nothing found
@@ -407,6 +398,7 @@ async function parseProductFromUrl(url: string) {
       slug: generateSlug(name),
       sku,
       description,
+      composition,
       shortDescription,
       price,
       originalPrice,

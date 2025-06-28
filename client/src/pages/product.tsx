@@ -341,7 +341,7 @@ export default function ProductPage() {
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="description">Описание</TabsTrigger>
           <TabsTrigger value="specifications">Характеристики</TabsTrigger>
-          <TabsTrigger value="reviews">Отзывы</TabsTrigger>
+          <TabsTrigger value="composition">Комплектация</TabsTrigger>
         </TabsList>
         
         <TabsContent value="description" className="mt-6">

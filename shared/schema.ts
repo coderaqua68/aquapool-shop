@@ -8,6 +8,7 @@ export const products = pgTable("products", {
   name: text("name").notNull(),
   slug: text("slug").unique().notNull(),
   description: text("description").notNull(),
+  composition: text("composition"), // Комплектация товара
   shortDescription: text("short_description"),
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
   originalPrice: decimal("original_price", { precision: 10, scale: 2 }),
