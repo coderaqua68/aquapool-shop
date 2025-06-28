@@ -52,21 +52,30 @@ export default function ProductCard({ product }: ProductCardProps) {
         />
         
         {/* Badges */}
-        {product.discount && product.discount > 0 && (
-          <Badge className="absolute top-3 left-3 bg-red-500 text-white">
-            -{product.discount}%
-          </Badge>
-        )}
-        {product.isNew && (
-          <Badge className="absolute top-3 left-3 bg-green-500 text-white">
-            NEW
-          </Badge>
-        )}
-        {product.isPopular && !product.isNew && !product.discount && (
-          <Badge className="absolute top-3 left-3 bg-[hsl(207,90%,54%)] text-white">
-            ХИТ
-          </Badge>
-        )}
+        <div className="absolute top-3 left-3 flex flex-col gap-1">
+          {product.originalPrice && product.price && (
+            (() => {
+              const original = parseFloat(product.originalPrice);
+              const current = parseFloat(product.price);
+              const discountPercent = Math.round(((original - current) / original) * 100);
+              return discountPercent > 0 ? (
+                <Badge className="bg-red-500 text-white text-xs font-bold">
+                  -{discountPercent}%
+                </Badge>
+              ) : null;
+            })()
+          )}
+          {product.isNew && (
+            <Badge className="bg-green-500 text-white text-xs font-bold">
+              NEW
+            </Badge>
+          )}
+          {product.isPopular && (
+            <Badge className="bg-[hsl(207,90%,54%)] text-white text-xs font-bold">
+              ХИТ
+            </Badge>
+          )}
+        </div>
         
         <Button
           variant="ghost"
@@ -93,13 +102,27 @@ export default function ProductCard({ product }: ProductCardProps) {
         
         <div className="flex items-center justify-between mb-3">
           <div>
-            <span className="text-2xl font-bold text-[hsl(207,90%,54%)]">
-              {parseInt(product.price).toLocaleString()} ₽
-            </span>
-            {product.originalPrice && (
-              <span className="text-lg text-gray-400 line-through ml-2">
-                {parseInt(product.originalPrice).toLocaleString()} ₽
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-2xl font-bold text-[hsl(207,90%,54%)]">
+                {parseInt(product.price).toLocaleString()} ₽
               </span>
+              {product.originalPrice && (
+                <span className="text-lg text-gray-400 line-through">
+                  {parseInt(product.originalPrice).toLocaleString()} ₽
+                </span>
+              )}
+            </div>
+            {product.originalPrice && product.price && (
+              (() => {
+                const original = parseFloat(product.originalPrice);
+                const current = parseFloat(product.price);
+                const savings = original - current;
+                return savings > 0 ? (
+                  <div className="text-sm text-green-600 font-medium">
+                    Экономия: {Math.round(savings).toLocaleString()} ₽
+                  </div>
+                ) : null;
+              })()
             )}
           </div>
         </div>
