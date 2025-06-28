@@ -369,11 +369,18 @@ export default function ProductPage() {
           </Card>
         </TabsContent>
         
-        <TabsContent value="reviews" className="mt-6">
+        <TabsContent value="composition" className="mt-6">
           <Card>
             <CardContent className="p-6">
-              <h3 className="text-xl font-semibold mb-4">Отзывы покупателей</h3>
-              <p className="text-gray-600">Отзывы появятся после первых покупок</p>
+              <h3 className="text-xl font-semibold mb-4">Комплектация товара</h3>
+              {product.composition ? (
+                <div 
+                  className="prose max-w-none"
+                  dangerouslySetInnerHTML={{ __html: product.composition }}
+                />
+              ) : (
+                <p className="text-gray-600">Информация о комплектации будет добавлена</p>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

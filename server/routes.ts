@@ -156,16 +156,16 @@ async function parseProductFromUrl(url: string) {
     // 1. Get composition (комплектация)
     const compositionElement = document.querySelector('[data-value="free-tab"] .toggle_content');
     if (compositionElement) {
-      composition = compositionElement.innerHTML?.trim() || '';
-      composition = removeClickableLinks(composition);
+      const rawComposition = compositionElement.innerHTML?.trim() || '';
+      composition = removeClickableLinks(rawComposition);
       console.log(`Found composition: ${composition.substring(0, 100)}...`);
     }
     
     // 2. Get main description (only description, no composition)
     const descriptionElement = document.querySelector('[data-value="description"] .toggle_content');
     if (descriptionElement) {
-      description = descriptionElement.innerHTML?.trim() || '';
-      description = removeClickableLinks(description);
+      const rawDescription = descriptionElement.innerHTML?.trim() || '';
+      description = removeClickableLinks(rawDescription);
       foundDescription = true;
       console.log(`Found main description: ${description.substring(0, 100)}...`);
     }
