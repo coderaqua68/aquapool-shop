@@ -8,6 +8,19 @@ interface FormattedTextProps {
 export function FormattedText({ text, className = "" }: FormattedTextProps) {
   if (!text) return null;
 
+  // Check if text contains HTML tags
+  const containsHTML = /<[^>]+>/.test(text);
+  
+  if (containsHTML) {
+    // If text contains HTML, render it directly
+    return (
+      <div 
+        className={`prose prose-sm max-w-none ${className}`}
+        dangerouslySetInnerHTML={{ __html: text }}
+      />
+    );
+  }
+
   const formatText = (text: string) => {
     const lines = text.split('\n');
     const elements: React.ReactNode[] = [];
