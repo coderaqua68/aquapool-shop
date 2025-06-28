@@ -245,49 +245,22 @@ async function parseProductFromUrl(url: string) {
       }
     }
     
-    // Extract main product image (single best quality image)
+    // Extract main product image (single best quality image without watermark)
     let imageUrl = "/api/placeholder/400/400";
     
-    // Try to find the main product image
+    // Try to find any image with upload path (real product images)
     const allImages = Array.from(document.querySelectorAll('img'));
-    
-    // Priority 1: Look for main product image (largest, usually first in gallery)
     for (const imgElement of allImages) {
       const src = imgElement.getAttribute('src');
-      const alt = imgElement.getAttribute('alt') || '';
-      
-      // Look for images that are likely the main product photo
-      if (src && (src.includes('upload') || src.includes('catalog') || src.includes('resize'))) {
-        // Skip small thumbnails and service images
-        const isThumb = src.includes('thumb') || src.includes('small') || src.includes('mini');
-        const isServiceImg = alt.toLowerCase().includes('логотип') || alt.toLowerCase().includes('logo') || 
-                            src.includes('logo') || src.includes('brand');
-        
-        if (!isThumb && !isServiceImg) {
-          if (src.startsWith('/')) {
-            imageUrl = 'https://intex-bassein.ru' + src;
-          } else if (src.startsWith('http')) {
-            imageUrl = src;
-          }
-          console.log(`Found main product image: ${imageUrl}`);
-          break;
+      if (src && src.includes('upload')) {
+        // Handle relative URLs
+        if (src.startsWith('/')) {
+          imageUrl = 'https://intex-bassein.ru' + src;
+        } else if (src.startsWith('http')) {
+          imageUrl = src;
         }
-      }
-    }
-    
-    // Priority 2: If still no image, take any upload image
-    if (imageUrl === "/api/placeholder/400/400") {
-      for (const imgElement of allImages) {
-        const src = imgElement.getAttribute('src');
-        if (src && src.includes('upload')) {
-          if (src.startsWith('/')) {
-            imageUrl = 'https://intex-bassein.ru' + src;
-          } else if (src.startsWith('http')) {
-            imageUrl = src;
-          }
-          console.log(`Found any product image: ${imageUrl}`);
-          break;
-        }
+        console.log(`Found product image: ${imageUrl}`);
+        break;
       }
     }
     
