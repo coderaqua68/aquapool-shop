@@ -53,10 +53,12 @@ export function ProductParser() {
     setParseResults(null);
 
     try {
+      const token = localStorage.getItem("adminToken");
       const response = await fetch('/api/admin/parse-products', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': token || '',
         },
         credentials: 'include',
         body: JSON.stringify({ urls: urlList }),
@@ -92,10 +94,12 @@ export function ProductParser() {
 
     setIsImporting(true);
     try {
+      const token = localStorage.getItem("adminToken");
       const response = await fetch('/api/admin/import-products', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': token || '',
         },
         credentials: 'include',
         body: JSON.stringify({ products: parseResults.products }),
