@@ -86,7 +86,7 @@ export default function ProductsList({ onEdit }: ProductsListProps) {
             Начните добавлять товары в ваш каталог
           </p>
           <Button
-            onClick={() => onEdit({} as Product)}
+            onClick={() => onEdit(null as any)}
             className="inline-flex items-center space-x-2"
           >
             <Plus className="w-4 h-4" />
@@ -107,7 +107,7 @@ export default function ProductsList({ onEdit }: ProductsListProps) {
               <span>Список товаров ({products.length})</span>
             </div>
             <Button
-              onClick={() => onEdit({} as Product)}
+              onClick={() => onEdit(null as any)}
               className="inline-flex items-center space-x-2"
             >
               <Plus className="w-4 h-4" />

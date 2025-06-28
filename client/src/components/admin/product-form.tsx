@@ -56,7 +56,7 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
 
   // Инициализация формы при редактировании
   useEffect(() => {
-    if (product) {
+    if (product && product.id) {
       setFormData({
         name: product.name || "",
         description: product.description || "",
@@ -88,17 +88,39 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
       } catch {
         setSpecificationsArray([]);
       }
+    } else {
+      // Сброс формы для нового товара
+      setFormData({
+        name: "",
+        description: "",
+        price: "",
+        originalPrice: "",
+        brand: "",
+        category: "",
+        subcategory: "",
+        volume: "",
+        imageUrl: "",
+        images: [],
+        specifications: "",
+        inStock: true,
+        isPopular: false,
+        isNew: false,
+        discount: 0,
+        rating: "4.0",
+        reviewCount: 0
+      });
+      setSpecificationsArray([]);
     }
   }, [product]);
 
   const saveMutation = useMutation({
     mutationFn: async (productData: any) => {
       const token = localStorage.getItem("adminToken");
-      const url = product 
+      const url = product && product.id
         ? `/api/admin/products/${product.id}`
         : "/api/admin/products";
       
-      const method = product ? "PUT" : "POST";
+      const method = product && product.id ? "PUT" : "POST";
 
       const response = await fetch(url, {
         method,
@@ -120,7 +142,7 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
       queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       toast({
         title: "Успешно",
-        description: product ? "Товар обновлен" : "Товар добавлен",
+        description: product && product.id ? "Товар обновлен" : "Товар добавлен",
       });
       onSave();
     },
@@ -195,7 +217,7 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
     <Card>
       <CardHeader>
         <CardTitle>
-          {product ? "Редактировать товар" : "Добавить новый товар"}
+          {product && product.id ? "Редактировать товар" : "Добавить новый товар"}
         </CardTitle>
       </CardHeader>
       
