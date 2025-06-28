@@ -135,7 +135,7 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
           <CardTitle className="text-lg">Тип бассейна</CardTitle>
         </CardHeader>
         <CardContent>
-          <Select value={filters.poolType || ""} onValueChange={(value) => onFiltersChange({...filters, poolType: value || undefined})}>
+          <Select value={filters.poolType || "all"} onValueChange={(value) => onFiltersChange({...filters, poolType: value === "all" ? undefined : value})}>
             <SelectTrigger>
               <SelectValue placeholder="Тип бассейна" />
             </SelectTrigger>
@@ -155,7 +155,7 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
           <CardTitle className="text-lg">Объем</CardTitle>
         </CardHeader>
         <CardContent>
-          <Select value={filters.volumeRange || ""} onValueChange={(value) => onFiltersChange({...filters, volumeRange: value || undefined})}>
+          <Select value={filters.volumeRange || "all"} onValueChange={(value) => onFiltersChange({...filters, volumeRange: value === "all" ? undefined : value})}>
             <SelectTrigger>
               <SelectValue placeholder="Объем бассейна" />
             </SelectTrigger>
@@ -176,7 +176,7 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
           <CardTitle className="text-lg">Форма</CardTitle>
         </CardHeader>
         <CardContent>
-          <Select value={filters.shape || ""} onValueChange={(value) => onFiltersChange({...filters, shape: value || undefined})}>
+          <Select value={filters.shape || "all"} onValueChange={(value) => onFiltersChange({...filters, shape: value === "all" ? undefined : value})}>
             <SelectTrigger>
               <SelectValue placeholder="Форма бассейна" />
             </SelectTrigger>
@@ -196,7 +196,7 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
           <CardTitle className="text-lg">Материал</CardTitle>
         </CardHeader>
         <CardContent>
-          <Select value={filters.material || ""} onValueChange={(value) => onFiltersChange({...filters, material: value || undefined})}>
+          <Select value={filters.material || "all"} onValueChange={(value) => onFiltersChange({...filters, material: value === "all" ? undefined : value})}>
             <SelectTrigger>
               <SelectValue placeholder="Материал чаши" />
             </SelectTrigger>
