@@ -184,12 +184,21 @@ export default function ProductPage() {
           </div>
 
           {/* Rating */}
-          <div className="flex items-center space-x-2">
-            <div className="flex">
-              {renderRating(product.rating || "0")}
+          {product.reviewCount > 0 && (
+            <div className="flex items-center space-x-2">
+              <div className="flex">
+                {renderRating(product.rating || "0")}
+              </div>
+              <span className="text-gray-500">({product.reviewCount} отзывов)</span>
             </div>
-            <span className="text-gray-500">({product.reviewCount} отзывов)</span>
-          </div>
+          )}
+
+          {/* Short Description */}
+          {product.shortDescription && (
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <p className="text-gray-700">{product.shortDescription}</p>
+            </div>
+          )}
 
           {/* Price */}
           <div className="space-y-2">

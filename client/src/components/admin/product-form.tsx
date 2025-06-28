@@ -24,6 +24,7 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
   const [formData, setFormData] = useState({
     name: "",
     description: "",
+    shortDescription: "",
     price: "",
     originalPrice: "",
     brand: "",
@@ -60,6 +61,7 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
       setFormData({
         name: product.name || "",
         description: product.description || "",
+        shortDescription: product.shortDescription || "",
         price: product.price || "",
         originalPrice: product.originalPrice || "",
         brand: product.brand || "",
@@ -93,6 +95,7 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
       setFormData({
         name: "",
         description: "",
+        shortDescription: "",
         price: "",
         originalPrice: "",
         brand: "",
@@ -320,16 +323,29 @@ export default function ProductForm({ product, onSave, onCancel }: ProductFormPr
             </div>
           </div>
 
-          {/* Описание */}
-          <div>
-            <Label htmlFor="description">Описание товара</Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              placeholder="Подробное описание товара..."
-              rows={4}
-            />
+          {/* Описания */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <Label htmlFor="shortDescription">Короткое описание</Label>
+              <Textarea
+                id="shortDescription"
+                value={formData.shortDescription}
+                onChange={(e) => setFormData(prev => ({ ...prev, shortDescription: e.target.value }))}
+                placeholder="Краткое описание для отображения рядом с ценой..."
+                rows={3}
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="description">Полное описание товара</Label>
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Подробное описание товара..."
+                rows={3}
+              />
+            </div>
           </div>
 
           {/* Дополнительные изображения */}
