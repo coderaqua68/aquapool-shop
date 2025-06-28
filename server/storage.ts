@@ -9,7 +9,7 @@ import {
   consultations,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, gte, lte, desc, ilike } from "drizzle-orm";
+import { eq, and, gte, lte, desc, ilike, or } from "drizzle-orm";
 
 export interface IStorage {
   // Products
@@ -42,7 +42,25 @@ export class DatabaseStorage implements IStorage {
       const conditions = [];
       
       if (filters.category) {
-        conditions.push(eq(products.category, filters.category));
+        // Проверяем, является ли это главной категорией
+        const categoryData = await db.select().from(categories).where(eq(categories.slug, filters.category));
+        
+        if (categoryData.length > 0 && categoryData[0].level === 0) {
+          // Это главная категория - получаем все её подкатегории
+          const subcategories = await db.select().from(categories)
+            .where(eq(categories.parentId, categoryData[0].id));
+          
+          // Создаем условия OR для всех подкатегорий
+          const categoryConditions = [eq(products.category, filters.category)];
+          subcategories.forEach(sub => {
+            categoryConditions.push(eq(products.category, sub.slug));
+          });
+          
+          conditions.push(or(...categoryConditions));
+        } else {
+          // Это подкатегория - обычная фильтрация
+          conditions.push(eq(products.category, filters.category));
+        }
       }
       
       if (filters.brand) {
