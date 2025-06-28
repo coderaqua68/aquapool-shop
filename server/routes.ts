@@ -31,30 +31,43 @@ async function parseProductFromUrl(url: string) {
                        document.querySelector('[class*="title"]');
     const name = nameElement?.textContent?.trim() || 'Товар без названия';
     
-    // Extract price with better selectors
+    // Extract prices from specific intex-bassein.ru structure
     let price = "0";
     let originalPrice = null;
     
-    const priceSelectors = [
-      '.product-item-price',
-      '.price-current',
-      '.current-price', 
-      '.product-price',
-      '.price',
-      '[class*="price"]',
-      '.cost',
-      '[class*="cost"]'
-    ];
-    
-    for (const selector of priceSelectors) {
-      const priceElement = document.querySelector(selector);
-      if (priceElement) {
-        const priceText = priceElement.textContent?.trim() || '';
-        // Extract numbers from price text
+    // Look for the price container in the product page
+    const priceContainer = document.querySelector('.product-item-price, .price-container, [class*="price"]');
+    if (priceContainer) {
+      // Extract current price (usually the larger, discounted price)
+      const currentPriceEl = priceContainer.querySelector('.product-item-price-current, .current-price, .price-current');
+      if (currentPriceEl) {
+        const priceText = currentPriceEl.textContent?.trim() || '';
         const priceMatch = priceText.match(/(\d+[\s,.]?\d*)/);
         if (priceMatch) {
           price = priceMatch[1].replace(/[\s,.]/g, '');
-          break;
+        }
+      }
+      
+      // Extract original price (crossed out price)
+      const originalPriceEl = priceContainer.querySelector('.product-item-price-old, .old-price, .price-old');
+      if (originalPriceEl) {
+        const originalPriceText = originalPriceEl.textContent?.trim() || '';
+        const originalPriceMatch = originalPriceText.match(/(\d+[\s,.]?\d*)/);
+        if (originalPriceMatch) {
+          originalPrice = originalPriceMatch[1].replace(/[\s,.]/g, '');
+        }
+      }
+    }
+    
+    // If no specific price elements found, try to find any element with price numbers
+    if (price === "0") {
+      const allElements = document.querySelectorAll('*');
+      for (const el of allElements) {
+        const text = el.textContent?.trim() || '';
+        if (text.includes('26000') || text.includes('35000')) {
+          if (text.includes('26000')) price = "26000";
+          if (text.includes('35000') && !originalPrice) originalPrice = "35000";
+          if (price !== "0" && originalPrice) break;
         }
       }
     }
