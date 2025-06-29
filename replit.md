@@ -170,6 +170,14 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Other categories display realistic placeholder values until database is populated with diverse product types
   - Enhanced category cards with improved image spacing using internal padding and reduced image height
   - Categories now display accurate statistics: count and minimum price for each category type
+- June 29, 2025: Updated contact and payment methods to reflect online-only business model
+  - Replaced all Telegram references with real @aquapool_manager channel across entire site
+  - Updated payment methods: removed cash payments, marked online payments as temporarily unavailable
+  - Added НАЛОЖКА as primary secure payment method, removed НДС mentions from business payment terms
+  - Modified contact page: replaced phone calls with WhatsApp communication, removed physical address visits
+  - Changed "Приехать к нам" to email contact option since no physical showroom exists
+  - Updated header location from "г. Химки, склад самовывоза" to simple "г.Химки"
+  - Aligned all communication channels with online-only business operations
 
 ## User Preferences
 

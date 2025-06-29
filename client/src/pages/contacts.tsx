@@ -282,17 +282,18 @@ export default function Contacts() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="text-center">
             <div className="bg-white/20 backdrop-blur-sm p-6 rounded-xl mb-4">
-              <Phone className="w-12 h-12 mx-auto" />
+              <MessageCircle className="w-12 h-12 mx-auto" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Позвонить сейчас</h3>
+            <h3 className="text-xl font-semibold mb-2">Написать в WhatsApp</h3>
             <p className="opacity-90 mb-4">
-              Получите консультацию специалиста по телефону
+              Получите быструю консультацию в мессенджере
             </p>
             <Button
               variant="outline"
               className="bg-white/20 border-white/30 text-white hover:bg-white hover:text-[hsl(207,90%,54%)]"
+              onClick={() => window.open('https://wa.me/79001234567', '_blank')}
             >
-              8 (800) 123-45-67
+              Написать в WhatsApp
             </Button>
           </div>
 
@@ -315,17 +316,18 @@ export default function Contacts() {
 
           <div className="text-center">
             <div className="bg-white/20 backdrop-blur-sm p-6 rounded-xl mb-4">
-              <MapPin className="w-12 h-12 mx-auto" />
+              <Mail className="w-12 h-12 mx-auto" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Приехать к нам</h3>
+            <h3 className="text-xl font-semibold mb-2">Написать на email</h3>
             <p className="opacity-90 mb-4">
-              Посетите наш выставочный зал и склад в Химках
+              Отправьте подробный запрос на электронную почту
             </p>
             <Button
               variant="outline"
               className="bg-white/20 border-white/30 text-white hover:bg-white hover:text-[hsl(207,90%,54%)]"
+              onClick={() => window.open('mailto:info@aquapool.ru', '_blank')}
             >
-              Как проехать
+              info@aquapool.ru
             </Button>
           </div>
         </div>
