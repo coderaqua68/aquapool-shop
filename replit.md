@@ -223,9 +223,13 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Updated 24 Laguna product prices with 25% discount using automated laguna-price-update.js script
   - Processed 60 mixed Laguna and Gigabass products with new pricing via new-batch-price-update.js
   - Updated 12 Summer Fun product prices with corrected pricing using summer-fun-price-update.js
-  - Total 96 products received accurate pricing updates with proper original/discounted price structure
+  - Updated 28 MAGIC POOL product prices with premium pricing adjustments using magic-pool-price-update.js
+  - Updated 6 GRE product prices with corrected pricing using gre-price-update.js
+  - Updated 11 INTEX jacuzzi prices from severely incorrect values (450₽-2,000₽) to realistic pricing (37,500₽-78,750₽) using intex-jacuzzi-price-update.js
+  - Updated 2 Bestway jacuzzi prices with 25% discount pricing using bestway-jacuzzi-price-update.js
+  - Total 143 products received accurate pricing updates with proper original/discounted price structure
   - All price update scripts include proper WebSocket configuration for Neon database connectivity
-  - Price changes range from minor adjustments to significant corrections (e.g., 1,800₽ to 397,500₽)
+  - Price changes range from minor adjustments to significant corrections (e.g., 1,800₽ to 397,500₽ for pools, 450₽ to 45,000₽ for jacuzzis)
 
 ## Production Readiness
 
