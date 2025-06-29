@@ -114,7 +114,7 @@ export default function Header() {
             </span>
           </div>
           <div className="flex items-center space-x-4">
-            <a href="#" className="hover:text-[hsl(207,90%,54%)] transition-colors">
+            <a href="https://t.me/aquapool_manager" target="_blank" rel="noopener noreferrer" className="hover:text-[hsl(207,90%,54%)] transition-colors">
               Telegram
             </a>
             <span className="font-medium text-[hsl(207,89%,40%)]">8 (800) 123-45-67</span>
