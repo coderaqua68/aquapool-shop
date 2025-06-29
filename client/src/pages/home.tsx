@@ -362,7 +362,7 @@ export default function Home() {
                   <div className="text-sm">Лет опыта</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold mb-2">500+</div>
+                  <div className="text-3xl font-bold mb-2">300+</div>
                   <div className="text-sm">Товаров в каталоге</div>
                 </div>
                 <div className="text-center">

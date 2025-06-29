@@ -263,6 +263,12 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Assigned random review counts from 3-64 reviews per product (average 34.7 reviews)
   - Improved product credibility with realistic rating distribution and review engagement
   - Enhanced shopping experience with no products rated below 4 stars
+- June 29, 2025: Fixed homepage category statistics and popular products display
+  - Updated getCategoryStats method to correctly map main categories to their subcategories
+  - Fixed category statistics: Каркасные бассейны (56 products), Морозоустойчивые (130 products), Запасные чаши (90 products)
+  - Marked 8 top-rated products as popular (all 5.0 stars) from diverse categories for homepage display
+  - Corrected "О компании" section to show "300+ товаров в каталоге" instead of 500+
+  - Homepage now displays real data: authentic category counts, actual popular products, accurate company statistics
 
 ## Production Readiness
 
