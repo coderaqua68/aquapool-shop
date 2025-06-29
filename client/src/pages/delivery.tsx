@@ -224,9 +224,10 @@ export default function Delivery() {
             <h3 className="text-xl font-semibold mb-4">Об оплате</h3>
             <div className="space-y-4">
               <div>
-                <h4 className="font-medium mb-2">Можно ли оплатить частями?</h4>
+                <h4 className="font-medium mb-2">Можно ли оплатить при получении?</h4>
                 <p className="text-sm opacity-90">
-                  Да, мы можем разработать индивидуальную схему оплаты для крупных заказов.
+                  Нет, мы не работаем с оплатой при получении. Оплата производится 
+                  заранее при оформлении заказа для обеспечения гарантий с обеих сторон.
                 </p>
               </div>
               
