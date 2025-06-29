@@ -18,9 +18,11 @@ import Delivery from "./pages/delivery";
 import Payment from "./pages/payment";
 import AdminLogin from "./pages/admin-login";
 import Admin from "./pages/admin";
+import TrackingDemo from "./pages/tracking-demo";
 import NotFound from "@/pages/not-found";
 import CallbackModal from "./components/modals/callback-modal";
 import CartSidebar from "./components/cart/cart-sidebar";
+import TrackingCodes from "./components/tracking/tracking-codes";
 
 // Компонент для автоматической прокрутки вверх при смене страницы
 function ScrollToTop() {
@@ -51,6 +53,7 @@ function Router() {
         <Route path="/payment" component={Payment} />
         <Route path="/admin/login" component={AdminLogin} />
         <Route path="/admin" component={Admin} />
+        <Route path="/tracking-demo" component={TrackingDemo} />
         <Route component={NotFound} />
       </Switch>
     </>
@@ -62,6 +65,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <div className="min-h-screen flex flex-col">
+          <TrackingCodes />
           <Header />
           <main className="flex-1">
             <Router />
