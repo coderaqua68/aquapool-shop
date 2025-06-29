@@ -49,7 +49,7 @@ export function PromoPopup({ onClose, isVisible }: PromoPopupProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 relative overflow-hidden animate-in zoom-in-95 duration-300">
+      <div className="bg-white rounded-2xl shadow-2xl w-full mx-4 sm:mx-6 max-w-sm sm:max-w-md relative overflow-hidden animate-in zoom-in-95 duration-300">
         {/* Закрыть */}
         <button
           onClick={onClose}
@@ -59,7 +59,7 @@ export function PromoPopup({ onClose, isVisible }: PromoPopupProps) {
         </button>
 
         {/* Градиентный фон */}
-        <div className="bg-gradient-to-br from-cyan-500 to-blue-600 px-6 py-8 text-white relative">
+        <div className="bg-gradient-to-br from-cyan-500 to-blue-600 px-4 sm:px-6 py-6 sm:py-8 text-white relative">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
           
@@ -70,8 +70,8 @@ export function PromoPopup({ onClose, isVisible }: PromoPopupProps) {
             </div>
             
             <div className="space-y-2 mb-4">
-              <p className="text-cyan-100">🎉 <strong>БЕСПЛАТНАЯ ДОСТАВКА</strong> до 31 июля</p>
-              <p className="text-cyan-100">💰 <strong>СКИДКА 500₽</strong> на первый заказ</p>
+              <p className="text-cyan-100"><strong>бесплатная доставка</strong> до 31 июля</p>
+              <p className="text-cyan-100"><strong>скидка 500₽</strong> на первый заказ</p>
             </div>
 
             {/* Таймер */}
@@ -103,7 +103,7 @@ export function PromoPopup({ onClose, isVisible }: PromoPopupProps) {
         </div>
 
         {/* Контент */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <p className="text-gray-600 text-center mb-6">
             Напишите нашему менеджеру прямо сейчас и получите персональную скидку!
           </p>
