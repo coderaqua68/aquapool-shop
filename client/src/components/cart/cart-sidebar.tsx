@@ -77,7 +77,7 @@ export default function CartSidebar() {
             </div>
 
             <div className="text-xs text-gray-500 mt-4 space-y-1">
-              <p>✓ Бесплатная доставка от 50 000 ₽</p>
+              <p>✓ Бесплатная доставка до 31 июля</p>
               <p>✓ Безопасная оплата</p>
               <p>✓ Гарантия качества</p>
             </div>
