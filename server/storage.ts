@@ -220,8 +220,6 @@ export class DatabaseStorage implements IStorage {
     const searchTerm = query.toLowerCase().trim();
     const suggestions: SearchSuggestion[] = [];
 
-    console.log(`[Debug] Starting search for: "${searchTerm}"`);
-
     // Поиск точных совпадений по артикулу
     const exactSkuProducts = await db.select({
       id: products.id,
@@ -352,8 +350,6 @@ export class DatabaseStorage implements IStorage {
 
     // Поиск по названию товара
     if (suggestions.length < 5) {
-      console.log(`[Debug] Searching for products with name containing: "${searchTerm}"`);
-      
       const nameProducts = await db.select({
         id: products.id,
         name: products.name,
@@ -365,8 +361,6 @@ export class DatabaseStorage implements IStorage {
       }).from(products)
         .where(ilike(products.name, `%${searchTerm}%`))
         .limit(10 - suggestions.length);
-
-      console.log(`[Debug] Found ${nameProducts.length} products by name`);
       
       nameProducts.forEach(product => {
         if (!suggestions.some(s => s.sku === product.sku)) {
@@ -605,7 +599,6 @@ export class MemStorage implements IStorage {
   }
 
   async getSearchSuggestions(query: string): Promise<SearchSuggestion[]> {
-    console.log(`[MemStorage Debug] Search called with: "${query}"`);
     const searchTerm = query.toLowerCase().trim();
     const suggestions: SearchSuggestion[] = [];
 

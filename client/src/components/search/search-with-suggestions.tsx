@@ -33,7 +33,13 @@ export default function SearchWithSuggestions({
 
   // Получаем подсказки с сервера
   const { data: suggestions = [] } = useQuery<SearchSuggestion[]>({
-    queryKey: ["/api/search/suggestions", { q: searchQuery }],
+    queryKey: ["/api/search/suggestions", searchQuery],
+    queryFn: async () => {
+      const encodedQuery = encodeURIComponent(searchQuery);
+      const response = await fetch(`/api/search/suggestions?q=${encodedQuery}`);
+      if (!response.ok) throw new Error('Search failed');
+      return response.json();
+    },
     enabled: searchQuery.length >= 2,
     staleTime: 1000 * 60 * 5, // 5 минут
   });
