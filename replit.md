@@ -237,6 +237,12 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Total 303 products received accurate pricing updates with proper original/discounted price structure
   - All price update scripts include proper WebSocket configuration for Neon database connectivity
   - Price changes range from minor adjustments to significant corrections (e.g., 75,000₽ to 56,250₽ for bowls, complete film pricing restructure)
+- June 29, 2025: Enhanced admin panel with bulk photo update functionality
+  - Added "Сменить фото" button directly in product cards within admin products list
+  - Implemented popup modal dialog for quick image URL replacement without navigating to full edit page
+  - Created dedicated mutation for image-only updates with real-time preview functionality
+  - Streamlined workflow: click button → paste new URL → preview → save, all in single interface
+  - Significantly reduced time required for bulk photo updates across large product catalogs
 
 ## Production Readiness
 

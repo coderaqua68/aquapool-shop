@@ -5,8 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Edit2, Trash2, Eye, Package, Plus, Search, Filter, X } from "lucide-react";
+import { Edit2, Trash2, Eye, Package, Plus, Search, Filter, X, ImageIcon } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
 import type { Product, Category } from "@shared/schema";
 
 interface ProductsListProps {
@@ -22,6 +25,11 @@ export default function ProductsList({ onEdit }: ProductsListProps) {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedBrand, setSelectedBrand] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
+
+  // Состояние для диалога замены фотографии
+  const [imageDialogOpen, setImageDialogOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [newImageUrl, setNewImageUrl] = useState("");
 
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
@@ -132,10 +140,71 @@ export default function ProductsList({ onEdit }: ProductsListProps) {
     }
   });
 
+  // Mutation для обновления изображения товара
+  const updateImageMutation = useMutation({
+    mutationFn: async ({ productId, imageUrl }: { productId: number; imageUrl: string }) => {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch(`/api/admin/products/${productId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token || ""
+        },
+        body: JSON.stringify({ imageUrl })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Ошибка при обновлении изображения");
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
+      toast({
+        title: "Успешно",
+        description: "Фотография товара обновлена",
+      });
+      setImageDialogOpen(false);
+      setNewImageUrl("");
+      setSelectedProduct(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Ошибка",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
   const handleDelete = (product: Product) => {
     if (confirm(`Вы уверены, что хотите удалить товар "${product.name}"?`)) {
       deleteMutation.mutate(product.id);
     }
+  };
+
+  const handleUpdateImage = () => {
+    if (!selectedProduct || !newImageUrl.trim()) {
+      toast({
+        title: "Ошибка",
+        description: "Введите ссылку на изображение",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    updateImageMutation.mutate({
+      productId: selectedProduct.id,
+      imageUrl: newImageUrl.trim()
+    });
+  };
+
+  const openImageDialog = (product: Product) => {
+    setSelectedProduct(product);
+    setNewImageUrl(product.imageUrl || "");
+    setImageDialogOpen(true);
   };
 
   if (isLoading) {
@@ -420,33 +489,44 @@ export default function ProductsList({ onEdit }: ProductsListProps) {
                   )}
 
                   {/* Кнопки действий */}
-                  <div className="flex space-x-2 pt-2">
+                  <div className="flex flex-col space-y-2 pt-2">
+                    <div className="flex space-x-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => window.open(`/product/${product.slug || product.id}`, '_blank')}
+                        className="flex-1"
+                      >
+                        <Eye className="w-4 h-4 mr-1" />
+                        Просмотр
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => onEdit(product)}
+                        className="flex-1"
+                      >
+                        <Edit2 className="w-4 h-4 mr-1" />
+                        Изменить
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDelete(product)}
+                        disabled={deleteMutation.isPending}
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => window.open(`/product/${product.slug || product.id}`, '_blank')}
-                      className="flex-1"
+                      onClick={() => openImageDialog(product)}
+                      className="w-full text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                     >
-                      <Eye className="w-4 h-4 mr-1" />
-                      Просмотр
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => onEdit(product)}
-                      className="flex-1"
-                    >
-                      <Edit2 className="w-4 h-4 mr-1" />
-                      Изменить
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleDelete(product)}
-                      disabled={deleteMutation.isPending}
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                    >
-                      <Trash2 className="w-4 h-4" />
+                      <ImageIcon className="w-4 h-4 mr-1" />
+                      Сменить фото
                     </Button>
                   </div>
                 </div>
@@ -455,6 +535,85 @@ export default function ProductsList({ onEdit }: ProductsListProps) {
           ))}
         </div>
       )}
+
+      {/* Диалог замены фотографии */}
+      <Dialog open={imageDialogOpen} onOpenChange={setImageDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Сменить фотографию товара</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            {selectedProduct && (
+              <div className="text-sm text-gray-600">
+                <strong>Товар:</strong> {selectedProduct.name}
+              </div>
+            )}
+            
+            {/* Текущее изображение */}
+            {selectedProduct?.imageUrl && (
+              <div className="space-y-2">
+                <Label>Текущее изображение:</Label>
+                <div className="relative">
+                  <img 
+                    src={selectedProduct.imageUrl} 
+                    alt="Текущее изображение"
+                    className="w-full h-32 object-cover border rounded-lg"
+                  />
+                </div>
+              </div>
+            )}
+            
+            {/* Новое изображение */}
+            <div className="space-y-2">
+              <Label htmlFor="new-image-url">Новая ссылка на изображение:</Label>
+              <Input
+                id="new-image-url"
+                type="url"
+                placeholder="https://example.com/image.jpg"
+                value={newImageUrl}
+                onChange={(e) => setNewImageUrl(e.target.value)}
+              />
+            </div>
+            
+            {/* Превью нового изображения */}
+            {newImageUrl && newImageUrl !== selectedProduct?.imageUrl && (
+              <div className="space-y-2">
+                <Label>Предварительный просмотр:</Label>
+                <div className="relative">
+                  <img 
+                    src={newImageUrl} 
+                    alt="Превью нового изображения"
+                    className="w-full h-32 object-cover border rounded-lg"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+            
+            {/* Кнопки действий */}
+            <div className="flex space-x-2 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => setImageDialogOpen(false)}
+                className="flex-1"
+                disabled={updateImageMutation.isPending}
+              >
+                Отмена
+              </Button>
+              <Button
+                onClick={handleUpdateImage}
+                disabled={updateImageMutation.isPending || !newImageUrl.trim()}
+                className="flex-1"
+              >
+                {updateImageMutation.isPending ? "Сохранение..." : "Сохранить"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
