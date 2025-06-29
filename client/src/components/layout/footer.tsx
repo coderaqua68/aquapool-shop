@@ -8,9 +8,11 @@ export default function Footer() {
           {/* Company Info */}
           <div>
             <div className="flex items-center mb-6">
-              <div className="pool-gradient p-2 rounded-lg mr-3">
-                <div className="text-white text-xl">🏊</div>
-              </div>
+              <img 
+                src="@assets/ChatGPT Image 29 июн. 2025 г., 16_45_15_1751204798609.png" 
+                alt="AquaPool" 
+                className="h-10 w-auto mr-3 bg-white rounded-lg p-1"
+              />
               <div>
                 <h3 className="text-xl font-bold">AquaPool</h3>
                 <p className="text-gray-400 text-sm">Бассейны и аксессуары</p>

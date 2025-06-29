@@ -92,9 +92,11 @@ export default function Header() {
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <div className="pool-gradient p-3 rounded-lg mr-3">
-              <div className="text-white text-2xl">🏊</div>
-            </div>
+            <img 
+              src="@assets/ChatGPT Image 29 июн. 2025 г., 16_45_15_1751204798609.png" 
+              alt="AquaPool" 
+              className="h-12 w-auto mr-3"
+            />
             <div>
               <h1 className="text-2xl font-bold text-gray-900">AquaPool</h1>
               <p className="text-sm text-gray-500">Бассейны и аксессуары</p>

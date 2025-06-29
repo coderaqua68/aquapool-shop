@@ -64,11 +64,13 @@ export default function About() {
           </div>
         </div>
         <div>
-          <img
-            src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400"
-            alt="О компании"
-            className="rounded-lg shadow-lg w-full"
-          />
+          <div className="bg-gray-50 rounded-lg shadow-lg p-8 flex items-center justify-center">
+            <img
+              src="@assets/ChatGPT Image 29 июн. 2025 г., 16_45_15_1751204798609.png"
+              alt="Логотип AquaPool"
+              className="w-80 h-auto"
+            />
+          </div>
         </div>
       </section>
 

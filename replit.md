@@ -197,6 +197,13 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Implemented promotional free delivery campaign: "Бесплатная доставка до 31 июля" across all pages
   - Updated homepage advantages, delivery page, product pages, and checkout with new promotional delivery terms
   - Enhanced delivery information display with green highlighting and celebration emoji for promotional aspect
+- June 29, 2025: Navigation menu improvements and branding updates
+  - Redesigned desktop category menu with horizontal submenus appearing dynamically next to hovered categories
+  - Added intelligent positioning system preventing submenu overflow with 300ms hover delay for better UX
+  - Optimized mobile menu with scrollable categories (max 80vh height) and disabled desktop hover effects on mobile
+  - Updated "About Us" page to reflect online-only business model: removed physical store references and installation services
+  - Implemented new professional logo across all pages (header, footer, about page) replacing emoji-based branding
+  - Enhanced about page with company logo display in dedicated section with proper background styling
 
 ## User Preferences
 
