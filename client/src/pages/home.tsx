@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import ProductCard from "@/components/product/product-card";
 import { Truck, Shield, Headphones, Star } from "lucide-react";
 import type { Product, Category } from "@shared/schema";
-import poolVideo from "@assets/1167ed91748d6b92c0e2c5b0eedcf6fa_1751200746355.mp4";
+import poolVideo from "@assets/d5eff5f333d3051b9f1f8efec1fd51ab_1751200866687.webm";
 
 interface CategoryWithStats {
   id: number;
@@ -95,7 +95,7 @@ export default function Home() {
             loop
             playsInline
           >
-            <source src={poolVideo} type="video/mp4" />
+            <source src={poolVideo} type="video/webm" />
           </video>
           {/* Video Overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 to-blue-600/30"></div>
