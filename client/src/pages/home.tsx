@@ -44,7 +44,7 @@ export default function Home() {
 
   // Mutation для отправки заявки на консультацию
   const consultationMutation = useMutation({
-    mutationFn: async (data: { customerName: string; customerPhone: string; message?: string }) => {
+    mutationFn: async (data: { name: string; phone: string; message?: string }) => {
       const response = await apiRequest("POST", "/api/consultations", data);
       return await response.json();
     },
@@ -78,8 +78,8 @@ export default function Home() {
     }
 
     consultationMutation.mutate({
-      customerName: consultationData.name,
-      customerPhone: consultationData.phone,
+      name: consultationData.name,
+      phone: consultationData.phone,
       message: consultationData.message || undefined,
     });
   };
