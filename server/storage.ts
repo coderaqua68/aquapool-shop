@@ -458,33 +458,78 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCategoryStats(categorySlug: string): Promise<{ count: number; minPrice: number } | null> {
-    // Маппинг главных категорий к категориям товаров
-    const categoryMapping: { [key: string]: string[] } = {
-      'karkasnye-basseyny': ['Каркасные бассейны', 'karkasnye-basseyny'],
-      'morozoustojchivye-basseyny': ['Морозоустойчивые бассейны', 'morozoustojchivye-basseyny'],
-      'naduvnye-basseyny': ['Надувные бассейны', 'naduvnye-basseyny'], 
-      'dzhakuzi-intex': ['Джакузи INTEX', 'dzhakuzi-intex'],
-      'dzhakuzi-bestway': ['Джакузи Bestway', 'dzhakuzi-bestway'],
-      'zapasnye-chashi': ['Запасные чаши', 'zapasnye-chashi']
-    };
-
-    const categoryNames = categoryMapping[categorySlug];
-    if (!categoryNames) return null;
-
     try {
-      // Получаем статистику по категории
-      const categoryProducts = await db.select({
+      // Подсчитываем товары по категориям с учетом реальных данных в базе
+      let whereCondition;
+      
+      switch (categorySlug) {
+        case 'karkasnye-basseyny':
+          whereCondition = or(
+            ilike(products.category, '%каркас%'),
+            ilike(products.name, '%каркас%'),
+            ilike(products.name, '%Metal Frame%'),
+            ilike(products.name, '%Prism Frame%'),
+            ilike(products.name, '%Ultra Frame%'),
+            ilike(products.name, '%Steel Pro%'),
+            ilike(products.name, '%Power Steel%')
+          );
+          break;
+        case 'morozostojkie-basseyny':
+          whereCondition = or(
+            ilike(products.category, '%мороз%'),
+            ilike(products.name, '%мороз%'),
+            ilike(products.name, '%зимний%'),
+            ilike(products.name, '%всесезон%')
+          );
+          break;
+        case 'naduvnye-basseyny':
+          whereCondition = or(
+            ilike(products.category, '%надув%'),
+            ilike(products.name, '%надув%'),
+            ilike(products.name, '%Easy Set%'),
+            ilike(products.name, '%Fast Set%')
+          );
+          break;
+        case 'dzjakuzi-intex':
+          whereCondition = and(
+            or(
+              ilike(products.name, '%джакузи%'),
+              ilike(products.name, '%jacuzzi%'),
+              ilike(products.name, '%спа%'),
+              ilike(products.name, '%spa%')
+            ),
+            ilike(products.brand, '%INTEX%')
+          );
+          break;
+        case 'dzjakuzi-bestway':
+          whereCondition = and(
+            or(
+              ilike(products.name, '%джакузи%'),
+              ilike(products.name, '%jacuzzi%'),
+              ilike(products.name, '%спа%'),
+              ilike(products.name, '%spa%')
+            ),
+            ilike(products.brand, '%Bestway%')
+          );
+          break;
+        case 'zapasnye-chashi':
+          whereCondition = or(
+            ilike(products.category, '%чаш%'),
+            ilike(products.name, '%чаш%'),
+            ilike(products.name, '%запасн%')
+          );
+          break;
+        default:
+          return null;
+      }
+
+      const [stats] = await db.select({
         count: sql<number>`count(*)::int`,
         minPrice: sql<number>`min(cast(${products.price} as numeric))::int`
       })
       .from(products)
-      .where(or(
-        eq(products.category, categoryNames[0]),
-        eq(products.category, categoryNames[1]),
-        ilike(products.name, `%${categoryNames[0].split(' ')[0]}%`)
-      ));
+      .where(whereCondition);
 
-      const stats = categoryProducts[0];
       if (!stats || stats.count === 0) return null;
 
       return {
@@ -897,10 +942,10 @@ export class MemStorage implements IStorage {
     // Простая реализация для MemStorage - возвращаем реальные данные для основных категорий
     const categoryMapping: { [key: string]: { count: number; minPrice: number } } = {
       'karkasnye-basseyny': { count: 32, minPrice: 5490 },
-      'morozoustojchivye-basseyny': { count: 8, minPrice: 25990 },
+      'morozostojkie-basseyny': { count: 8, minPrice: 25990 },
       'naduvnye-basseyny': { count: 15, minPrice: 1290 },
-      'dzhakuzi-intex': { count: 7, minPrice: 16990 },
-      'dzhakuzi-bestway': { count: 5, minPrice: 14990 },
+      'dzjakuzi-intex': { count: 7, minPrice: 16990 },
+      'dzjakuzi-bestway': { count: 5, minPrice: 14990 },
       'zapasnye-chashi': { count: 3, minPrice: 3490 }
     };
 

@@ -34,7 +34,7 @@ export default function Home() {
     {
       id: 2,
       name: "Морозоустойчивые бассейны",
-      slug: "morozoustojchivye-basseyny",
+      slug: "morozostojkie-basseyny",
       imageUrl: "https://intex-bassein.ru/upload/iblock/66a/j1psn0j08u4cf15jvvx123oewb70tbh2.png"
     },
     {
@@ -46,13 +46,13 @@ export default function Home() {
     {
       id: 4,
       name: "Джакузи INTEX",
-      slug: "dzhakuzi-intex",
+      slug: "dzjakuzi-intex",
       imageUrl: "https://intexopt.ru/wa-data/public/shop/products/60/06/660/images/636/636.970.jpg"
     },
     {
       id: 5,
       name: "Джакузи Bestway",
-      slug: "dzhakuzi-bestway",
+      slug: "dzjakuzi-bestway",
       imageUrl: "https://avatars.mds.yandex.net/get-mpic/4303532/img_id5353389577744090768.jpeg/orig"
     },
     {
