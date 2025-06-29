@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Truck, Shield, Headphones, Wrench, Users, Award } from "lucide-react";
+import { Truck, Shield, Headphones, ShoppingCart, Users, Award } from "lucide-react";
 
 export default function About() {
   return (
@@ -48,14 +48,14 @@ export default function About() {
           <div className="space-y-4 text-gray-600">
             <p>
               Компания AquaPool была основана в 2014 году с простой идеей — сделать качественные 
-              бассейны доступными для каждой семьи. Мы начинали как небольшой магазин в Химках, 
-              но благодаря доверию наших клиентов выросли в крупнейшего поставщика бассейнов 
+              бассейны доступными для каждой семьи. Мы начинали как интернет-магазин в Химках, 
+              но благодаря доверию наших клиентов выросли в крупнейшего онлайн-поставщика бассейнов 
               и оборудования в России.
             </p>
             <p>
               Сегодня мы предлагаем широкий ассортимент товаров от ведущих мировых производителей, 
-              обеспечиваем быструю доставку по всей стране и предоставляем профессиональные 
-              консультации по выбору и установке оборудования.
+              обеспечиваем быструю доставку по всей России и предоставляем профессиональные 
+              консультации по выбору оборудования.
             </p>
             <p>
               Наша команда состоит из опытных специалистов, которые знают все о бассейнах и 
@@ -123,9 +123,9 @@ export default function About() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="text-center">
             <Truck className="w-12 h-12 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Быстрая доставка</h3>
+            <h3 className="text-lg font-semibold mb-2">Доставка по России</h3>
             <p className="text-sm opacity-90">
-              Доставка по Москве в день заказа. По России — через ТК за 2-5 дней
+              Быстрая доставка по всей России через надежные транспортные компании
             </p>
           </div>
           
@@ -139,17 +139,17 @@ export default function About() {
           
           <div className="text-center">
             <Headphones className="w-12 h-12 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Поддержка 24/7</h3>
+            <h3 className="text-lg font-semibold mb-2">Консультации экспертов</h3>
             <p className="text-sm opacity-90">
-              Консультации по выбору и установке бассейнов в любое время
+              Помощь в выборе подходящего бассейна и оборудования
             </p>
           </div>
           
           <div className="text-center">
-            <Wrench className="w-12 h-12 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Профессиональный монтаж</h3>
+            <ShoppingCart className="w-12 h-12 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Удобные покупки</h3>
             <p className="text-sm opacity-90">
-              Услуги по установке и обслуживанию бассейнов опытными мастерами
+              Простое оформление заказов онлайн и удобные способы оплаты
             </p>
           </div>
         </div>
