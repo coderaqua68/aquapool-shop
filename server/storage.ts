@@ -3,10 +3,12 @@ import {
   Category, InsertCategory, 
   Order, InsertOrder, 
   Consultation, InsertConsultation,
+  SiteSetting, InsertSiteSetting,
   products,
   categories,
   orders,
   consultations,
+  siteSettings,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, gte, lte, desc, ilike, or, sql } from "drizzle-orm";
