@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import ProductCard from "@/components/product/product-card";
-import { Truck, Shield, Headphones, Wrench } from "lucide-react";
+import { Truck, Shield, Headphones, Star } from "lucide-react";
 import type { Product, Category } from "@shared/schema";
 
 interface CategoryWithStats {
@@ -242,11 +242,11 @@ export default function Home() {
 
             <div className="text-center group">
               <div className="pool-gradient-light p-6 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Wrench className="text-white text-2xl w-8 h-8" />
+                <Star className="text-white text-2xl w-8 h-8" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Профессиональный монтаж</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Проверенное качество</h3>
               <p className="text-gray-600">
-                Услуги по установке и обслуживанию бассейнов опытными мастерами
+                Работаем только с проверенными брендами INTEX и Bestway
               </p>
             </div>
           </div>
