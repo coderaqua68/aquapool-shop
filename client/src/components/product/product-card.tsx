@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Heart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,8 +11,9 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { addItem } = useCart();
+  const { addItem, clearCart } = useCart();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -26,6 +27,20 @@ export default function ProductCard({ product }: ProductCardProps) {
       title: "Товар добавлен в корзину",
       description: `${product.name} успешно добавлен в корзину`,
     });
+  };
+
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    // Clear cart and add only this product
+    clearCart();
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      imageUrl: product.imageUrl,
+    });
+    // Redirect to checkout
+    setLocation('/checkout');
   };
 
   const renderRating = (rating: string) => {
@@ -127,12 +142,21 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
         
-        <Button
-          onClick={handleAddToCart}
-          className="w-full bg-[hsl(207,90%,54%)] hover:bg-[hsl(207,89%,40%)] text-white"
-        >
-          В корзину
-        </Button>
+        <div className="grid grid-cols-2 gap-2">
+          <Button
+            onClick={handleAddToCart}
+            variant="outline"
+            className="border-[hsl(207,90%,54%)] text-[hsl(207,90%,54%)] hover:bg-[hsl(207,90%,54%)] hover:text-white"
+          >
+            В корзину
+          </Button>
+          <Button
+            onClick={handleBuyNow}
+            className="bg-[hsl(207,90%,54%)] hover:bg-[hsl(207,89%,40%)] text-white"
+          >
+            Купить
+          </Button>
+        </div>
       </div>
     </div>
   );

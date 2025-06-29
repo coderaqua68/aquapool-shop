@@ -22,8 +22,8 @@ export default function Checkout() {
     customerEmail: "",
     customerPhone: "",
     deliveryAddress: "",
-    deliveryMethod: "pickup",
-    paymentMethod: "manual",
+    deliveryMethod: "courier",
+    paymentMethod: "nalogka",
     notes: "",
   });
 
@@ -91,10 +91,11 @@ export default function Checkout() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="name">Имя *</Label>
+                  <Label htmlFor="name">ФИО *</Label>
                   <Input
                     id="name"
                     type="text"
+                    placeholder="Иванов Иван Иванович"
                     value={formData.customerName}
                     onChange={(e) => handleInputChange("customerName", e.target.value)}
                     required
@@ -106,6 +107,7 @@ export default function Checkout() {
                   <Input
                     id="phone"
                     type="tel"
+                    placeholder="+7 (999) 123-45-67"
                     value={formData.customerPhone}
                     onChange={(e) => handleInputChange("customerPhone", e.target.value)}
                     required
@@ -113,12 +115,14 @@ export default function Checkout() {
                 </div>
                 
                 <div>
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">Email *</Label>
                   <Input
                     id="email"
                     type="email"
+                    placeholder="example@mail.ru"
                     value={formData.customerEmail}
                     onChange={(e) => handleInputChange("customerEmail", e.target.value)}
+                    required
                   />
                 </div>
               </CardContent>
@@ -135,31 +139,22 @@ export default function Checkout() {
                   onValueChange={(value) => handleInputChange("deliveryMethod", value)}
                 >
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="pickup" id="pickup" />
-                    <Label htmlFor="pickup">Самовывоз (г. Химки) - Бесплатно</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
                     <RadioGroupItem value="courier" id="courier" />
-                    <Label htmlFor="courier">Курьер по Москве и области - 2 000 ₽</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="transport" id="transport" />
-                    <Label htmlFor="transport">Транспортная компания - по тарифам ТК</Label>
+                    <Label htmlFor="courier">Курьером до двери</Label>
                   </div>
                 </RadioGroup>
                 
-                {formData.deliveryMethod !== "pickup" && (
-                  <div className="mt-4">
-                    <Label htmlFor="address">Адрес доставки *</Label>
-                    <Textarea
-                      id="address"
-                      value={formData.deliveryAddress}
-                      onChange={(e) => handleInputChange("deliveryAddress", e.target.value)}
-                      placeholder="Укажите полный адрес доставки"
-                      required={formData.deliveryMethod !== "pickup"}
-                    />
-                  </div>
-                )}
+                <div className="mt-4">
+                  <Label htmlFor="address">Полный адрес доставки *</Label>
+                  <Textarea
+                    id="address"
+                    value={formData.deliveryAddress}
+                    onChange={(e) => handleInputChange("deliveryAddress", e.target.value)}
+                    placeholder="Укажите полный адрес: город, улица, дом, квартира, подъезд, этаж"
+                    required
+                    rows={3}
+                  />
+                </div>
               </CardContent>
             </Card>
 
@@ -174,14 +169,13 @@ export default function Checkout() {
                   onValueChange={(value) => handleInputChange("paymentMethod", value)}
                 >
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="manual" id="manual" />
-                    <Label htmlFor="manual">Оплата после подтверждения менеджером</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="cash" id="cash" />
-                    <Label htmlFor="cash">Наличными при получении</Label>
+                    <RadioGroupItem value="nalogka" id="nalogka" />
+                    <Label htmlFor="nalogka">НАЛОЖКА (наложенный платеж при получении)</Label>
                   </div>
                 </RadioGroup>
+                <p className="text-sm text-gray-600 mt-2">
+                  Вы оплачиваете заказ при получении товара курьеру или в отделении почты.
+                </p>
               </CardContent>
             </Card>
 
@@ -228,13 +222,7 @@ export default function Checkout() {
                   </div>
                   <div className="flex justify-between">
                     <span>Доставка:</span>
-                    <span>
-                      {formData.deliveryMethod === "pickup" 
-                        ? "Бесплатно" 
-                        : getTotal() >= 50000 
-                          ? "Бесплатно" 
-                          : "2 000 ₽"}
-                    </span>
+                    <span>По тарифам транспортной компании</span>
                   </div>
                 </div>
                 
@@ -243,15 +231,13 @@ export default function Checkout() {
                 <div className="flex justify-between text-lg font-bold">
                   <span>Итого:</span>
                   <span className="text-[hsl(207,90%,54%)]">
-                    {(() => {
-                      let total = getTotal();
-                      if (formData.deliveryMethod !== "pickup" && total < 50000) {
-                        total += 2000;
-                      }
-                      return total.toLocaleString();
-                    })()} ₽
+                    {getTotal().toLocaleString()} ₽
                   </span>
                 </div>
+                
+                <p className="text-sm text-gray-600">
+                  * Стоимость доставки будет рассчитана менеджером после оформления заказа
+                </p>
                 
                 <Button 
                   type="submit" 
