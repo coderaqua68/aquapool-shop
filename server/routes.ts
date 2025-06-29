@@ -136,10 +136,27 @@ async function parseProductFromUrl(url: string) {
     
     console.log(`Final prices - current: ${price}, original: ${originalPrice}`);
     
-    // Extract SKU from URL or page
-    const urlParts = url.split('/');
-    const artikulMatch = url.match(/artikul-([^\/]+)/);
-    const sku = artikulMatch ? artikulMatch[1].toUpperCase() : `PROD-${Date.now()}`;
+    // Extract SKU from specific HTML element or URL as fallback
+    let sku = `PROD-${Date.now()}`;
+    
+    // First priority: Extract from .product-item-detail-article span
+    const artikulElement = document.querySelector('.product-item-detail-article span');
+    if (artikulElement) {
+      const artikulText = artikulElement.textContent?.trim();
+      if (artikulText) {
+        sku = artikulText;
+        console.log(`Found SKU from HTML element: ${sku}`);
+      }
+    } else {
+      // Fallback: Extract from URL
+      const artikulMatch = url.match(/artikul?[_-]([^\/]+)/);
+      if (artikulMatch) {
+        sku = artikulMatch[1].replace(/-[^-]*$/, ''); // Remove color suffix like "-korichnevyy"
+        console.log(`Found SKU from URL: ${sku}`);
+      } else {
+        console.log(`No SKU found, using generated: ${sku}`);
+      }
+    }
     
     // Extract description - create formatted description from product data
     let description = '';
@@ -642,6 +659,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Товар удален успешно" });
     } catch (error) {
       res.status(500).json({ message: "Ошибка при удалении товара", error });
+    }
+  });
+
+  // Update product price by SKU
+  app.post("/api/admin/products/update-price", adminAuth, async (req, res) => {
+    try {
+      const { sku, price, originalPrice } = req.body;
+      
+      if (!sku || !price) {
+        return res.status(400).json({ message: "SKU и цена обязательны" });
+      }
+      
+      const updated = await storage.updateProductPriceBySku(sku, price, originalPrice);
+      
+      if (!updated) {
+        return res.status(404).json({ message: "Товар с указанным SKU не найден" });
+      }
+      
+      res.json({ 
+        success: true, 
+        message: `Цена товара ${sku} обновлена`,
+        product: updated
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Ошибка при обновлении цены", error });
     }
   });
 

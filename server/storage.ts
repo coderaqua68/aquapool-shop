@@ -33,6 +33,7 @@ export interface IStorage {
   getPopularProducts(): Promise<Product[]>;
   createProduct(product: InsertProduct): Promise<Product>;
   updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined>;
+  updateProductPriceBySku(sku: string, price: number, originalPrice?: number): Promise<Product | undefined>;
   deleteProduct(id: number): Promise<boolean>;
   
   // Categories
