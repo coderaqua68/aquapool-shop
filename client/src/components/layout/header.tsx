@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link } from "wouter";
-import { Heart, ShoppingCart, Menu, MapPin, Truck } from "lucide-react";
+import { Heart, ShoppingCart, Menu, MapPin, Truck, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { cartStore } from "@/lib/cart-store";
@@ -17,6 +18,7 @@ import SearchWithSuggestions from "@/components/search/search-with-suggestions";
 
 export default function Header() {
   const { getItemCount } = useCart();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const catalogCategories = [
     { 
@@ -160,8 +162,13 @@ export default function Header() {
                 </span>
               )}
             </Button>
-            <Button variant="ghost" size="sm" className="md:hidden">
-              <Menu className="w-4 h-4" />
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="md:hidden"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </Button>
           </div>
         </div>
@@ -189,6 +196,83 @@ export default function Header() {
             </NavigationMenuList>
           </NavigationMenu>
         </nav>
+        
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-100 bg-white shadow-lg">
+            <div className="container mx-auto px-4 py-4 space-y-4">
+              {/* Mobile Search */}
+              <div className="mb-4">
+                <SearchWithSuggestions className="w-full" />
+              </div>
+              
+              {/* Mobile Categories */}
+              <div className="space-y-2">
+                <h3 className="font-semibold text-gray-900 mb-3">Категории</h3>
+                {catalogCategories.map((category) => (
+                  <div key={category.slug} className="space-y-1">
+                    <Link
+                      href={`/catalog?category=${category.slug}`}
+                      className="block p-3 text-gray-700 hover:text-[hsl(207,90%,54%)] hover:bg-blue-50 rounded-md transition-colors font-medium"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {category.name}
+                    </Link>
+                    {category.subcategories.map((sub) => (
+                      <Link
+                        key={sub}
+                        href={`/catalog?category=${category.slug}&subcategory=${sub}`}
+                        className="block p-2 ml-4 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded transition-colors"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {sub}
+                      </Link>
+                    ))}
+                  </div>
+                ))}
+              </div>
+              
+              {/* Mobile Navigation Links */}
+              <div className="border-t pt-4 space-y-2">
+                {navigationPages.slice(1).map((page) => (
+                  <Link
+                    key={page.href}
+                    href={page.href}
+                    className="block p-3 text-gray-700 hover:text-[hsl(207,90%,54%)] hover:bg-blue-50 rounded-md transition-colors font-medium"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {page.name}
+                  </Link>
+                ))}
+              </div>
+              
+              {/* Mobile Action Buttons */}
+              <div className="border-t pt-4 space-y-3">
+                <Button
+                  variant="outline"
+                  className="w-full mobile-button"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    // Add favorites logic here
+                  }}
+                >
+                  <Heart className="w-4 h-4 mr-2" />
+                  Избранное
+                </Button>
+                <Button
+                  className="w-full bg-[hsl(207,90%,54%)] hover:bg-[hsl(207,89%,40%)] text-white mobile-button"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    cartStore.setIsOpen(true);
+                  }}
+                >
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  Корзина {getItemCount() > 0 && `(${getItemCount()})`}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );
