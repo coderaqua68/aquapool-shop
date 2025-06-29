@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FormattedText } from "@/components/ui/formatted-text";
-import { Heart, Star, Truck, Shield, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { Heart, Star, Truck, Shield, ArrowLeft, ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { Link } from "wouter";
 import OneClickOrderModal from "@/components/modals/one-click-order-modal";
@@ -42,6 +42,16 @@ export default function ProductPage() {
         title: "Товар добавлен в корзину",
         description: `${product.name} успешно добавлен в корзину`,
       });
+    }
+  };
+
+  const handleWhatsAppClick = () => {
+    if (product) {
+      const currentUrl = window.location.href;
+      const message = `Здравствуйте! Интересует товар:\n${product.name}\nАртикул: ${product.sku}\nСсылка: ${currentUrl}`;
+      const phoneNumber = "79285668729"; // Номер без символов
+      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
     }
   };
 
@@ -308,14 +318,24 @@ export default function ProductPage() {
               </Button>
             </div>
             
-            <Button 
-              variant="outline" 
-              className="w-full" 
-              size="lg"
-              onClick={() => setIsOneClickModalOpen(true)}
-            >
-              Купить в 1 клик
-            </Button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Button 
+                variant="outline" 
+                className="w-full" 
+                size="lg"
+                onClick={() => setIsOneClickModalOpen(true)}
+              >
+                Купить в 1 клик
+              </Button>
+              <Button 
+                onClick={handleWhatsAppClick}
+                className="w-full bg-green-500 hover:bg-green-600 text-white"
+                size="lg"
+              >
+                <MessageCircle className="w-4 h-4 mr-2" />
+                Написать в WhatsApp
+              </Button>
+            </div>
           </div>
 
           {/* Delivery Info */}
