@@ -106,7 +106,7 @@ export default function Header() {
           <div className="flex items-center space-x-6">
             <span className="flex items-center">
               <MapPin className="w-4 h-4 mr-1 text-[hsl(207,90%,54%)]" />
-              г. Химки, склад самовывоза
+              г.Химки
             </span>
             <span className="flex items-center">
               <Truck className="w-4 h-4 mr-1 text-[hsl(207,90%,54%)]" />
