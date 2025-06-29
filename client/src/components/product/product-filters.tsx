@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,6 +29,19 @@ interface ProductFiltersProps {
 export default function ProductFilters({ filters, onFiltersChange }: ProductFiltersProps) {
   const [minPrice, setMinPrice] = useState(filters.minPrice?.toString() || "");
   const [maxPrice, setMaxPrice] = useState(filters.maxPrice?.toString() || "");
+  const [dimensionsInput, setDimensionsInput] = useState(filters.dimensions || "");
+
+  // Debounce для поиска по размерам
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      onFiltersChange({
+        ...filters,
+        dimensions: dimensionsInput || undefined
+      });
+    }, 800); // Задержка 800ms
+
+    return () => clearTimeout(timeoutId);
+  }, [dimensionsInput]); // Только dimensionsInput в зависимостях
 
   const handlePriceFilter = () => {
     onFiltersChange({
@@ -49,6 +62,7 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
   const clearFilters = () => {
     setMinPrice("");
     setMaxPrice("");
+    setDimensionsInput("");
     onFiltersChange({});
   };
 
@@ -121,8 +135,8 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
               id="dimensions"
               type="text"
               placeholder="Например: 549x274, 366x122"
-              value={filters.dimensions || ""}
-              onChange={(e) => onFiltersChange({...filters, dimensions: e.target.value || undefined})}
+              value={dimensionsInput}
+              onChange={(e) => setDimensionsInput(e.target.value)}
             />
             <p className="text-sm text-muted-foreground mt-1">
               Введите размеры через "x" или поиск по части размера
@@ -131,31 +145,7 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
         </CardContent>
       </Card>
 
-      {/* Brand Filter */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Бренд</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Select value={filters.brand || "all"} onValueChange={(value) => onFiltersChange({...filters, brand: value === "all" ? undefined : value})}>
-            <SelectTrigger>
-              <SelectValue placeholder="Выберите бренд" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Все бренды</SelectItem>
-              <SelectItem value="Atlantic Pool">Atlantic Pool</SelectItem>
-              <SelectItem value="Azuro">Azuro</SelectItem>
-              <SelectItem value="Bestway">Bestway</SelectItem>
-              <SelectItem value="GRE">GRE</SelectItem>
-              <SelectItem value="Intex">Intex</SelectItem>
-              <SelectItem value="Larimar">Larimar</SelectItem>
-              <SelectItem value="MAGIC POOL">MAGIC POOL</SelectItem>
-              <SelectItem value="Summer Fun">Summer Fun</SelectItem>
-              <SelectItem value="Лагуна">Лагуна</SelectItem>
-            </SelectContent>
-          </Select>
-        </CardContent>
-      </Card>
+
 
       {/* Pool Type Filter */}
       <Card>
