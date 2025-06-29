@@ -49,11 +49,7 @@ export default function SiteSettings() {
 
   const createMutation = useMutation({
     mutationFn: async (data: SettingFormData) => {
-      return await apiRequest("/api/admin/settings", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" },
-      });
+      return await apiRequest("/api/admin/settings", "POST", data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/settings"] });
@@ -81,11 +77,7 @@ export default function SiteSettings() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: SettingFormData }) => {
-      return await apiRequest(`/api/admin/settings/${id}`, {
-        method: "PUT",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" },
-      });
+      return await apiRequest(`/api/admin/settings/${id}`, "PUT", data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/settings"] });
@@ -106,9 +98,7 @@ export default function SiteSettings() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      return await apiRequest(`/api/admin/settings/${id}`, {
-        method: "DELETE",
-      });
+      return await apiRequest(`/api/admin/settings/${id}`, "DELETE");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/settings"] });

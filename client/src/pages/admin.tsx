@@ -214,6 +214,11 @@ export default function Admin() {
           <TabsContent value="parser" className="space-y-6">
             <ProductParser />
           </TabsContent>
+
+          {/* Site Settings */}
+          <TabsContent value="settings" className="space-y-6">
+            <SiteSettings />
+          </TabsContent>
         </Tabs>
       </main>
     </div>
