@@ -78,11 +78,11 @@ export default function Header() {
           </div>
           <div className="flex items-center space-x-4">
             <a href="https://t.me/aquapool_manager" target="_blank" rel="noopener noreferrer" className="flex items-center hover:text-[hsl(207,90%,54%)] transition-colors">
-              <img src="/assets/telegram.webp" alt="Telegram" className="w-4 h-4 mr-1" />
+              <img src="/assets/telegram.webp" alt="Telegram" className="w-4 h-4 mr-1 object-contain" />
               Telegram
             </a>
             <a href="https://wa.me/79285668729" target="_blank" rel="noopener noreferrer" className="flex items-center font-medium text-[hsl(207,89%,40%)] hover:text-[hsl(207,90%,54%)] transition-colors">
-              <img src="/assets/whatsapp.png" alt="WhatsApp" className="w-4 h-4 mr-1" />
+              <img src="/assets/whatsapp.png" alt="WhatsApp" className="w-5 h-5 mr-1 object-contain" />
               WhatsApp
             </a>
           </div>
