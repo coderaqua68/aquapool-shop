@@ -23,7 +23,7 @@ export default function Checkout() {
     customerPhone: "",
     deliveryAddress: "",
     deliveryMethod: "courier",
-    paymentMethod: "nalogka",
+    paymentMethod: "manager",
     notes: "",
   });
 
@@ -169,12 +169,12 @@ export default function Checkout() {
                   onValueChange={(value) => handleInputChange("paymentMethod", value)}
                 >
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="nalogka" id="nalogka" />
-                    <Label htmlFor="nalogka">НАЛОЖКА (наложенный платеж при получении)</Label>
+                    <RadioGroupItem value="manager" id="manager" />
+                    <Label htmlFor="manager">Оплата через менеджера</Label>
                   </div>
                 </RadioGroup>
                 <p className="text-sm text-gray-600 mt-2">
-                  Вы оплачиваете заказ при получении товара курьеру или в отделении почты.
+                  После оформления заказа с вами свяжется менеджер и предложит удобный вариант оплаты.
                 </p>
               </CardContent>
             </Card>
