@@ -263,9 +263,9 @@ export default function Home() {
               <div className="pool-gradient-light p-6 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Truck className="text-white text-2xl w-8 h-8" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Быстрая доставка</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Бесплатная доставка</h3>
               <p className="text-gray-600">
-                Доставка по Москве в день заказа. По России — через ТК за 2-5 дней
+                🎉 Акция: бесплатная доставка по всей России до 31 июля!
               </p>
             </div>
 

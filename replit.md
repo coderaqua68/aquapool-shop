@@ -189,6 +189,14 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Added high-quality WebM video background to main hero banner with autoplay and gradient overlay
   - Implemented WhatsApp integration for main "Получить консультацию" button in hero section with direct consultation message
   - Added separate WhatsApp handlers for consultation form (with user data) and hero button (direct consultation)
+- June 29, 2025: Enhanced checkout experience and promotional delivery updates
+  - Added "Купить в один клик" button on product cards that clears cart, adds single item, and redirects to checkout
+  - Updated checkout form fields: changed "Имя" to "ФИО", made email field required with placeholder
+  - Simplified delivery to single option "Курьером до двери" with full address requirement
+  - Changed payment method to "Оплата через менеджера" with explanation about manager contact
+  - Implemented promotional free delivery campaign: "Бесплатная доставка до 31 июля" across all pages
+  - Updated homepage advantages, delivery page, product pages, and checkout with new promotional delivery terms
+  - Enhanced delivery information display with green highlighting and celebration emoji for promotional aspect
 
 ## User Preferences
 

@@ -222,7 +222,7 @@ export default function Checkout() {
                   </div>
                   <div className="flex justify-between">
                     <span>Доставка:</span>
-                    <span>По тарифам транспортной компании</span>
+                    <span className="text-green-600 font-semibold">Бесплатно до 31 июля</span>
                   </div>
                 </div>
                 
@@ -235,8 +235,8 @@ export default function Checkout() {
                   </span>
                 </div>
                 
-                <p className="text-sm text-gray-600">
-                  * Стоимость доставки будет рассчитана менеджером после оформления заказа
+                <p className="text-sm text-green-600 font-medium">
+                  🎉 Акция: Бесплатная доставка по всей России до 31 июля!
                 </p>
                 
                 <Button 

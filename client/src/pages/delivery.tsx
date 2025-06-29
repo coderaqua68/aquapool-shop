@@ -58,8 +58,7 @@ export default function Delivery() {
                   <div className="flex justify-between items-center">
                     <span className="font-semibold">Стоимость:</span>
                     <div className="text-right">
-                      <span className="text-red-500 line-through">2 000 ₽</span>
-                      <span className="text-green-600 font-bold ml-2">Бесплатно от 50 000 ₽</span>
+                      <span className="text-green-600 font-bold text-lg">🎉 Бесплатно до 31 июля</span>
                     </div>
                   </div>
                   <div className="flex justify-between items-center">

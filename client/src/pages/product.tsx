@@ -343,8 +343,8 @@ export default function ProductPage() {
             <CardContent className="p-4">
               <div className="space-y-3">
                 <div className="flex items-center space-x-3">
-                  <Truck className="w-5 h-5 text-[hsl(207,90%,54%)]" />
-                  <span className="text-sm">Бесплатная доставка от 50 000 ₽</span>
+                  <Truck className="w-5 h-5 text-green-600" />
+                  <span className="text-sm text-green-600 font-medium">🎉 Бесплатная доставка до 31 июля</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Shield className="w-5 h-5 text-[hsl(207,90%,54%)]" />
