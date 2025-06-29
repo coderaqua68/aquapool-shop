@@ -14,9 +14,51 @@ export default function Home() {
     queryKey: ["/api/products/popular"],
   });
 
-  const { data: categories = [] } = useQuery<Category[]>({
-    queryKey: ["/api/categories"],
-  });
+  // Главные категории с изображениями
+  const categories = [
+    {
+      id: 1,
+      name: "Каркасные бассейны",
+      slug: "karkasnye-basseyny",
+      imageUrl: "https://intex-basseiny-krasnodar.ru/upload/iblock/0b1/s4syl35quv4xuyphoxfg3f0v64yd6msv.jpg",
+      productCount: 25
+    },
+    {
+      id: 2,
+      name: "Морозоустойчивые бассейны",
+      slug: "morozoustojchivye-basseyny",
+      imageUrl: "https://intex-bassein.ru/upload/iblock/66a/j1psn0j08u4cf15jvvx123oewb70tbh2.png",
+      productCount: 8
+    },
+    {
+      id: 3,
+      name: "Надувные бассейны",
+      slug: "naduvnye-basseyny",
+      imageUrl: "https://cdn1.ozone.ru/s3/multimedia-f/6364934463.jpg",
+      productCount: 15
+    },
+    {
+      id: 4,
+      name: "Джакузи INTEX",
+      slug: "dzhakuzi-intex",
+      imageUrl: "https://intexopt.ru/wa-data/public/shop/products/60/06/660/images/636/636.970.jpg",
+      productCount: 12
+    },
+    {
+      id: 5,
+      name: "Джакузи Bestway",
+      slug: "dzhakuzi-bestway",
+      imageUrl: "https://avatars.mds.yandex.net/get-mpic/4303532/img_id5353389577744090768.jpeg/orig",
+      productCount: 10
+    },
+    {
+      id: 6,
+      name: "Запасные чаши",
+      slug: "zapasnye-chashi",
+      imageUrl: "https://egorevsk.intexregion.ru/files/products/blue-mozaik.800x600w.jpg?8a38fb231ebff153539a039f63d79fc7",
+      productCount: 6
+    }
+  ];
 
   return (
     <div>
@@ -76,7 +118,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {categories.map((category) => (
               <Link key={category.id} href={`/catalog/${category.slug}`}>
                 <div className="group cursor-pointer">
