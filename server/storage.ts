@@ -11,7 +11,7 @@ import {
   type InsertSiteSetting
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, gte, lte, desc, ilike, or, sql, inArray } from "drizzle-orm";
+import { eq, and, gte, lte, desc, ilike, or, sql } from "drizzle-orm";
 
 // Import products table
 import { products, categories, orders, consultations, siteSettings } from "@shared/schema";
@@ -381,11 +381,15 @@ export class DatabaseStorage implements IStorage {
 
     const subcategories = categoryMapping[categorySlug] || [categorySlug];
     
+    // Создаем OR условие для каждой подкатегории
+    const conditions = subcategories.map(cat => eq(products.category, cat));
+    const whereCondition = conditions.length === 1 ? conditions[0] : or(...conditions);
+    
     const result = await db.select({
       count: sql<number>`count(*)::int`,
       minPrice: sql<number>`min(${products.price}::int)::int`
     }).from(products)
-      .where(inArray(products.category, subcategories));
+      .where(whereCondition);
 
     const stats = result[0];
     if (!stats || stats.count === 0) {
