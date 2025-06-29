@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertOrderSchema, insertConsultationSchema, insertProductSchema } from "@shared/schema";
-import { sendConsultationRequest, sendOrderNotification, testTelegramBot } from "./telegram";
+import { sendConsultationRequest, sendOrderNotification, testTelegramBot, getAdminChatIds } from "./telegram";
 import fetch from "node-fetch";
 import { JSDOM } from "jsdom";
 
@@ -693,6 +693,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ 
         success: false, 
         message: "Ошибка тестирования Telegram бота", 
+        error: error 
+      });
+    }
+  });
+
+  // Get Telegram admin chat IDs info
+  app.get("/api/telegram/admins", (req, res) => {
+    try {
+      const adminInfo = getAdminChatIds();
+      res.json(adminInfo);
+    } catch (error) {
+      res.status(500).json({ 
+        success: false, 
+        message: "Ошибка получения информации об администраторах", 
         error: error 
       });
     }

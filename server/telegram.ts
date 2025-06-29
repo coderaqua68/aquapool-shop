@@ -133,9 +133,25 @@ export async function testTelegramBot() {
   try {
     const me = await bot.getMe();
     console.log('Telegram бот успешно подключен:', me.username);
-    return { success: true, botInfo: me };
+    console.log(`Настроено ${adminChatIds.length} получателей уведомлений:`, adminChatIds.join(', '));
+    
+    return { 
+      success: true, 
+      botInfo: me,
+      adminChatIds: adminChatIds,
+      adminCount: adminChatIds.length
+    };
   } catch (error) {
     console.error('Ошибка подключения к Telegram боту:', error);
     return { success: false, error: error };
   }
+}
+
+// Функция для получения списка администраторов
+export function getAdminChatIds() {
+  return {
+    chatIds: adminChatIds,
+    count: adminChatIds.length,
+    rawConfig: ADMIN_CHAT_IDS
+  };
 }
