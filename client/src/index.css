@@ -112,4 +112,23 @@
   .pool-gradient-light {
     @apply bg-gradient-to-br from-[hsl(207,90%,54%)] to-[hsl(188,100%,47%)];
   }
+  
+  .callback-bounce {
+    animation: callbackBounce 2s ease-in-out infinite;
+  }
+}
+
+@keyframes callbackBounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -15px, 0);
+  }
+  70% {
+    transform: translate3d(0, -7px, 0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,11 +25,24 @@ export function openCallbackModal() {
 export default function CallbackModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({ name: "", phone: "" });
+  const [isPulsing, setIsPulsing] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // Update global state reference
   callbackModalState = { isOpen, setIsOpen };
+
+  // Animation effect to attract attention every 40 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!isOpen) {
+        setIsPulsing(true);
+        setTimeout(() => setIsPulsing(false), 3000); // Animation lasts 3 seconds
+      }
+    }, 40000); // Every 40 seconds
+
+    return () => clearInterval(interval);
+  }, [isOpen]);
 
   const consultationMutation = useMutation({
     mutationFn: async (data: { name: string; phone: string }) => {
@@ -115,10 +128,14 @@ export default function CallbackModal() {
       {/* Floating Action Button */}
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 bg-[hsl(207,90%,54%)] hover:bg-[hsl(207,89%,40%)] text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all z-40"
+        className={`fixed bottom-6 right-6 bg-[hsl(207,90%,54%)] hover:bg-[hsl(207,89%,40%)] text-white p-5 rounded-full shadow-lg hover:shadow-xl transition-all z-40 ${
+          isPulsing 
+            ? 'animate-pulse scale-110 shadow-2xl ring-4 ring-[hsl(207,90%,54%)]/30 callback-bounce' 
+            : 'hover:scale-105'
+        }`}
         size="lg"
       >
-        <Phone className="w-6 h-6" />
+        <Phone className="w-7 h-7" />
       </Button>
     </>
   );
