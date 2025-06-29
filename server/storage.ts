@@ -126,11 +126,6 @@ export class DatabaseStorage implements IStorage {
             ilike(products.name, '%каркасный%'),
             ilike(products.specifications, '%каркасный%')
           ));
-        } else if (poolType === 'Надувной') {
-          conditions.push(or(
-            ilike(products.name, '%надувной%'),
-            ilike(products.specifications, '%надувной%')
-          ));
         } else if (poolType === 'Морозоустойчивый') {
           conditions.push(or(
             ilike(products.name, '%морозоустойчив%'),
@@ -479,7 +474,6 @@ export class DatabaseStorage implements IStorage {
       // пока не наполним базу разнообразными товарами
       const categoryStats: { [key: string]: { count: number; minPrice: number } } = {
         'morozostojkie-basseyny': { count: 8, minPrice: 25990 },
-        'naduvnye-basseyny': { count: 15, minPrice: 1290 },
         'dzjakuzi-intex': { count: 7, minPrice: 16990 },
         'dzjakuzi-bestway': { count: 5, minPrice: 14990 },
         'zapasnye-chashi': { count: 12, minPrice: 3490 }
