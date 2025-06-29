@@ -87,12 +87,20 @@ export default function Contacts() {
                       <Phone className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Телефон</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Телефон WhatsApp</h3>
                       <p className="text-[hsl(207,90%,54%)] font-semibold text-lg">
-                        8 (800) 123-45-67
+                        +7 928 566‑87‑29
                       </p>
-                      <p className="text-gray-600 text-sm">Бесплатный звонок по России</p>
-                      <p className="text-gray-600 text-sm">Ежедневно с 9:00 до 21:00</p>
+                      <p className="text-gray-600 text-sm">Только сообщения в WhatsApp</p>
+                      <div className="mt-2">
+                        <Button
+                          size="sm"
+                          className="bg-green-600 hover:bg-green-700 text-white"
+                          onClick={() => window.open('https://wa.me/79285668729', '_blank')}
+                        >
+                          Написать в WhatsApp
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -289,9 +297,9 @@ export default function Contacts() {
             <Button
               variant="outline"
               className="bg-white/20 border-white/30 text-white hover:bg-white hover:text-[hsl(207,90%,54%)]"
-              onClick={() => window.open('https://wa.me/79001234567', '_blank')}
+              onClick={() => window.open('https://wa.me/79285668729', '_blank')}
             >
-              Написать в WhatsApp
+              +7 928 566‑87‑29
             </Button>
           </div>
 
