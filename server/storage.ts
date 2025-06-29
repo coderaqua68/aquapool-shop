@@ -138,11 +138,6 @@ export class DatabaseStorage implements IStorage {
             ilike(products.name, '%spa%'),
             ilike(products.specifications, '%spa%')
           ));
-        } else if (poolType === 'Детский') {
-          conditions.push(or(
-            ilike(products.name, '%детский%'),
-            ilike(products.specifications, '%детский%')
-          ));
         } else if (poolType === 'Запасные чаши') {
           conditions.push(or(
             ilike(products.name, '%чаша%'),

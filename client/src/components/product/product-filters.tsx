@@ -143,10 +143,15 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Все бренды</SelectItem>
-              <SelectItem value="Intex">Intex</SelectItem>
+              <SelectItem value="Atlantic Pool">Atlantic Pool</SelectItem>
+              <SelectItem value="Azuro">Azuro</SelectItem>
               <SelectItem value="Bestway">Bestway</SelectItem>
-              <SelectItem value="Summer Waves">Summer Waves</SelectItem>
-              <SelectItem value="Jilong">Jilong</SelectItem>
+              <SelectItem value="GRE">GRE</SelectItem>
+              <SelectItem value="Intex">Intex</SelectItem>
+              <SelectItem value="Larimar">Larimar</SelectItem>
+              <SelectItem value="MAGIC POOL">MAGIC POOL</SelectItem>
+              <SelectItem value="Summer Fun">Summer Fun</SelectItem>
+              <SelectItem value="Лагуна">Лагуна</SelectItem>
             </SelectContent>
           </Select>
         </CardContent>
@@ -165,10 +170,8 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
             <SelectContent>
               <SelectItem value="all">Все типы</SelectItem>
               <SelectItem value="Каркасный">Каркасный</SelectItem>
-              <SelectItem value="Надувной">Надувной</SelectItem>
               <SelectItem value="Морозоустойчивый">Морозоустойчивый</SelectItem>
               <SelectItem value="Джакузи">Джакузи</SelectItem>
-              <SelectItem value="Детский">Детский</SelectItem>
               <SelectItem value="Запасные чаши">Запасные чаши</SelectItem>
             </SelectContent>
           </Select>
