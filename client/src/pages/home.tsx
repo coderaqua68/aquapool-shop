@@ -24,7 +24,7 @@ export default function Home() {
     queryKey: ["/api/products/popular"],
   });
 
-  // WhatsApp consultation function
+  // WhatsApp consultation function for form
   const handleConsultationWhatsApp = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -53,6 +53,14 @@ export default function Home() {
     const whatsappUrl = `https://wa.me/79285668729?text=${encodedMessage}`;
     
     // Open WhatsApp
+    window.open(whatsappUrl, '_blank');
+  };
+
+  // WhatsApp consultation function for hero button
+  const handleHeroConsultationWhatsApp = () => {
+    const whatsappMessage = 'Здравствуйте! Мне нужна консультация по выбору бассейна. Помогите пожалуйста подобрать подходящий вариант.';
+    const encodedMessage = encodeURIComponent(whatsappMessage);
+    const whatsappUrl = `https://wa.me/79285668729?text=${encodedMessage}`;
     window.open(whatsappUrl, '_blank');
   };
 
@@ -149,6 +157,7 @@ export default function Home() {
                   size="lg"
                   variant="outline"
                   className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-white/30 px-8 py-4"
+                  onClick={handleHeroConsultationWhatsApp}
                 >
                   Получить консультацию
                 </Button>

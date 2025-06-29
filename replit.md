@@ -186,6 +186,9 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Updated footer structure with separate "Доставка" and "Оплата" links for improved navigation
   - Removed installation (монтаж) information from homepage advantages section, replaced with quality assurance message
   - Fixed broken image on homepage about section with working Unsplash image
+  - Added high-quality WebM video background to main hero banner with autoplay and gradient overlay
+  - Implemented WhatsApp integration for main "Получить консультацию" button in hero section with direct consultation message
+  - Added separate WhatsApp handlers for consultation form (with user data) and hero button (direct consultation)
 
 ## User Preferences
 
