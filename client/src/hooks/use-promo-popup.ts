@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const POPUP_SHOWN_KEY = 'aquapool_promo_popup_shown';
-const POPUP_DELAY = 10000; // 10 секунд для тестирования (потом можно изменить на 60000)
+const POPUP_DELAY = 30000; // 30 секунд
 
 export function usePromoPopup() {
   const [isVisible, setIsVisible] = useState(false);
