@@ -141,7 +141,6 @@ export default function Header() {
           <div className="hidden md:flex flex-1 max-w-2xl mx-8">
             <SearchWithSuggestions 
               className="w-full"
-              placeholder="Поиск по артикулу, названию, размерам..."
             />
           </div>
 
