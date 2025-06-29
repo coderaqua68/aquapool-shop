@@ -236,6 +236,20 @@ export class DatabaseStorage implements IStorage {
     return updatedProduct;
   }
 
+  async updateProductPriceBySku(sku: string, price: number, originalPrice?: number): Promise<Product | undefined> {
+    const updateData: Partial<InsertProduct> = { price: price.toString() };
+    if (originalPrice !== undefined) {
+      updateData.originalPrice = originalPrice.toString();
+    }
+    
+    const [updatedProduct] = await db.update(products)
+      .set(updateData)
+      .where(eq(products.sku, sku))
+      .returning();
+    
+    return updatedProduct;
+  }
+
   async deleteProduct(id: number): Promise<boolean> {
     const result = await db.delete(products).where(eq(products.id, id));
     return result.rowCount ? result.rowCount > 0 : false;
@@ -515,6 +529,18 @@ export class MemStorage implements IStorage {
 
     this.products.set(id, updatedProduct);
     return updatedProduct;
+  }
+
+  async updateProductPriceBySku(sku: string, price: number, originalPrice?: number): Promise<Product | undefined> {
+    const product = Array.from(this.products.values()).find(p => p.sku === sku);
+    if (!product) return undefined;
+    
+    const updateData: Partial<InsertProduct> = { price: price.toString() };
+    if (originalPrice !== undefined) {
+      updateData.originalPrice = originalPrice.toString();
+    }
+    
+    return await this.updateProduct(product.id, updateData);
   }
 
   async deleteProduct(id: number): Promise<boolean> {
