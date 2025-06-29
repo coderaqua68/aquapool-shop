@@ -37,33 +37,33 @@ export default function Footer() {
             <h4 className="text-lg font-semibold mb-4">Каталог</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/catalog/frame-pools" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
+                <Link href="/catalog/karkasnye-basseyny" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
                   Каркасные бассейны
                 </Link>
               </li>
               <li>
-                <Link href="/catalog/pumps-filters" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
+                <Link href="/catalog/morozostojkie-basseyny" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
+                  Морозоустойчивые бассейны
+                </Link>
+              </li>
+              <li>
+                <Link href="/catalog/naduvnye-basseyny" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
+                  Надувные бассейны
+                </Link>
+              </li>
+              <li>
+                <Link href="/catalog/dzjakuzi-intex" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
+                  Джакузи INTEX
+                </Link>
+              </li>
+              <li>
+                <Link href="/catalog/nasosy-filtry" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
                   Насосы и фильтры
                 </Link>
               </li>
               <li>
-                <Link href="/catalog/ladders" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
-                  Лестницы
-                </Link>
-              </li>
-              <li>
-                <Link href="/catalog/covers-underlays" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
-                  Подстилки и тенты
-                </Link>
-              </li>
-              <li>
-                <Link href="/catalog/accessories" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
+                <Link href="/catalog/aksessuary" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
                   Аксессуары
-                </Link>
-              </li>
-              <li>
-                <Link href="/catalog/chemicals" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
-                  Химия и уход
                 </Link>
               </li>
             </ul>
@@ -89,11 +89,6 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
-                  Монтаж
-                </a>
-              </li>
-              <li>
                 <Link href="/contacts" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
                   Контакты
                 </Link>
@@ -114,9 +109,8 @@ export default function Footer() {
                 <span className="text-gray-300">info@aquapool.ru</span>
               </div>
               <div className="flex items-start">
-                <span className="mr-3 mt-1 text-[hsl(188,83%,70%)]">📍</span>
+                <span className="mr-3 mt-1 text-[hsl(188,83%,70%)]">🕒</span>
                 <span className="text-gray-300">
-                  г. Химки, ул. Складская, 15<br />
                   Пн-Вс: 9:00-21:00
                 </span>
               </div>
@@ -128,7 +122,7 @@ export default function Footer() {
 
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm mb-4 md:mb-0">
-            © 2024 AquaPool. Все права защищены.
+            © 2025 AquaPool. Все права защищены.
           </p>
           <div className="flex space-x-6 text-sm">
             <a href="#" className="text-gray-400 hover:text-[hsl(188,83%,70%)] transition-colors">
