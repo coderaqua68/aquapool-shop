@@ -12,7 +12,11 @@ export default function Catalog() {
 
   // Parse URL parameters
   useEffect(() => {
-    const params = new URLSearchParams(location.split('?')[1] || '');
+    console.log('[DEBUG] Current location:', location);
+    const urlPart = location.split('?')[1] || '';
+    console.log('[DEBUG] URL part after ?:', urlPart);
+    const params = new URLSearchParams(urlPart);
+    console.log('[DEBUG] URLSearchParams:', Array.from(params.entries()));
     const categoryFromPath = location.split('/catalog/')[1]?.split('?')[0];
     
     const newFilters: any = {};
@@ -23,6 +27,7 @@ export default function Catalog() {
     
     if (params.get('search')) {
       newFilters.search = params.get('search');
+      console.log('[DEBUG] Search param found:', params.get('search'));
     }
     
     if (params.get('brand')) {
