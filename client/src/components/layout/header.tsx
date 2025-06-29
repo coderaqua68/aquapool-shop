@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Heart, ShoppingCart, Menu, MapPin, Truck, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
+import { useFavorites } from "@/hooks/use-favorites";
 import { cartStore } from "@/lib/cart-store";
 import {
   NavigationMenu,

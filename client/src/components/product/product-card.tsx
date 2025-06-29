@@ -3,6 +3,7 @@ import { Heart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/hooks/use-cart";
+import { useFavorites } from "@/hooks/use-favorites";
 import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@shared/schema";
 
@@ -12,6 +13,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const { addItem, clearCart } = useCart();
+  const { toggleFavorite, isFavorite } = useFavorites();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
 
@@ -41,6 +43,25 @@ export default function ProductCard({ product }: ProductCardProps) {
     });
     // Redirect to checkout
     setLocation('/checkout');
+  };
+
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const isAdded = toggleFavorite({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      imageUrl: product.imageUrl,
+      slug: product.slug,
+    });
+    
+    toast({
+      title: isAdded ? "Добавлено в избранное" : "Удалено из избранного",
+      description: isAdded 
+        ? `${product.name} добавлен в избранное` 
+        : `${product.name} удален из избранного`,
+    });
   };
 
   const renderRating = (rating: string) => {
@@ -97,9 +118,14 @@ export default function ProductCard({ product }: ProductCardProps) {
         <Button
           variant="ghost"
           size="sm"
-          className="absolute top-3 right-3 bg-white/80 hover:bg-white text-gray-600 hover:text-[hsl(207,90%,54%)] p-2 rounded-full"
+          onClick={handleToggleFavorite}
+          className={`absolute top-3 right-3 bg-white/80 hover:bg-white p-2 rounded-full transition-colors ${
+            isFavorite(product.id) 
+              ? 'text-red-500 hover:text-red-600' 
+              : 'text-gray-600 hover:text-[hsl(207,90%,54%)]'
+          }`}
         >
-          <Heart className="w-4 h-4" />
+          <Heart className={`w-4 h-4 ${isFavorite(product.id) ? 'fill-current' : ''}`} />
         </Button>
       </div>
       
