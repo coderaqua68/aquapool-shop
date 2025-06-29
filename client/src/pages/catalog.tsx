@@ -9,6 +9,7 @@ import type { Product } from "@shared/schema";
 export default function Catalog() {
   const [location] = useLocation();
   const [filters, setFilters] = useState<any>({});
+  const [urlKey, setUrlKey] = useState(0); // Триггер для обновления
 
   // Parse URL parameters
   useEffect(() => {
@@ -48,7 +49,34 @@ export default function Catalog() {
     }
     
     setFilters(newFilters);
-  }, [location]);
+  }, [location, urlKey]);
+
+  // Отслеживаем изменения в search параметрах для принудительного обновления
+  useEffect(() => {
+    const handleLocationChange = () => {
+      setUrlKey(prev => prev + 1);
+    };
+
+    // Добавляем обработчик для pushState/replaceState (для программных изменений URL)
+    const originalPushState = history.pushState;
+    const originalReplaceState = history.replaceState;
+
+    history.pushState = function(...args) {
+      originalPushState.apply(this, args);
+      handleLocationChange();
+    };
+
+    history.replaceState = function(...args) {
+      originalReplaceState.apply(this, args);
+      handleLocationChange();
+    };
+
+    // Восстанавливаем оригинальные методы при размонтировании
+    return () => {
+      history.pushState = originalPushState;
+      history.replaceState = originalReplaceState;
+    };
+  }, []);
 
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products", filters],
