@@ -25,12 +25,22 @@ interface ProductFilters {
   dimensions?: string;
 }
 
+interface SearchSuggestion {
+  type: 'product' | 'brand' | 'category';
+  text: string;
+  value: string;
+  sku?: string;
+  price?: string;
+  image?: string;
+}
+
 export interface IStorage {
   // Products
   getProducts(filters?: ProductFilters): Promise<Product[]>;
   getProduct(id: number): Promise<Product | undefined>;
   getProductBySlug(slug: string): Promise<Product | undefined>;
   getPopularProducts(): Promise<Product[]>;
+  getSearchSuggestions(query: string): Promise<SearchSuggestion[]>;
   createProduct(product: InsertProduct): Promise<Product>;
   updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined>;
   updateProductPriceBySku(sku: string, price: number, originalPrice?: number): Promise<Product | undefined>;
@@ -204,6 +214,148 @@ export class DatabaseStorage implements IStorage {
       .where(eq(products.isPopular, true))
       .orderBy(desc(products.rating))
       .limit(8);
+  }
+
+  async getSearchSuggestions(query: string): Promise<SearchSuggestion[]> {
+    const searchTerm = query.toLowerCase().trim();
+    const suggestions: SearchSuggestion[] = [];
+
+    // Поиск точных совпадений по артикулу
+    const exactSkuProducts = await db.select({
+      id: products.id,
+      name: products.name,
+      sku: products.sku,
+      slug: products.slug,
+      price: products.price,
+      imageUrl: products.imageUrl,
+      brand: products.brand
+    }).from(products)
+      .where(eq(products.sku, searchTerm))
+      .limit(3);
+
+    exactSkuProducts.forEach(product => {
+      suggestions.push({
+        type: 'product',
+        text: `${product.name} (арт. ${product.sku})`,
+        value: product.slug,
+        sku: product.sku,
+        price: product.price,
+        image: product.imageUrl || undefined
+      });
+    });
+
+    // Поиск по началу артикула если точного совпадения нет
+    if (exactSkuProducts.length === 0 && /^\d/.test(searchTerm)) {
+      const skuStartProducts = await db.select({
+        id: products.id,
+        name: products.name,
+        sku: products.sku,
+        slug: products.slug,
+        price: products.price,
+        imageUrl: products.imageUrl,
+        brand: products.brand
+      }).from(products)
+        .where(ilike(products.sku, `${searchTerm}%`))
+        .limit(5);
+
+      skuStartProducts.forEach(product => {
+        suggestions.push({
+          type: 'product',
+          text: `${product.name} (арт. ${product.sku})`,
+          value: product.slug,
+          sku: product.sku,
+          price: product.price,
+          image: product.imageUrl || undefined
+        });
+      });
+    }
+
+    // Поиск по названию с точным совпадением размеров
+    const dimensionMatch = searchTerm.match(/(\d+)\s*[xх×]\s*(\d+)(?:\s*[xх×]\s*(\d+))?/);
+    if (dimensionMatch) {
+      const nameProducts = await db.select({
+        id: products.id,
+        name: products.name,
+        sku: products.sku,
+        slug: products.slug,
+        price: products.price,
+        imageUrl: products.imageUrl,
+        brand: products.brand
+      }).from(products)
+        .where(ilike(products.name, `%${searchTerm}%`))
+        .limit(5);
+
+      nameProducts.forEach(product => {
+        if (!suggestions.some(s => s.sku === product.sku)) {
+          suggestions.push({
+            type: 'product',
+            text: `${product.name} (арт. ${product.sku})`,
+            value: product.slug,
+            sku: product.sku,
+            price: product.price,
+            image: product.imageUrl || undefined
+          });
+        }
+      });
+    }
+
+    // Поиск по бренду
+    if (searchTerm.length >= 3) {
+      const brandProducts = await db.select({
+        id: products.id,
+        name: products.name,
+        sku: products.sku,
+        slug: products.slug,
+        price: products.price,
+        imageUrl: products.imageUrl,
+        brand: products.brand
+      }).from(products)
+        .where(ilike(products.brand, `%${searchTerm}%`))
+        .limit(3);
+
+      // Добавляем уникальные бренды
+      const uniqueBrands = new Set<string>();
+      brandProducts.forEach(product => {
+        if (product.brand && !uniqueBrands.has(product.brand)) {
+          uniqueBrands.add(product.brand);
+          suggestions.push({
+            type: 'brand',
+            text: `Бренд: ${product.brand}`,
+            value: product.brand
+          });
+        }
+      });
+    }
+
+    // Поиск по названию товара
+    if (suggestions.length < 5) {
+      const nameProducts = await db.select({
+        id: products.id,
+        name: products.name,
+        sku: products.sku,
+        slug: products.slug,
+        price: products.price,
+        imageUrl: products.imageUrl,
+        brand: products.brand
+      }).from(products)
+        .where(ilike(products.name, `%${searchTerm}%`))
+        .limit(10 - suggestions.length);
+
+      nameProducts.forEach(product => {
+        if (!suggestions.some(s => s.sku === product.sku)) {
+          suggestions.push({
+            type: 'product',
+            text: product.name,
+            value: product.slug,
+            sku: product.sku,
+            price: product.price,
+            image: product.imageUrl || undefined
+          });
+        }
+      });
+    }
+
+    return suggestions.slice(0, 8);
   }
 
   async createProduct(insertProduct: InsertProduct): Promise<Product> {

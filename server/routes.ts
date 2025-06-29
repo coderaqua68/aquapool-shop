@@ -513,6 +513,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Search suggestions endpoint
+  app.get("/api/search/suggestions", async (req, res) => {
+    try {
+      const query = req.query.q as string;
+      if (!query || query.length < 2) {
+        return res.json([]);
+      }
+      
+      const suggestions = await storage.getSearchSuggestions(query);
+      res.json(suggestions);
+    } catch (error) {
+      console.error("Error fetching search suggestions:", error);
+      res.status(500).json({ message: "Failed to fetch suggestions" });
+    }
+  });
+
   app.get("/api/products/:identifier", async (req, res) => {
     try {
       const identifier = req.params.identifier;
