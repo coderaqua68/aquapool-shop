@@ -4,17 +4,19 @@ import {
   Order, 
   Consultation,
   SiteSetting,
+  TelegramAdmin,
   type InsertProduct, 
   type InsertCategory, 
   type InsertOrder, 
   type InsertConsultation,
-  type InsertSiteSetting
+  type InsertSiteSetting,
+  type InsertTelegramAdmin
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, gte, lte, desc, ilike, or, sql } from "drizzle-orm";
 
 // Import products table
-import { products, categories, orders, consultations, siteSettings } from "@shared/schema";
+import { products, categories, orders, consultations, siteSettings, telegramAdmins } from "@shared/schema";
 
 // Define interface types
 interface ProductFilters {
@@ -68,6 +70,13 @@ export interface IStorage {
   getSiteSetting(key: string): Promise<SiteSetting | undefined>;
   createSiteSetting(setting: InsertSiteSetting): Promise<SiteSetting>;
   updateSiteSetting(id: number, data: Partial<InsertSiteSetting>): Promise<SiteSetting>;
+  
+  // Telegram Admin operations
+  getTelegramAdmins(): Promise<TelegramAdmin[]>;
+  createTelegramAdmin(admin: InsertTelegramAdmin): Promise<TelegramAdmin>;
+  deleteTelegramAdmin(id: number): Promise<boolean>;
+  toggleTelegramAdmin(id: number, isActive: boolean): Promise<TelegramAdmin>;
+  updateLastNotified(chatId: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -456,6 +465,42 @@ export class DatabaseStorage implements IStorage {
       .where(eq(siteSettings.id, id))
       .returning();
     return setting;
+  }
+
+  // Telegram Admin operations
+  async getTelegramAdmins(): Promise<TelegramAdmin[]> {
+    return await db.select().from(telegramAdmins).orderBy(desc(telegramAdmins.addedAt));
+  }
+
+  async createTelegramAdmin(admin: InsertTelegramAdmin): Promise<TelegramAdmin> {
+    const [newAdmin] = await db
+      .insert(telegramAdmins)
+      .values(admin)
+      .returning();
+    return newAdmin;
+  }
+
+  async deleteTelegramAdmin(id: number): Promise<boolean> {
+    const result = await db
+      .delete(telegramAdmins)
+      .where(eq(telegramAdmins.id, id));
+    return result.rowCount! > 0;
+  }
+
+  async toggleTelegramAdmin(id: number, isActive: boolean): Promise<TelegramAdmin> {
+    const [admin] = await db
+      .update(telegramAdmins)
+      .set({ isActive })
+      .where(eq(telegramAdmins.id, id))
+      .returning();
+    return admin;
+  }
+
+  async updateLastNotified(chatId: string): Promise<void> {
+    await db
+      .update(telegramAdmins)
+      .set({ lastNotified: new Date() })
+      .where(eq(telegramAdmins.chatId, chatId));
   }
 }
 

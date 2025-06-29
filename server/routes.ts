@@ -943,6 +943,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Telegram Admin Management Routes
+  app.get('/api/admin/telegram-admins', adminAuth, async (req, res) => {
+    try {
+      const admins = await storage.getTelegramAdmins();
+      res.json(admins);
+    } catch (error) {
+      console.error('Error fetching telegram admins:', error);
+      res.status(500).json({ message: 'Failed to fetch telegram admins' });
+    }
+  });
+
+  app.post('/api/admin/telegram-admins', adminAuth, async (req, res) => {
+    try {
+      const admin = await storage.createTelegramAdmin(req.body);
+      res.json(admin);
+    } catch (error) {
+      console.error('Error creating telegram admin:', error);
+      if (error.code === '23505') { // Unique constraint violation
+        res.status(400).json({ message: 'Этот Telegram ID уже добавлен' });
+      } else {
+        res.status(500).json({ message: 'Failed to create telegram admin' });
+      }
+    }
+  });
+
+  app.delete('/api/admin/telegram-admins/:id', adminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteTelegramAdmin(id);
+      if (success) {
+        res.json({ success: true });
+      } else {
+        res.status(404).json({ message: 'Admin not found' });
+      }
+    } catch (error) {
+      console.error('Error deleting telegram admin:', error);
+      res.status(500).json({ message: 'Failed to delete telegram admin' });
+    }
+  });
+
+  app.patch('/api/admin/telegram-admins/:id/toggle', adminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { isActive } = req.body;
+      const admin = await storage.toggleTelegramAdmin(id, isActive);
+      res.json(admin);
+    } catch (error) {
+      console.error('Error toggling telegram admin:', error);
+      res.status(500).json({ message: 'Failed to toggle telegram admin' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

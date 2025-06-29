@@ -1,18 +1,30 @@
 import TelegramBot from 'node-telegram-bot-api';
+import { storage } from './storage';
 
 // Конфигурация бота
 const BOT_TOKEN = '7550930591:AAHZHqOnklv8EFkID5XaTkgzCrGwhY3Ex7M';
 
-// Поддержка множественных получателей уведомлений
-// Можно указать один ID или несколько через запятую: "5696137293,1234567890,9876543210"
-const ADMIN_CHAT_IDS = process.env.TELEGRAM_ADMIN_CHAT_IDS || '5696137293';
-const adminChatIds = ADMIN_CHAT_IDS.split(',').map(id => id.trim()).filter(Boolean);
-
 // Создаем экземпляр бота
 const bot = new TelegramBot(BOT_TOKEN, { polling: false });
 
+// Функция для получения активных администраторов из базы данных
+async function getActiveAdminChatIds(): Promise<string[]> {
+  try {
+    const admins = await storage.getTelegramAdmins();
+    return admins
+      .filter(admin => admin.isActive)
+      .map(admin => admin.chatId);
+  } catch (error) {
+    console.error('Ошибка получения администраторов из БД:', error);
+    // Fallback на переменную окружения, если БД недоступна
+    const ADMIN_CHAT_IDS = process.env.TELEGRAM_ADMIN_CHAT_IDS || '5696137293';
+    return ADMIN_CHAT_IDS.split(',').map(id => id.trim()).filter(Boolean);
+  }
+}
+
 // Функция для отправки сообщения всем администраторам
 async function sendToAllAdmins(message: string, options?: TelegramBot.SendMessageOptions) {
+  const adminChatIds = await getActiveAdminChatIds();
   const results = [];
   
   for (const chatId of adminChatIds) {
@@ -20,6 +32,9 @@ async function sendToAllAdmins(message: string, options?: TelegramBot.SendMessag
       await bot.sendMessage(chatId, message, options);
       results.push({ chatId, success: true });
       console.log(`Сообщение успешно отправлено в чат ${chatId}`);
+      
+      // Обновляем время последнего уведомления в базе данных
+      await storage.updateLastNotified(chatId);
     } catch (error) {
       console.error(`Ошибка отправки сообщения в чат ${chatId}:`, error);
       results.push({ chatId, success: false, error });

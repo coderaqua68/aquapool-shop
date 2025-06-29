@@ -123,6 +123,26 @@ export type InsertConsultation = z.infer<typeof insertConsultationSchema>;
 export type SiteSetting = typeof siteSettings.$inferSelect;
 export type InsertSiteSetting = z.infer<typeof insertSiteSettingSchema>;
 
+// Telegram administrators table
+export const telegramAdmins = pgTable("telegram_admins", {
+  id: serial("id").primaryKey(),
+  chatId: varchar("chat_id", { length: 50 }).notNull().unique(),
+  name: varchar("name", { length: 100 }).notNull(),
+  username: varchar("username", { length: 50 }),
+  isActive: boolean("is_active").default(true),
+  addedAt: timestamp("added_at").defaultNow(),
+  lastNotified: timestamp("last_notified"),
+});
+
+export const insertTelegramAdminSchema = createInsertSchema(telegramAdmins).omit({
+  id: true,
+  addedAt: true,
+  lastNotified: true,
+});
+
+export type TelegramAdmin = typeof telegramAdmins.$inferSelect;
+export type InsertTelegramAdmin = z.infer<typeof insertTelegramAdminSchema>;
+
 // Product filters type for frontend
 export interface ProductFilters {
   category?: string;
