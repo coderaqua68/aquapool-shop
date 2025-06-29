@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "🚀 Starting AquaPool production server..."
+echo "🚀 Запуск AquaPool продакшн сервера..."
 export NODE_ENV=production
-export PORT=${PORT:-3001}
+export PORT=${PORT:-3000}
 node server/index.js
