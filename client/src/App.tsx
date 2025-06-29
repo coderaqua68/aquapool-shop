@@ -25,6 +25,8 @@ import NotFound from "@/pages/not-found";
 import CallbackModal from "./components/modals/callback-modal";
 import CartSidebar from "./components/cart/cart-sidebar";
 import TrackingCodes from "./components/tracking/tracking-codes";
+import { PromoPopup } from "./components/promo-popup";
+import { usePromoPopup } from "./hooks/use-promo-popup";
 
 // Компонент для автоматической прокрутки вверх при смене страницы
 function ScrollToTop() {
@@ -65,6 +67,8 @@ function Router() {
 }
 
 function App() {
+  const { isVisible, hidePopup } = usePromoPopup();
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -78,6 +82,7 @@ function App() {
         </div>
         <CartSidebar />
         <CallbackModal />
+        <PromoPopup isVisible={isVisible} onClose={hidePopup} />
         <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
