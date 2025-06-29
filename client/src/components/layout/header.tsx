@@ -164,16 +164,16 @@ export default function Header() {
         
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-100 bg-white shadow-lg">
+          <div className="md:hidden border-t border-gray-100 bg-white shadow-lg max-h-[80vh] overflow-y-auto">
             <div className="container mx-auto px-4 py-4 space-y-4">
               {/* Mobile Search */}
               <div className="mb-4">
                 <SearchWithSuggestions className="w-full" />
               </div>
               
-              {/* Mobile Categories */}
-              <div className="space-y-2">
-                <h3 className="font-semibold text-gray-900 mb-3">Категории</h3>
+              {/* Mobile Categories with scroll */}
+              <div className="space-y-2 max-h-[50vh] overflow-y-auto">
+                <h3 className="font-semibold text-gray-900 mb-3 sticky top-0 bg-white py-2">Категории</h3>
                 {mainCategories.map((category) => {
                   const categorySubcategories = subcategoriesByParent[category.id] || [];
                   

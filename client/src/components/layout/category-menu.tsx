@@ -93,12 +93,17 @@ export default function CategoryMenu() {
                       className="relative group"
                       ref={(el) => categoryRefs.current[category.id] = el}
                       onMouseEnter={(e) => {
-                        if (categorySubcategories.length > 0) {
+                        // Только для десктоп устройств
+                        if (categorySubcategories.length > 0 && window.innerWidth >= 768) {
                           const rect = e.currentTarget.getBoundingClientRect();
                           handleShowSubmenu(category.id, rect);
                         }
                       }}
-                      onMouseLeave={handleHideSubmenu}
+                      onMouseLeave={() => {
+                        if (window.innerWidth >= 768) {
+                          handleHideSubmenu();
+                        }
+                      }}
                     >
                       <Link
                         to={`/catalog/${category.slug}`}
@@ -119,10 +124,10 @@ export default function CategoryMenu() {
                         )}
                       </Link>
                       
-                      {/* Horizontal Submenu */}
+                      {/* Horizontal Submenu - только для десктопа */}
                       {categorySubcategories.length > 0 && hoveredCategory === category.id && submenuPosition && (
                         <div 
-                          className="fixed bg-white border border-gray-200 rounded-lg shadow-xl p-4 min-w-[280px] z-[9999]"
+                          className="hidden md:block fixed bg-white border border-gray-200 rounded-lg shadow-xl p-4 min-w-[280px] z-[9999]"
                           style={{
                             left: `${submenuPosition.left}px`,
                             top: `${submenuPosition.top}px`
