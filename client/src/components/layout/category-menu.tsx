@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { ChevronRight, ChevronDown } from "lucide-react";
@@ -24,6 +24,8 @@ interface Category {
 
 export default function CategoryMenu() {
   const [hoveredCategory, setHoveredCategory] = useState<number | null>(null);
+  const [submenuPosition, setSubmenuPosition] = useState<{top: number, left: number} | null>(null);
+  const categoryRefs = useRef<{[key: number]: HTMLDivElement | null}>({});
 
   const { data: mainCategories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories/main"],
@@ -62,8 +64,21 @@ export default function CategoryMenu() {
                     <div 
                       key={category.id}
                       className="relative group"
-                      onMouseEnter={() => setHoveredCategory(category.id)}
-                      onMouseLeave={() => setHoveredCategory(null)}
+                      ref={(el) => categoryRefs.current[category.id] = el}
+                      onMouseEnter={(e) => {
+                        setHoveredCategory(category.id);
+                        if (categorySubcategories.length > 0) {
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          setSubmenuPosition({
+                            top: rect.top,
+                            left: rect.right + 8
+                          });
+                        }
+                      }}
+                      onMouseLeave={() => {
+                        setHoveredCategory(null);
+                        setSubmenuPosition(null);
+                      }}
                     >
                       <Link
                         to={`/catalog/${category.slug}`}
@@ -85,12 +100,19 @@ export default function CategoryMenu() {
                       </Link>
                       
                       {/* Horizontal Submenu */}
-                      {categorySubcategories.length > 0 && hoveredCategory === category.id && (
-                        <div className="fixed bg-white border border-gray-200 rounded-lg shadow-xl p-4 min-w-[280px] z-[9999]"
-                             style={{
-                               left: '500px', // Фиксированная позиция справа от основного меню
-                               top: `${Math.max(120, window.scrollY + 120)}px` // Адаптивная позиция по вертикали
-                             }}>
+                      {categorySubcategories.length > 0 && hoveredCategory === category.id && submenuPosition && (
+                        <div 
+                          className="fixed bg-white border border-gray-200 rounded-lg shadow-xl p-4 min-w-[280px] z-[9999]"
+                          style={{
+                            left: `${submenuPosition.left}px`,
+                            top: `${submenuPosition.top}px`
+                          }}
+                          onMouseEnter={() => setHoveredCategory(category.id)}
+                          onMouseLeave={() => {
+                            setHoveredCategory(null);
+                            setSubmenuPosition(null);
+                          }}
+                        >
                           <h4 className="font-semibold text-gray-900 mb-3 text-sm border-b border-gray-100 pb-2">{category.name}</h4>
                           <div className="space-y-1 max-h-[400px] overflow-y-auto">
                             {categorySubcategories
