@@ -8,9 +8,7 @@ import {
   type InsertCategory, 
   type InsertOrder, 
   type InsertConsultation,
-  type InsertSiteSetting,
-  type ProductFilters,
-  type SearchSuggestion
+  type InsertSiteSetting
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, gte, lte, desc, ilike, or, sql } from "drizzle-orm";
