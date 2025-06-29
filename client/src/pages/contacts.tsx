@@ -170,16 +170,9 @@ export default function Contacts() {
                 variant="outline"
                 size="lg"
                 className="flex items-center space-x-2 border-[hsl(207,90%,54%)] text-[hsl(207,90%,54%)] hover:bg-[hsl(207,90%,54%)] hover:text-white"
+                onClick={() => window.open('https://wa.me/79001234567', '_blank')}
               >
-                <Facebook className="w-5 h-5" />
-                <span>VK</span>
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="flex items-center space-x-2 border-[hsl(207,90%,54%)] text-[hsl(207,90%,54%)] hover:bg-[hsl(207,90%,54%)] hover:text-white"
-              >
-                <Instagram className="w-5 h-5" />
+                <Phone className="w-5 h-5" />
                 <span>WhatsApp</span>
               </Button>
             </div>
