@@ -601,45 +601,7 @@ export class MemStorage implements IStorage {
     // Каталог товаров очищен - будет заполняться через админ панель
   }
 
-  async getProducts(filters?: ProductFilters): Promise<Product[]> {
-    let results = Array.from(this.products.values());
-    
-    if (filters) {
-      if (filters.category) {
-        results = results.filter(p => p.category === filters.category);
-      }
-      if (filters.minPrice !== undefined) {
-        results = results.filter(p => parseInt(p.price) >= filters.minPrice!);
-      }
-      if (filters.maxPrice !== undefined) {
-        results = results.filter(p => parseInt(p.price) <= filters.maxPrice!);
-      }
-      if (filters.inStock !== undefined) {
-        results = results.filter(p => p.inStock === filters.inStock);
-      }
-      if (filters.search) {
-        const searchLower = filters.search.toLowerCase();
-        results = results.filter(p => 
-          p.name.toLowerCase().includes(searchLower) ||
-          p.description.toLowerCase().includes(searchLower) ||
-          (p.brand && p.brand.toLowerCase().includes(searchLower))
-        );
-      }
-    }
-    
-    return results.sort((a, b) => {
-      // Популярные товары сначала
-      if (a.isPopular && !b.isPopular) return -1;
-      if (!a.isPopular && b.isPopular) return 1;
-      
-      // Новые товары сначала среди одинаково популярных
-      if (a.isNew && !b.isNew) return -1;
-      if (!a.isNew && b.isNew) return 1;
-      
-      // По умолчанию по ID
-      return a.id - b.id;
-    });
-  }
+
 
   async getProduct(id: number): Promise<Product | undefined> {
     return this.products.get(id);
