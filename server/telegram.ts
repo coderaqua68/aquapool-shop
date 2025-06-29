@@ -55,7 +55,7 @@ export async function sendOrderNotification(orderData: {
     quantity: number;
     price: string;
   }>;
-  totalAmount: string;
+  totalAmount: string | number;
   paymentMethod: string;
   deliveryMethod: string;
 }) {

@@ -665,6 +665,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Telegram bot test endpoint
+  app.get("/api/telegram/test", async (req, res) => {
+    try {
+      const result = await testTelegramBot();
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ 
+        success: false, 
+        message: "Ошибка тестирования Telegram бота", 
+        error: error 
+      });
+    }
+  });
+
   // Admin API routes
   app.post("/api/admin/login", (req, res) => {
     const { login, password } = req.body;

@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { testTelegramBot } from "./telegram";
 
 const app = express();
 app.use(express.json({ limit: '50mb' }));
@@ -66,5 +67,16 @@ app.use((req, res, next) => {
     reusePort: true,
   }, () => {
     log(`serving on port ${port}`);
+    
+    // Тестируем Telegram бота при запуске
+    testTelegramBot().then(result => {
+      if (result.success) {
+        console.log('✅ Telegram бот успешно подключен');
+      } else {
+        console.log('❌ Ошибка подключения к Telegram боту:', result.error);
+      }
+    }).catch(error => {
+      console.log('❌ Ошибка тестирования Telegram бота:', error);
+    });
   });
 })();
