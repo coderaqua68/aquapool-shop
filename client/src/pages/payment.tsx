@@ -111,7 +111,7 @@ export default function Payment() {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Вопросы по оплате?</h3>
           <p className="text-gray-600 mb-4">Наши менеджеры помогут выбрать удобный способ оплаты</p>
           <div className="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-6">
-            <span className="text-[hsl(207,89%,40%)] font-semibold text-lg">8 (800) 123-45-67</span>
+            <span className="text-[hsl(207,89%,40%)] font-semibold text-lg">+7 928 566‑87‑29</span>
             <span className="text-gray-500">или</span>
             <span className="text-[hsl(207,89%,40%)]">info@aquapool.ru</span>
           </div>

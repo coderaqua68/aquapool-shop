@@ -107,7 +107,7 @@ export default function Footer() {
             <div className="space-y-3">
               <div className="flex items-center">
                 <span className="mr-3 text-[hsl(188,83%,70%)]">📞</span>
-                <span className="text-gray-300">8 (800) 123-45-67</span>
+                <span className="text-gray-300">+7 928 566‑87‑29</span>
               </div>
               <div className="flex items-center">
                 <span className="mr-3 text-[hsl(188,83%,70%)]">✉️</span>

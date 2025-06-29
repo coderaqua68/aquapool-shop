@@ -117,7 +117,7 @@ export default function Header() {
             <a href="https://t.me/aquapool_manager" target="_blank" rel="noopener noreferrer" className="hover:text-[hsl(207,90%,54%)] transition-colors">
               Telegram
             </a>
-            <span className="font-medium text-[hsl(207,89%,40%)]">8 (800) 123-45-67</span>
+            <span className="font-medium text-[hsl(207,89%,40%)]">+7 928 566‑87‑29</span>
           </div>
         </div>
 

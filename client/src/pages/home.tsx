@@ -371,8 +371,8 @@ export default function Home() {
                 <div className="bg-[hsl(207,90%,54%)] text-white p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                   📞
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Позвоните нам</h3>
-                <p className="text-[hsl(207,90%,54%)] font-semibold">8 (800) 123-45-67</p>
+                <h3 className="font-semibold text-gray-900 mb-2">Напишите в WhatsApp</h3>
+                <p className="text-[hsl(207,90%,54%)] font-semibold">+7 928 566‑87‑29</p>
               </div>
 
               <div className="text-center">
