@@ -85,11 +85,7 @@ export default function Footer() {
                   Оплата
                 </Link>
               </li>
-              <li>
-                <a href="#" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
-                  Гарантия
-                </a>
-              </li>
+
               <li>
                 <Link href="/contacts" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
                   Контакты
