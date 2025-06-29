@@ -2,10 +2,32 @@ import TelegramBot from 'node-telegram-bot-api';
 
 // Конфигурация бота
 const BOT_TOKEN = '7550930591:AAHZHqOnklv8EFkID5XaTkgzCrGwhY3Ex7M';
-const ADMIN_CHAT_ID = '5696137293';
+
+// Поддержка множественных получателей уведомлений
+// Можно указать один ID или несколько через запятую: "5696137293,1234567890,9876543210"
+const ADMIN_CHAT_IDS = process.env.TELEGRAM_ADMIN_CHAT_IDS || '5696137293';
+const adminChatIds = ADMIN_CHAT_IDS.split(',').map(id => id.trim()).filter(Boolean);
 
 // Создаем экземпляр бота
 const bot = new TelegramBot(BOT_TOKEN, { polling: false });
+
+// Функция для отправки сообщения всем администраторам
+async function sendToAllAdmins(message: string, options?: TelegramBot.SendMessageOptions) {
+  const results = [];
+  
+  for (const chatId of adminChatIds) {
+    try {
+      await bot.sendMessage(chatId, message, options);
+      results.push({ chatId, success: true });
+      console.log(`Сообщение успешно отправлено в чат ${chatId}`);
+    } catch (error) {
+      console.error(`Ошибка отправки сообщения в чат ${chatId}:`, error);
+      results.push({ chatId, success: false, error });
+    }
+  }
+  
+  return results;
+}
 
 // Функция для отправки заявки на обратную связь
 export async function sendConsultationRequest(data: {
@@ -31,7 +53,7 @@ export async function sendConsultationRequest(data: {
     })} МСК
     `;
 
-    await bot.sendMessage(ADMIN_CHAT_ID, messageText, {
+    await sendToAllAdmins(messageText, {
       parse_mode: 'HTML'
     });
 
@@ -95,7 +117,7 @@ ${itemsList}
 📞 <b>Действие:</b> Свяжитесь с клиентом для подтверждения заказа
     `;
 
-    await bot.sendMessage(ADMIN_CHAT_ID, messageText, {
+    await sendToAllAdmins(messageText, {
       parse_mode: 'HTML'
     });
 
