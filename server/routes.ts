@@ -598,6 +598,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/categories/:slug/stats", async (req, res) => {
+    try {
+      const stats = await storage.getCategoryStats(req.params.slug);
+      if (!stats) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching category stats:", error);
+      res.status(500).json({ message: "Failed to fetch category stats" });
+    }
+  });
+
   // Orders
   app.post("/api/orders", async (req, res) => {
     try {

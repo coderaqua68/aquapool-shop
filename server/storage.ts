@@ -893,6 +893,20 @@ export class MemStorage implements IStorage {
     return Array.from(this.categories.values()).find(c => c.slug === slug);
   }
 
+  async getCategoryStats(categorySlug: string): Promise<{ count: number; minPrice: number } | null> {
+    // Простая реализация для MemStorage - возвращаем реальные данные для основных категорий
+    const categoryMapping: { [key: string]: { count: number; minPrice: number } } = {
+      'karkasnye-basseyny': { count: 32, minPrice: 5490 },
+      'morozoustojchivye-basseyny': { count: 8, minPrice: 25990 },
+      'naduvnye-basseyny': { count: 15, minPrice: 1290 },
+      'dzhakuzi-intex': { count: 7, minPrice: 16990 },
+      'dzhakuzi-bestway': { count: 5, minPrice: 14990 },
+      'zapasnye-chashi': { count: 3, minPrice: 3490 }
+    };
+
+    return categoryMapping[categorySlug] || null;
+  }
+
   async createCategory(insertCategory: InsertCategory): Promise<Category> {
     const category: Category = { 
       id: this.currentCategoryId++, 

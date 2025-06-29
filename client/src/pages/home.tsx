@@ -9,56 +9,77 @@ import ProductCard from "@/components/product/product-card";
 import { Truck, Shield, Headphones, Wrench } from "lucide-react";
 import type { Product, Category } from "@shared/schema";
 
+interface CategoryWithStats {
+  id: number;
+  name: string;
+  slug: string;
+  imageUrl: string;
+  productCount: number;
+  minPrice: number;
+}
+
 export default function Home() {
   const { data: popularProducts = [] } = useQuery<Product[]>({
     queryKey: ["/api/products/popular"],
   });
 
   // Главные категории с изображениями
-  const categories = [
+  const staticCategories = [
     {
       id: 1,
       name: "Каркасные бассейны",
       slug: "karkasnye-basseyny",
-      imageUrl: "https://intex-basseiny-krasnodar.ru/upload/iblock/0b1/s4syl35quv4xuyphoxfg3f0v64yd6msv.jpg",
-      productCount: 25
+      imageUrl: "https://intex-basseiny-krasnodar.ru/upload/iblock/0b1/s4syl35quv4xuyphoxfg3f0v64yd6msv.jpg"
     },
     {
       id: 2,
       name: "Морозоустойчивые бассейны",
       slug: "morozoustojchivye-basseyny",
-      imageUrl: "https://intex-bassein.ru/upload/iblock/66a/j1psn0j08u4cf15jvvx123oewb70tbh2.png",
-      productCount: 8
+      imageUrl: "https://intex-bassein.ru/upload/iblock/66a/j1psn0j08u4cf15jvvx123oewb70tbh2.png"
     },
     {
       id: 3,
       name: "Надувные бассейны",
       slug: "naduvnye-basseyny",
-      imageUrl: "https://cdn1.ozone.ru/s3/multimedia-f/6364934463.jpg",
-      productCount: 15
+      imageUrl: "https://cdn1.ozone.ru/s3/multimedia-f/6364934463.jpg"
     },
     {
       id: 4,
       name: "Джакузи INTEX",
       slug: "dzhakuzi-intex",
-      imageUrl: "https://intexopt.ru/wa-data/public/shop/products/60/06/660/images/636/636.970.jpg",
-      productCount: 12
+      imageUrl: "https://intexopt.ru/wa-data/public/shop/products/60/06/660/images/636/636.970.jpg"
     },
     {
       id: 5,
       name: "Джакузи Bestway",
       slug: "dzhakuzi-bestway",
-      imageUrl: "https://avatars.mds.yandex.net/get-mpic/4303532/img_id5353389577744090768.jpeg/orig",
-      productCount: 10
+      imageUrl: "https://avatars.mds.yandex.net/get-mpic/4303532/img_id5353389577744090768.jpeg/orig"
     },
     {
       id: 6,
       name: "Запасные чаши",
       slug: "zapasnye-chashi",
-      imageUrl: "https://egorevsk.intexregion.ru/files/products/blue-mozaik.800x600w.jpg?8a38fb231ebff153539a039f63d79fc7",
-      productCount: 6
+      imageUrl: "https://egorevsk.intexregion.ru/files/products/blue-mozaik.800x600w.jpg?8a38fb231ebff153539a039f63d79fc7"
     }
   ];
+
+  // Загружаем статистику для каждой категории
+  const categoryQueries = staticCategories.map(category =>
+    useQuery<{ count: number; minPrice: number }>({
+      queryKey: [`/api/categories/${category.slug}/stats`],
+      retry: false
+    })
+  );
+
+  // Объединяем статическую информацию с данными из API
+  const categories: CategoryWithStats[] = staticCategories.map((category, index) => {
+    const stats = categoryQueries[index].data;
+    return {
+      ...category,
+      productCount: stats?.count || 0,
+      minPrice: stats?.minPrice || 0
+    };
+  });
 
   return (
     <div>
@@ -132,7 +153,7 @@ export default function Home() {
                     <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                       <h3 className="text-2xl font-bold mb-2">{category.name}</h3>
                       <p className="text-sm opacity-90">
-                        От 1 500 ₽ • {category.productCount}+ товаров
+                        {category.minPrice > 0 ? `От ${category.minPrice.toLocaleString()} ₽` : "от 1 500 ₽"} • {category.productCount > 0 ? `${category.productCount} товаров` : "товары"}
                       </p>
                     </div>
                   </div>
