@@ -51,13 +51,19 @@ export default function Catalog() {
       
       if (filters.category) params.append('category', filters.category);
       if (filters.brand) params.append('brand', filters.brand);
-      if (filters.search) params.append('search', encodeURIComponent(filters.search));
+      if (filters.search) params.append('search', filters.search);
       if (filters.minPrice) params.append('minPrice', filters.minPrice.toString());
       if (filters.maxPrice) params.append('maxPrice', filters.maxPrice.toString());
       if (filters.inStock) params.append('inStock', 'true');
       
-      const response = await fetch(`/api/products?${params}`);
-      return response.json();
+      const url = `/api/products?${params}`;
+      console.log('[DEBUG] Catalog API request:', url);
+      console.log('[DEBUG] Current filters:', filters);
+      
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log('[DEBUG] API response products count:', data.length);
+      return data;
     },
   });
 
