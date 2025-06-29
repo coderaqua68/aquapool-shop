@@ -297,8 +297,8 @@ export default function Home() {
 
             <div className="relative">
               <img
-                src="https://images.unsplash.com/photo-1530549387789-4c1017266635?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"
-                alt="Каркасный бассейн во дворе"
+                src="https://intex-bassein.ru/upload/iblock/0ad/3rdrwhsl5logv421r8u7fd91vodrkv38.png"
+                alt="Каркасный бассейн INTEX"
                 className="rounded-xl shadow-2xl w-full"
               />
               <div className="absolute -bottom-6 -right-6 bg-white p-6 rounded-xl shadow-lg max-w-xs">
