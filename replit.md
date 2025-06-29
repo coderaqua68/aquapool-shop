@@ -219,6 +219,13 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Updated canonical URLs in privacy policy and other SEO components
   - Updated deployment guide documentation with new domain
   - Site ready for production deployment on aquapool-shop.ru domain
+- June 29, 2025: Massive price updates across product catalog
+  - Updated 24 Laguna product prices with 25% discount using automated laguna-price-update.js script
+  - Processed 60 mixed Laguna and Gigabass products with new pricing via new-batch-price-update.js
+  - Updated 12 Summer Fun product prices with corrected pricing using summer-fun-price-update.js
+  - Total 96 products received accurate pricing updates with proper original/discounted price structure
+  - All price update scripts include proper WebSocket configuration for Neon database connectivity
+  - Price changes range from minor adjustments to significant corrections (e.g., 1,800₽ to 397,500₽)
 
 ## Production Readiness
 
