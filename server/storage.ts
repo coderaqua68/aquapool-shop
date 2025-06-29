@@ -19,15 +19,10 @@ import { products, categories, orders, consultations, siteSettings } from "@shar
 // Define interface types
 interface ProductFilters {
   category?: string;
-  brand?: string;
   minPrice?: number;
   maxPrice?: number;
-  inStock?: boolean;
   search?: string;
-  type?: string;
-  material?: string;
-  shape?: string;
-  volume?: string;
+  dimensions?: string;
   sortBy?: string;
 }
 
@@ -105,20 +100,12 @@ export class DatabaseStorage implements IStorage {
         }
       }
       
-      if (filters.brand) {
-        conditions.push(eq(products.brand, filters.brand));
-      }
-      
       if (filters.minPrice !== undefined) {
         conditions.push(gte(products.price, filters.minPrice.toString()));
       }
       
       if (filters.maxPrice !== undefined) {
         conditions.push(lte(products.price, filters.maxPrice.toString()));
-      }
-      
-      if (filters.inStock !== undefined) {
-        conditions.push(eq(products.inStock, filters.inStock));
       }
       
       if (filters.search) {
@@ -132,55 +119,19 @@ export class DatabaseStorage implements IStorage {
         ));
       }
 
-      // Фильтр по типу бассейна (на основе категории)
-      if (filters.poolType) {
-        const poolType = filters.poolType;
-        if (poolType === 'Каркасный') {
-          conditions.push(eq(products.category, 'karkasnye-basseyny'));
-        } else if (poolType === 'Морозоустойчивый') {
-          conditions.push(eq(products.category, 'morozostojkie-basseyny'));
-        } else if (poolType === 'Джакузи') {
-          conditions.push(or(
-            eq(products.category, 'dzjakuzi-intex'),
-            eq(products.category, 'dzjakuzi-bestway')
-          ));
-        } else if (poolType === 'Запасные чаши') {
-          conditions.push(eq(products.category, 'zapasnye-chashi'));
-        }
-      }
 
-      // Фильтр по объему
-      if (filters.volumeRange) {
-        if (filters.volumeRange === 'small') {
-          conditions.push(lte(products.volume, '5000'));
-        } else if (filters.volumeRange === 'medium') {
-          conditions.push(and(
-            gte(products.volume, '5000'),
-            lte(products.volume, '15000')
-          ));
-        } else if (filters.volumeRange === 'large') {
-          conditions.push(and(
-            gte(products.volume, '15000'),
-            lte(products.volume, '30000')
-          ));
-        } else if (filters.volumeRange === 'xlarge') {
-          conditions.push(gte(products.volume, '30000'));
-        }
-      }
 
-      // Фильтр по форме
-      if (filters.shape) {
-        conditions.push(eq(products.shape, filters.shape));
-      }
 
-      // Фильтр по материалу
-      if (filters.material) {
-        conditions.push(eq(products.material, filters.material));
-      }
 
-      // Фильтр по размерам
+      // Фильтр по размерам - поиск в названии и характеристиках
       if (filters.dimensions) {
-        conditions.push(ilike(products.name, `%${filters.dimensions}%`));
+        const dimensionsQuery = filters.dimensions.trim();
+        if (dimensionsQuery) {
+          conditions.push(or(
+            ilike(products.name, `%${dimensionsQuery}%`),
+            ilike(products.specifications, `%${dimensionsQuery}%`)
+          ));
+        }
       }
       
       if (conditions.length > 0) {
