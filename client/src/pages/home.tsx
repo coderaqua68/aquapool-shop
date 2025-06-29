@@ -297,7 +297,7 @@ export default function Home() {
 
             <div className="relative">
               <img
-                src="https://pixabay.com/get/gea4a12bd3c6dd70d6c185eaad46df15df7b4b786ceb5814722863f8807a9951a85eee1063824a928bd8ad66de12fb8e5b1c74ee4cd76ab543b58b9da6afa62cf_1280.jpg"
+                src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
                 alt="Семья у бассейна"
                 className="rounded-xl shadow-2xl w-full"
               />
