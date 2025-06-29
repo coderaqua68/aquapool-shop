@@ -9,7 +9,7 @@ import {
   consultations,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, gte, lte, desc, ilike, or } from "drizzle-orm";
+import { eq, and, gte, lte, desc, ilike, or, sql } from "drizzle-orm";
 
 interface ProductFilters {
   category?: string; 
@@ -49,6 +49,7 @@ export interface IStorage {
   // Categories
   getCategories(): Promise<Category[]>;
   getCategory(slug: string): Promise<Category | undefined>;
+  getCategoryStats(categorySlug: string): Promise<{ count: number; minPrice: number } | null>;
   createCategory(category: InsertCategory): Promise<Category>;
   
   // Orders
@@ -454,6 +455,46 @@ export class DatabaseStorage implements IStorage {
   async getCategory(slug: string): Promise<Category | undefined> {
     const [category] = await db.select().from(categories).where(eq(categories.slug, slug));
     return category;
+  }
+
+  async getCategoryStats(categorySlug: string): Promise<{ count: number; minPrice: number } | null> {
+    // Маппинг главных категорий к категориям товаров
+    const categoryMapping: { [key: string]: string[] } = {
+      'karkasnye-basseyny': ['Каркасные бассейны', 'karkasnye-basseyny'],
+      'morozoustojchivye-basseyny': ['Морозоустойчивые бассейны', 'morozoustojchivye-basseyny'],
+      'naduvnye-basseyny': ['Надувные бассейны', 'naduvnye-basseyny'], 
+      'dzhakuzi-intex': ['Джакузи INTEX', 'dzhakuzi-intex'],
+      'dzhakuzi-bestway': ['Джакузи Bestway', 'dzhakuzi-bestway'],
+      'zapasnye-chashi': ['Запасные чаши', 'zapasnye-chashi']
+    };
+
+    const categoryNames = categoryMapping[categorySlug];
+    if (!categoryNames) return null;
+
+    try {
+      // Получаем статистику по категории
+      const categoryProducts = await db.select({
+        count: sql<number>`count(*)::int`,
+        minPrice: sql<number>`min(cast(${products.price} as numeric))::int`
+      })
+      .from(products)
+      .where(or(
+        eq(products.category, categoryNames[0]),
+        eq(products.category, categoryNames[1]),
+        ilike(products.name, `%${categoryNames[0].split(' ')[0]}%`)
+      ));
+
+      const stats = categoryProducts[0];
+      if (!stats || stats.count === 0) return null;
+
+      return {
+        count: stats.count,
+        minPrice: stats.minPrice || 0
+      };
+    } catch (error) {
+      console.error('Error getting category stats:', error);
+      return null;
+    }
   }
 
   async createCategory(insertCategory: InsertCategory): Promise<Category> {
