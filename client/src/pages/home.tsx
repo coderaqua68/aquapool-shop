@@ -237,7 +237,7 @@ export default function Home() {
                     <div className="absolute bottom-0 left-0 right-0 p-6 text-white transform group-hover:translate-y-1 transition-transform duration-300">
                       <h3 className="text-2xl font-bold mb-2 group-hover:text-cyan-300 transition-colors duration-300">{category.name}</h3>
                       <p className="text-sm opacity-90 group-hover:opacity-100 transition-opacity duration-300">
-                        {category.minPrice > 0 ? `От ${category.minPrice.toLocaleString()} ₽` : "от 1 500 ₽"} • {category.productCount > 0 ? `${category.productCount} товаров` : "товары"}
+                        {category.minPrice > 0 ? `От ${category.minPrice.toLocaleString()} ₽` : "Цена по запросу"} • {category.productCount > 0 ? `${category.productCount} товар${category.productCount > 4 ? 'ов' : category.productCount === 1 ? '' : 'а'}` : "Товары"}
                       </p>
                     </div>
                     {/* Эффект блеска при наведении */}

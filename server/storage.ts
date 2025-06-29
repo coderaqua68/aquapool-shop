@@ -11,7 +11,7 @@ import {
   type InsertSiteSetting
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, gte, lte, desc, ilike, or, sql } from "drizzle-orm";
+import { eq, and, gte, lte, desc, ilike, or, sql, inArray } from "drizzle-orm";
 
 // Import products table
 import { products, categories, orders, consultations, siteSettings } from "@shared/schema";
@@ -370,11 +370,22 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCategoryStats(categorySlug: string): Promise<{ count: number; minPrice: number } | null> {
+    // Маппинг главных категорий к их подкатегориям
+    const categoryMapping: { [key: string]: string[] } = {
+      'karkasnye-basseyny': ['intex-karkasnye', 'bestway-karkasnye'],
+      'morozostojkie-basseyny': ['morozostojkie-basseyny'],
+      'dzjakuzi-intex': ['dzjakuzi-intex'],
+      'dzjakuzi-bestway': ['dzjakuzi-bestway'],
+      'zapasnye-chashi': ['zapasnye-chashi', 'laguna-films', 'azuro-films', 'gre-films', 'atlantic-pool-films', 'larimar-films']
+    };
+
+    const subcategories = categoryMapping[categorySlug] || [categorySlug];
+    
     const result = await db.select({
       count: sql<number>`count(*)::int`,
       minPrice: sql<number>`min(${products.price}::int)::int`
     }).from(products)
-      .where(eq(products.category, categorySlug));
+      .where(inArray(products.category, subcategories));
 
     const stats = result[0];
     if (!stats || stats.count === 0) {
