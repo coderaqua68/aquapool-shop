@@ -380,7 +380,7 @@ export default function Home() {
                   ✈️
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">Напишите в Telegram</h3>
-                <p className="text-[hsl(207,90%,54%)] font-semibold">@aquapool_bot</p>
+                <p className="text-[hsl(207,90%,54%)] font-semibold">@aquapool_manager</p>
               </div>
 
               <div className="text-center">
