@@ -42,28 +42,18 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/catalog/morozostojkie-basseyny" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
-                  Морозоустойчивые бассейны
+                <Link href="/catalog" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
+                  Все товары
                 </Link>
               </li>
               <li>
-                <Link href="/catalog/naduvnye-basseyny" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
-                  Надувные бассейны
+                <Link href="/catalog?brand=INTEX" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
+                  Бассейны INTEX
                 </Link>
               </li>
               <li>
-                <Link href="/catalog/dzjakuzi-intex" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
-                  Джакузи INTEX
-                </Link>
-              </li>
-              <li>
-                <Link href="/catalog/nasosy-filtry" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
-                  Насосы и фильтры
-                </Link>
-              </li>
-              <li>
-                <Link href="/catalog/aksessuary" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
-                  Аксессуары
+                <Link href="/catalog?brand=Bestway" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
+                  Бассейны Bestway
                 </Link>
               </li>
             </ul>
