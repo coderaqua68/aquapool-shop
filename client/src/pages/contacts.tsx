@@ -124,11 +124,16 @@ export default function Contacts() {
                       <MapPin className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Адрес склада</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Наш склад</h3>
                       <p className="text-gray-700 font-medium">
-                        г. Химки, ул. Складская, 15
+                        г. Химки
                       </p>
-                      <p className="text-gray-600 text-sm">Самовывоз и выставочный зал</p>
+                      <p className="text-gray-600 text-sm">Работаем только с доставкой</p>
+                      <div className="mt-2 p-2 bg-orange-50 rounded-md">
+                        <p className="text-orange-700 text-xs">
+                          ⚠️ Самовывоз временно недоступен
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
