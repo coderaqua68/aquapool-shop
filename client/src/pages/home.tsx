@@ -91,12 +91,13 @@ export default function Home() {
     }));
   };
 
-  // WhatsApp consultation function for hero button
-  const handleHeroConsultationWhatsApp = () => {
-    const whatsappMessage = 'Здравствуйте! Мне нужна консультация по выбору бассейна. Помогите пожалуйста подобрать подходящий вариант.';
-    const encodedMessage = encodeURIComponent(whatsappMessage);
-    const whatsappUrl = `https://wa.me/79285668729?text=${encodedMessage}`;
-    window.open(whatsappUrl, '_blank');
+  // Hero consultation button function
+  const handleHeroConsultation = () => {
+    // Прокрутка к форме консультации
+    const consultationSection = document.getElementById('consultation-section');
+    if (consultationSection) {
+      consultationSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   // Главные категории с изображениями
@@ -192,7 +193,7 @@ export default function Home() {
                   size="lg"
                   variant="outline"
                   className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-white/30 px-8 py-4"
-                  onClick={handleHeroConsultationWhatsApp}
+                  onClick={handleHeroConsultation}
                 >
                   Получить консультацию
                 </Button>
@@ -402,7 +403,7 @@ export default function Home() {
       </section>
 
       {/* Consultation Form */}
-      <section className="py-16 bg-gray-50">
+      <section id="consultation-section" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">

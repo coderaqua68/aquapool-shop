@@ -11,6 +11,7 @@ import Catalog from "./pages/catalog";
 import Product from "./pages/product";
 import Cart from "./pages/cart";
 import Checkout from "./pages/checkout";
+import OrderConfirmation from "./pages/order-confirmation";
 import About from "./pages/about";
 import Contacts from "./pages/contacts";
 import Delivery from "./pages/delivery";
@@ -43,6 +44,7 @@ function Router() {
         <Route path="/product/:identifier" component={Product} />
         <Route path="/cart" component={Cart} />
         <Route path="/checkout" component={Checkout} />
+        <Route path="/order-confirmation" component={OrderConfirmation} />
         <Route path="/about" component={About} />
         <Route path="/contacts" component={Contacts} />
         <Route path="/delivery" component={Delivery} />

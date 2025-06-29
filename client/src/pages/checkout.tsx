@@ -33,12 +33,8 @@ export default function Checkout() {
       return response.json();
     },
     onSuccess: (order) => {
-      toast({
-        title: "Заказ оформлен!",
-        description: `Заказ №${order.id} принят в обработку. Мы свяжемся с вами в ближайшее время.`,
-      });
       clearCart();
-      setLocation("/");
+      setLocation(`/order-confirmation?orderId=${order.id}`);
     },
     onError: () => {
       toast({

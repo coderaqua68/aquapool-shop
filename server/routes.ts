@@ -640,6 +640,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get specific order by ID
+  app.get("/api/orders/:id", async (req, res) => {
+    try {
+      const orderId = parseInt(req.params.id);
+      if (isNaN(orderId)) {
+        return res.status(400).json({ message: "Invalid order ID" });
+      }
+
+      const order = await storage.getOrder(orderId);
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+
+      res.json(order);
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error });
+    }
+  });
+
   // Consultations
   app.post("/api/consultations", async (req, res) => {
     try {
