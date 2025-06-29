@@ -118,32 +118,20 @@ export class DatabaseStorage implements IStorage {
         ));
       }
 
-      // Фильтр по типу бассейна (на основе названия и характеристик)
+      // Фильтр по типу бассейна (на основе категории)
       if (filters.poolType) {
         const poolType = filters.poolType;
         if (poolType === 'Каркасный') {
-          conditions.push(or(
-            ilike(products.name, '%каркасный%'),
-            ilike(products.specifications, '%каркасный%')
-          ));
+          conditions.push(eq(products.category, 'karkasnye-basseyny'));
         } else if (poolType === 'Морозоустойчивый') {
-          conditions.push(or(
-            ilike(products.name, '%морозоустойчив%'),
-            ilike(products.specifications, '%морозоустойчив%')
-          ));
+          conditions.push(eq(products.category, 'morozostojkie-basseyny'));
         } else if (poolType === 'Джакузи') {
           conditions.push(or(
-            ilike(products.name, '%джакузи%'),
-            ilike(products.specifications, '%джакузи%'),
-            ilike(products.name, '%spa%'),
-            ilike(products.specifications, '%spa%')
+            eq(products.category, 'dzjakuzi-intex'),
+            eq(products.category, 'dzjakuzi-bestway')
           ));
         } else if (poolType === 'Запасные чаши') {
-          conditions.push(or(
-            ilike(products.name, '%чаша%'),
-            ilike(products.specifications, '%чаша%'),
-            ilike(products.name, '%лайнер%')
-          ));
+          conditions.push(eq(products.category, 'zapasnye-chashi'));
         }
       }
 

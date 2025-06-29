@@ -213,7 +213,6 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
               <SelectItem value="all">Любая форма</SelectItem>
               <SelectItem value="Круглый">Круглый</SelectItem>
               <SelectItem value="Прямоугольный">Прямоугольный</SelectItem>
-              <SelectItem value="Овальный">Овальный</SelectItem>
             </SelectContent>
           </Select>
         </CardContent>
@@ -232,8 +231,7 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
             <SelectContent>
               <SelectItem value="all">Любой материал</SelectItem>
               <SelectItem value="ПВХ">ПВХ</SelectItem>
-              <SelectItem value="Винил">Винил</SelectItem>
-              <SelectItem value="Полиэстер">Полиэстер</SelectItem>
+              <SelectItem value="DuraPlus">DuraPlus</SelectItem>
             </SelectContent>
           </Select>
         </CardContent>
