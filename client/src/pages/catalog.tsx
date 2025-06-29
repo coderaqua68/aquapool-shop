@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import ProductCard from "@/components/product/product-card";
-import ProductFilters from "@/components/product/product-filters";
+import Filters from "@/components/product/filters";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Product } from "@shared/schema";
+import type { Product, ProductFilters } from "@shared/schema";
 
 export default function Catalog() {
   const [location] = useLocation();
@@ -160,7 +160,7 @@ export default function Catalog() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Filters Sidebar */}
         <div className="lg:col-span-1">
-          <ProductFilters filters={filters} onFiltersChange={setFilters} />
+          <Filters filters={filters} onFiltersChange={setFilters} />
         </div>
 
         {/* Products Grid */}
