@@ -71,7 +71,6 @@ export default function Contacts() {
           и ответить на все ваши вопросы о бассейнах и оборудовании.
         </p>
       </section>
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
         {/* Contact Information */}
         <div className="space-y-8">
@@ -275,7 +274,6 @@ export default function Contacts() {
           </Card>
         </div>
       </div>
-
       {/* Additional Information */}
       <section className="pool-gradient rounded-xl p-8 md:p-12 text-white">
         <div className="text-center mb-8">
@@ -332,9 +330,7 @@ export default function Contacts() {
               variant="outline"
               className="bg-white/20 border-white/30 text-white hover:bg-white hover:text-[hsl(207,90%,54%)]"
               onClick={() => window.open('mailto:info@aquapool.ru', '_blank')}
-            >
-              info@aquapool.ru
-            </Button>
+            >aquapoolshop@yandex.ru</Button>
           </div>
         </div>
       </section>
