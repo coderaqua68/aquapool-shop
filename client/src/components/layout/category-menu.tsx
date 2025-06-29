@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { ChevronRight, ChevronDown } from "lucide-react";
@@ -26,6 +26,33 @@ export default function CategoryMenu() {
   const [hoveredCategory, setHoveredCategory] = useState<number | null>(null);
   const [submenuPosition, setSubmenuPosition] = useState<{top: number, left: number} | null>(null);
   const categoryRefs = useRef<{[key: number]: HTMLDivElement | null}>({});
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleShowSubmenu = useCallback((categoryId: number, rect: DOMRect) => {
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current);
+      hideTimeoutRef.current = null;
+    }
+    setHoveredCategory(categoryId);
+    setSubmenuPosition({
+      top: rect.top,
+      left: rect.right + 8
+    });
+  }, []);
+
+  const handleHideSubmenu = useCallback(() => {
+    hideTimeoutRef.current = setTimeout(() => {
+      setHoveredCategory(null);
+      setSubmenuPosition(null);
+    }, 300); // 300ms задержка перед скрытием
+  }, []);
+
+  const handleKeepSubmenu = useCallback(() => {
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current);
+      hideTimeoutRef.current = null;
+    }
+  }, []);
 
   const { data: mainCategories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories/main"],
@@ -66,19 +93,12 @@ export default function CategoryMenu() {
                       className="relative group"
                       ref={(el) => categoryRefs.current[category.id] = el}
                       onMouseEnter={(e) => {
-                        setHoveredCategory(category.id);
                         if (categorySubcategories.length > 0) {
                           const rect = e.currentTarget.getBoundingClientRect();
-                          setSubmenuPosition({
-                            top: rect.top,
-                            left: rect.right + 8
-                          });
+                          handleShowSubmenu(category.id, rect);
                         }
                       }}
-                      onMouseLeave={() => {
-                        setHoveredCategory(null);
-                        setSubmenuPosition(null);
-                      }}
+                      onMouseLeave={handleHideSubmenu}
                     >
                       <Link
                         to={`/catalog/${category.slug}`}
@@ -107,11 +127,8 @@ export default function CategoryMenu() {
                             left: `${submenuPosition.left}px`,
                             top: `${submenuPosition.top}px`
                           }}
-                          onMouseEnter={() => setHoveredCategory(category.id)}
-                          onMouseLeave={() => {
-                            setHoveredCategory(null);
-                            setSubmenuPosition(null);
-                          }}
+                          onMouseEnter={handleKeepSubmenu}
+                          onMouseLeave={handleHideSubmenu}
                         >
                           <h4 className="font-semibold text-gray-900 mb-3 text-sm border-b border-gray-100 pb-2">{category.name}</h4>
                           <div className="space-y-1 max-h-[400px] overflow-y-auto">
