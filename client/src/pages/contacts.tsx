@@ -307,8 +307,9 @@ export default function Contacts() {
             <Button
               variant="outline"
               className="bg-white/20 border-white/30 text-white hover:bg-white hover:text-[hsl(207,90%,54%)]"
+              onClick={() => window.open('https://t.me/aquapool_manager', '_blank')}
             >
-              @aquapool_bot
+              @aquapool_manager
             </Button>
           </div>
 

@@ -90,7 +90,6 @@ export default function Payment() {
               <h4 className="font-medium text-gray-900 mb-2">Условия оплаты</h4>
               <ul className="space-y-1">
                 <li>• Все цены указаны в рублях</li>
-                <li>• НДС включен в стоимость товаров</li>
                 <li>• Предоплата 100% при онлайн заказе</li>
                 <li>• Возможна рассрочка для крупных заказов</li>
               </ul>
