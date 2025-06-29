@@ -521,7 +521,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.json([]);
       }
       
-      const suggestions = await storage.getSearchSuggestions(query);
+      // Правильная декодировка URL для поддержки кириллицы
+      const decodedQuery = decodeURIComponent(query);
+      
+      const suggestions = await storage.getSearchSuggestions(decodedQuery);
       res.json(suggestions);
     } catch (error) {
       console.error("Error fetching search suggestions:", error);
