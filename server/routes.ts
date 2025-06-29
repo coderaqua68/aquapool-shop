@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertOrderSchema, insertConsultationSchema, insertProductSchema } from "@shared/schema";
+import { sendConsultationRequest, sendOrderNotification, testTelegramBot } from "./telegram";
 import fetch from "node-fetch";
 import { JSDOM } from "jsdom";
 
@@ -613,6 +614,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const orderData = insertOrderSchema.parse(req.body);
       const order = await storage.createOrder(orderData);
+
+      // Отправляем уведомление в Telegram
+      try {
+        await sendOrderNotification({
+          orderId: order.id,
+          customerName: order.customerName,
+          phone: order.customerPhone,
+          email: order.customerEmail || 'Не указан',
+          deliveryAddress: order.deliveryAddress || 'Не указан',
+          items: JSON.parse(order.items),
+          totalAmount: order.totalAmount,
+          paymentMethod: order.paymentMethod,
+          deliveryMethod: order.deliveryMethod
+        });
+        console.log(`Уведомление о заказе #${order.id} отправлено в Telegram`);
+      } catch (telegramError) {
+        console.error('Ошибка отправки уведомления о заказе в Telegram:', telegramError);
+        // Не прерываем выполнение, заказ должен быть создан даже если Telegram недоступен
+      }
+
       res.status(201).json(order);
     } catch (error) {
       res.status(400).json({ message: "Invalid order data", error });
@@ -624,6 +645,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const consultationData = insertConsultationSchema.parse(req.body);
       const consultation = await storage.createConsultation(consultationData);
+
+      // Отправляем заявку на консультацию в Telegram
+      try {
+        await sendConsultationRequest({
+          name: consultation.name,
+          phone: consultation.phone,
+          message: consultation.message || 'Запрос консультации'
+        });
+        console.log(`Заявка на консультацию от ${consultation.name} отправлена в Telegram`);
+      } catch (telegramError) {
+        console.error('Ошибка отправки заявки на консультацию в Telegram:', telegramError);
+        // Не прерываем выполнение, консультация должна быть создана даже если Telegram недоступен
+      }
+
       res.status(201).json(consultation);
     } catch (error) {
       res.status(400).json({ message: "Invalid consultation data", error });

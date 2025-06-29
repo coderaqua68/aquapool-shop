@@ -1,0 +1,119 @@
+import TelegramBot from 'node-telegram-bot-api';
+
+// Конфигурация бота
+const BOT_TOKEN = '7550930591:AAHZHqOnklv8EFkID5XaTkgzCrGwhY3Ex7M';
+const ADMIN_CHAT_ID = '5696137293';
+
+// Создаем экземпляр бота
+const bot = new TelegramBot(BOT_TOKEN, { polling: false });
+
+// Функция для отправки заявки на обратную связь
+export async function sendConsultationRequest(data: {
+  name: string;
+  phone: string;
+  message: string;
+}) {
+  try {
+    const messageText = `
+🔔 <b>Новая заявка на обратную связь</b>
+
+👤 <b>Имя:</b> ${data.name}
+📞 <b>Телефон:</b> ${data.phone}
+💬 <b>Сообщение:</b> ${data.message}
+
+⏰ <b>Время:</b> ${new Date().toLocaleString('ru-RU', {
+      timeZone: 'Europe/Moscow',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    })} МСК
+    `;
+
+    await bot.sendMessage(ADMIN_CHAT_ID, messageText, {
+      parse_mode: 'HTML'
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Ошибка отправки в Telegram:', error);
+    return { success: false, error: error };
+  }
+}
+
+// Функция для отправки информации о заказе
+export async function sendOrderNotification(orderData: {
+  orderId: number;
+  customerName: string;
+  phone: string;
+  email: string;
+  deliveryAddress: string;
+  items: Array<{
+    name: string;
+    sku: string;
+    quantity: number;
+    price: string;
+  }>;
+  totalAmount: string;
+  paymentMethod: string;
+  deliveryMethod: string;
+}) {
+  try {
+    // Формируем список товаров
+    const itemsList = orderData.items.map((item, index) => 
+      `${index + 1}. <b>${item.name}</b>\n   📦 Артикул: ${item.sku}\n   📊 Количество: ${item.quantity} шт.\n   💰 Цена: ${item.price} ₽`
+    ).join('\n\n');
+
+    const messageText = `
+🛒 <b>НОВЫЙ ЗАКАЗ #${orderData.orderId}</b>
+
+👤 <b>Покупатель:</b>
+• Имя: ${orderData.customerName}
+• Телефон: ${orderData.phone}
+• Email: ${orderData.email}
+
+📦 <b>Товары:</b>
+${itemsList}
+
+💵 <b>Общая сумма:</b> ${orderData.totalAmount} ₽
+
+🚚 <b>Доставка:</b> ${orderData.deliveryMethod}
+📍 <b>Адрес:</b> ${orderData.deliveryAddress}
+
+💳 <b>Оплата:</b> ${orderData.paymentMethod}
+
+⏰ <b>Время заказа:</b> ${new Date().toLocaleString('ru-RU', {
+      timeZone: 'Europe/Moscow',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    })} МСК
+
+📞 <b>Действие:</b> Свяжитесь с клиентом для подтверждения заказа
+    `;
+
+    await bot.sendMessage(ADMIN_CHAT_ID, messageText, {
+      parse_mode: 'HTML'
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Ошибка отправки заказа в Telegram:', error);
+    return { success: false, error: error };
+  }
+}
+
+// Функция для тестирования соединения с ботом
+export async function testTelegramBot() {
+  try {
+    const me = await bot.getMe();
+    console.log('Telegram бот успешно подключен:', me.username);
+    return { success: true, botInfo: me };
+  } catch (error) {
+    console.error('Ошибка подключения к Telegram боту:', error);
+    return { success: false, error: error };
+  }
+}
