@@ -249,6 +249,14 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Cleaned up backend filters and statistics to exclude inflatable pool references
   - Updated category display grid from 6 to 5 categories on homepage
   - Maintained clean category structure focusing on frame pools, winter pools, jacuzzis, and spare bowls
+- June 29, 2025: Comprehensive filtering system improvements and navigation fixes
+  - Fixed category hierarchy: main navigation menu now shows only parent categories (Каркасные бассейны, Морозоустойчивые, etc.)
+  - Implemented proper parent-child category logic: main categories display products from all subcategories
+  - Fixed "Каркасные бассейны" to show products from both "intex-karkasnye" and "bestway-karkasnye" subcategories
+  - Added debounce (800ms delay) for dimensions search filter to prevent API calls on every keystroke
+  - Removed brand filter from product filters interface since brands are already selected via subcategories
+  - Enhanced filter user experience: users can now type complete dimensions like "488x122" without interruptions
+  - Verified category filtering works correctly: 65 products properly distributed across parent and child categories
 
 ## Production Readiness
 

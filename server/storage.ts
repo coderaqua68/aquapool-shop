@@ -93,17 +93,13 @@ export class DatabaseStorage implements IStorage {
           const subcategories = await db.select().from(categories)
             .where(eq(categories.parentId, category.id));
           
-          console.log(`Category "${filters.category}": found ${subcategories.length} subcategories`);
-          
           if (subcategories.length > 0) {
             // Это родительская категория - включаем товары из всех дочерних категорий
             const subcategorySlugs = subcategories.map(sub => sub.slug);
-            console.log(`Searching in subcategories: ${subcategorySlugs.join(', ')}`);
             const categoryConditions = subcategorySlugs.map(slug => eq(products.category, slug));
             conditions.push(or(...categoryConditions));
           } else {
             // Это дочерняя категория - обычная фильтрация
-            console.log(`Direct category search: ${filters.category}`);
             conditions.push(eq(products.category, filters.category));
           }
         }
