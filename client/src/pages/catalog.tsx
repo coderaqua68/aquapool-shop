@@ -13,9 +13,10 @@ export default function Catalog() {
   // Parse URL parameters
   useEffect(() => {
     console.log('[DEBUG] Current location:', location);
-    const urlPart = location.split('?')[1] || '';
-    console.log('[DEBUG] URL part after ?:', urlPart);
-    const params = new URLSearchParams(urlPart);
+    console.log('[DEBUG] window.location.search:', window.location.search);
+    
+    // Используем window.location.search вместо парсинга из location
+    const params = new URLSearchParams(window.location.search);
     console.log('[DEBUG] URLSearchParams:', Array.from(params.entries()));
     const categoryFromPath = location.split('/catalog/')[1]?.split('?')[0];
     
