@@ -282,7 +282,7 @@ export default function Contacts() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="text-center">
             <div className="bg-white/20 backdrop-blur-sm p-6 rounded-xl mb-4">
-              <MessageCircle className="w-12 h-12 mx-auto" />
+              <Phone className="w-12 h-12 mx-auto" />
             </div>
             <h3 className="text-xl font-semibold mb-2">Написать в WhatsApp</h3>
             <p className="opacity-90 mb-4">
