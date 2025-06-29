@@ -117,12 +117,6 @@ export default function Home() {
       imageUrl: "https://intex-bassein.ru/upload/iblock/66a/j1psn0j08u4cf15jvvx123oewb70tbh2.png"
     },
     {
-      id: 3,
-      name: "Надувные бассейны",
-      slug: "naduvnye-basseyny",
-      imageUrl: "https://cdn1.ozone.ru/s3/multimedia-f/6364934463.jpg"
-    },
-    {
       id: 4,
       name: "Джакузи INTEX",
       slug: "dzjakuzi-intex",

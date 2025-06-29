@@ -243,6 +243,12 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Created dedicated mutation for image-only updates with real-time preview functionality
   - Streamlined workflow: click button → paste new URL → preview → save, all in single interface
   - Significantly reduced time required for bulk photo updates across large product catalogs
+- June 29, 2025: Removed "Надувные бассейны" category completely from the platform
+  - Deleted category and all subcategories from database (4 total categories removed)
+  - Removed from homepage category listings and navigation menus
+  - Cleaned up backend filters and statistics to exclude inflatable pool references
+  - Updated category display grid from 6 to 5 categories on homepage
+  - Maintained clean category structure focusing on frame pools, winter pools, jacuzzis, and spare bowls
 
 ## Production Readiness
 
