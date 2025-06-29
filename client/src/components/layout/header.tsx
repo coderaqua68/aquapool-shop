@@ -93,7 +93,7 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <img 
-              src="@assets/ChatGPT Image 29 июн. 2025 г., 16_45_15_1751204798609.png" 
+              src="/attached_assets/ChatGPT Image 29 июн. 2025 г., 16_45_15_1751204798609.png" 
               alt="AquaPool" 
               className="h-12 w-auto mr-3"
             />
