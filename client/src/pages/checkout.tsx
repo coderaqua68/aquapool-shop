@@ -55,7 +55,7 @@ export default function Checkout() {
     const orderData = {
       ...formData,
       items: JSON.stringify(items),
-      totalAmount: (getTotal() + (getTotal() >= 50000 ? 0 : 2000)).toString(),
+      totalAmount: getTotal().toString(),
     };
     
     orderMutation.mutate(orderData);
