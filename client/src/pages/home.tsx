@@ -45,7 +45,8 @@ export default function Home() {
   // Mutation для отправки заявки на консультацию
   const consultationMutation = useMutation({
     mutationFn: async (data: { customerName: string; customerPhone: string; message?: string }) => {
-      return await apiRequest("/api/consultations", "POST", data);
+      const response = await apiRequest("POST", "/api/consultations", data);
+      return await response.json();
     },
     onSuccess: () => {
       toast({
