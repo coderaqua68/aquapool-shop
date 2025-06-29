@@ -8,7 +8,7 @@ import type { Product, ProductFilters } from "@shared/schema";
 
 export default function Catalog() {
   const [location] = useLocation();
-  const [filters, setFilters] = useState<any>({});
+  const [filters, setFilters] = useState<ProductFilters>({});
   const [urlKey, setUrlKey] = useState(0); // Триггер для обновления
 
   // Parse URL parameters
@@ -17,30 +17,35 @@ export default function Catalog() {
     const params = new URLSearchParams(window.location.search);
     const categoryFromPath = location.split('/catalog/')[1]?.split('?')[0];
     
-    const newFilters: any = {};
+    const newFilters: ProductFilters = {};
     
     if (categoryFromPath) {
       newFilters.category = categoryFromPath;
     }
     
-    if (params.get('search')) {
-      newFilters.search = params.get('search');
+    const searchParam = params.get('search');
+    if (searchParam) {
+      newFilters.search = searchParam;
     }
     
-    if (params.get('brand')) {
-      newFilters.brand = params.get('brand');
+    const minPriceParam = params.get('minPrice');
+    if (minPriceParam) {
+      newFilters.minPrice = parseInt(minPriceParam);
     }
     
-    if (params.get('minPrice')) {
-      newFilters.minPrice = parseInt(params.get('minPrice')!);
+    const maxPriceParam = params.get('maxPrice');
+    if (maxPriceParam) {
+      newFilters.maxPrice = parseInt(maxPriceParam);
     }
     
-    if (params.get('maxPrice')) {
-      newFilters.maxPrice = parseInt(params.get('maxPrice')!);
+    const dimensionsParam = params.get('dimensions');
+    if (dimensionsParam) {
+      newFilters.dimensions = dimensionsParam;
     }
     
-    if (params.get('inStock')) {
-      newFilters.inStock = params.get('inStock') === 'true';
+    const sortByParam = params.get('sortBy');
+    if (sortByParam) {
+      newFilters.sortBy = sortByParam;
     }
     
     setFilters(newFilters);
@@ -79,11 +84,11 @@ export default function Catalog() {
       const params = new URLSearchParams();
       
       if (filters.category) params.append('category', filters.category);
-      if (filters.brand) params.append('brand', filters.brand);
       if (filters.search) params.append('search', filters.search);
       if (filters.minPrice) params.append('minPrice', filters.minPrice.toString());
       if (filters.maxPrice) params.append('maxPrice', filters.maxPrice.toString());
-      if (filters.inStock) params.append('inStock', 'true');
+      if (filters.dimensions) params.append('dimensions', filters.dimensions);
+      if (filters.sortBy) params.append('sortBy', filters.sortBy);
       
       const url = `/api/products?${params}`;
       
