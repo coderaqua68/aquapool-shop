@@ -204,6 +204,10 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Updated "About Us" page to reflect online-only business model: removed physical store references and installation services
   - Implemented new professional logo across all pages (header, footer, about page) replacing emoji-based branding
   - Enhanced about page with company logo display in dedicated section with proper background styling
+- June 29, 2025: Updated contact information with new business email
+  - Replaced all email addresses throughout the site with aquapoolshop@yandex.ru
+  - Updated footer, contact page, order confirmation, and SEO structured data
+  - Maintained consistency across all customer-facing communication channels
 
 ## Production Readiness
 

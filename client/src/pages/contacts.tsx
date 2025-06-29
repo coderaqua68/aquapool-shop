@@ -116,7 +116,7 @@ export default function Contacts() {
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900 mb-2">Email</h3>
                       <p className="text-[hsl(207,90%,54%)] font-semibold">
-                        info@aquapool.ru
+                        aquapoolshop@yandex.ru
                       </p>
                       <p className="text-gray-600 text-sm">Отвечаем в течение 1 часа</p>
                     </div>

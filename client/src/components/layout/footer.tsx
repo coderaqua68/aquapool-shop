@@ -108,7 +108,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center">
                 <span className="mr-3 text-[hsl(188,83%,70%)]">✉️</span>
-                <span className="text-gray-300">info@aquapool.ru</span>
+                <span className="text-gray-300">aquapoolshop@yandex.ru</span>
               </div>
               <div className="flex items-start">
                 <span className="mr-3 mt-1 text-[hsl(188,83%,70%)]">🕒</span>

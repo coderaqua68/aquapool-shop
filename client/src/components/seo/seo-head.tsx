@@ -90,6 +90,7 @@ export default function SEOHead({
       "contactPoint": {
         "@type": "ContactPoint",
         "contactType": "customer service",
+        "email": "aquapoolshop@yandex.ru",
         "url": `${window.location.origin}/contacts`
       },
       "sameAs": [

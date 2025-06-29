@@ -220,7 +220,7 @@ export default function OrderConfirmation() {
                     <span className="font-medium">Telegram:</span> @aquapool_manager
                   </p>
                   <p className="text-sm">
-                    <span className="font-medium">Email:</span> info@aquapool.ru
+                    <span className="font-medium">Email:</span> aquapoolshop@yandex.ru
                   </p>
                 </div>
               </CardContent>
