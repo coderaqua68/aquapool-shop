@@ -45,12 +45,12 @@ export default function Delivery() {
               </CardContent>
             </Card>
 
-            {/* Courier Moscow */}
+            {/* Courier Delivery */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Truck className="w-5 h-5 mr-2 text-[hsl(207,90%,54%)]" />
-                  Курьер по Москве и области
+                  Доставка по всей России
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -64,10 +64,10 @@ export default function Delivery() {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="font-semibold">Сроки:</span>
-                    <span>1-2 дня</span>
+                    <span>1-7 дней</span>
                   </div>
                   <div className="text-sm text-gray-600">
-                    <p>Доставка в пределах МКАД и Московской области до 30 км от МКАД.</p>
+                    <p>Курьерская доставка прямо по адресу в любой город России.</p>
                     <p>Курьер предварительно свяжется с вами для уточнения времени доставки.</p>
                   </div>
                 </div>
