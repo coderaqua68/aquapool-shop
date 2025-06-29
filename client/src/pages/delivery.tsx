@@ -23,27 +23,23 @@ export default function Delivery() {
           
           <div className="space-y-6">
             {/* Pickup */}
-            <Card>
+            <Card className="opacity-60">
               <CardHeader>
                 <CardTitle className="flex items-center">
-                  <MapPin className="w-5 h-5 mr-2 text-[hsl(207,90%,54%)]" />
+                  <MapPin className="w-5 h-5 mr-2 text-gray-400" />
                   Самовывоз
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold">Стоимость:</span>
-                    <span className="text-green-600 font-bold">Бесплатно</span>
+                    <span className="font-semibold text-gray-500">Статус:</span>
+                    <span className="text-orange-600 font-bold">Временно недоступно</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold">Сроки:</span>
-                    <span>В день заказа</span>
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    <p><strong>Адрес склада:</strong> г. Химки, ул. Складская, 15</p>
-                    <p><strong>Режим работы:</strong> Пн-Вс: 9:00-21:00</p>
-                    <p className="mt-2">У нас есть выставочный зал, где вы можете посмотреть товары перед покупкой.</p>
+                  <div className="text-sm text-gray-500">
+                    <p>AquaPool — интернет-магазин без шоурума.</p>
+                    <p>Мы работаем только с доставкой по всей России курьером прямо по адресу.</p>
+                    <p className="mt-2">Для заказа используйте курьерскую доставку или транспортные компании.</p>
                   </div>
                 </div>
               </CardContent>
@@ -127,29 +123,13 @@ export default function Delivery() {
                 <div className="text-sm text-gray-600 space-y-2">
                   <p>• Менеджер свяжется с вами в течение 15 минут после оформления заказа</p>
                   <p>• Уточнит детали заказа и способ доставки</p>
-                  <p>• Предложит удобный способ оплаты</p>
-                  <p>• Безналичный расчет или наличными курьеру</p>
+                  <p>• Оплата производится при оформлении заказа</p>
+                  
                 </div>
               </CardContent>
             </Card>
 
-            {/* Cash on Delivery */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <CreditCard className="w-5 h-5 mr-2 text-[hsl(207,90%,54%)]" />
-                  Наличными при получении
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-sm text-gray-600 space-y-2">
-                  <p>• Оплата наличными курьеру при доставке</p>
-                  <p>• Оплата в пункте самовывоза</p>
-                  <p>• Возможность осмотра товара перед оплатой</p>
-                  <p>• Предоплата не требуется</p>
-                </div>
-              </CardContent>
-            </Card>
+
 
             {/* Bank Transfer */}
             <Card>
