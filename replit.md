@@ -150,6 +150,14 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Enhanced parser to combine both product description and composition sections
   - Parser now extracts complete product information including detailed specifications, installation instructions, and full package contents
   - Successfully imports authentic product data with unique descriptions from source website
+- June 29, 2025: Completely fixed search system functionality
+  - Resolved Cyrillic character encoding issues in search URL requests by implementing custom queryFn with proper encodeURIComponent
+  - Fixed search placeholder to display "Поиск" with capital letter instead of lowercase
+  - Enhanced DatabaseStorage search to work across multiple fields: name, SKU, brand, description, and specifications
+  - Regular search now properly filters results instead of showing all 65 products
+  - Both autocomplete suggestions and regular search form submission now work correctly with Russian text
+  - Verified exact SKU search (26780) and partial text search ("каркасный") both return accurate results
+  - Search system now fully functional for all types of queries: SKU numbers, product names, brands, and dimensions
 
 ## User Preferences
 

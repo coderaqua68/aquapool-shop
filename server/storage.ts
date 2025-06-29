@@ -105,7 +105,14 @@ export class DatabaseStorage implements IStorage {
       }
       
       if (filters.search) {
-        conditions.push(ilike(products.name, `%${filters.search}%`));
+        const searchTerm = filters.search.toLowerCase();
+        conditions.push(or(
+          ilike(products.name, `%${searchTerm}%`),
+          ilike(products.sku, `%${searchTerm}%`),
+          ilike(products.brand, `%${searchTerm}%`),
+          ilike(products.description, `%${searchTerm}%`),
+          ilike(products.specifications, `%${searchTerm}%`)
+        ));
       }
 
       // Фильтр по типу бассейна (на основе названия и характеристик)
