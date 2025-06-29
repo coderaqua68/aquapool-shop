@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import ProductCard from "@/components/product/product-card";
 import { Truck, Shield, Headphones, Star } from "lucide-react";
 import type { Product, Category } from "@shared/schema";
+import poolVideo from "@assets/1167ed91748d6b92c0e2c5b0eedcf6fa_1751200746355.mp4";
 
 interface CategoryWithStats {
   id: number;
@@ -85,12 +86,19 @@ export default function Home() {
     <div>
       {/* Hero Section */}
       <section className="relative">
-        <div
-          className="h-96 md:h-[500px] bg-cover bg-center relative"
-          style={{
-            backgroundImage: `linear-gradient(rgba(6, 182, 212, 0.3), rgba(14, 165, 233, 0.3)), url('https://images.unsplash.com/photo-1571902943202-507ec2618e8f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080')`,
-          }}
-        >
+        <div className="h-96 md:h-[500px] relative overflow-hidden">
+          {/* Video Background */}
+          <video
+            className="absolute inset-0 w-full h-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+          >
+            <source src={poolVideo} type="video/mp4" />
+          </video>
+          {/* Video Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 to-blue-600/30"></div>
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center text-white px-4">
               <h2 className="text-4xl md:text-6xl font-bold mb-4">
