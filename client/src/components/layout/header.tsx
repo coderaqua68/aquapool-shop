@@ -1,8 +1,6 @@
-import { useState } from "react";
-import { Link, useLocation } from "wouter";
-import { Search, Heart, ShoppingCart, Menu, Phone, MapPin, Truck, ChevronDown } from "lucide-react";
+import { Link } from "wouter";
+import { Heart, ShoppingCart, Menu, MapPin, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useCart } from "@/hooks/use-cart";
 import { cartStore } from "@/lib/cart-store";
 import {
@@ -15,18 +13,10 @@ import {
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import CategoryMenu from "@/components/layout/category-menu";
+import SearchWithSuggestions from "@/components/search/search-with-suggestions";
 
 export default function Header() {
-  const [, setLocation] = useLocation();
-  const [searchQuery, setSearchQuery] = useState("");
   const { getItemCount } = useCart();
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      setLocation(`/catalog?search=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
 
   const catalogCategories = [
     { 
@@ -149,23 +139,10 @@ export default function Header() {
 
           {/* Search */}
           <div className="hidden md:flex flex-1 max-w-2xl mx-8">
-            <form onSubmit={handleSearch} className="relative w-full">
-              <Input
-                type="text"
-                placeholder="Поиск товаров..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pr-12"
-              />
-              <Button
-                type="submit"
-                variant="ghost"
-                size="sm"
-                className="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[hsl(207,90%,54%)]"
-              >
-                <Search className="w-4 h-4" />
-              </Button>
-            </form>
+            <SearchWithSuggestions 
+              className="w-full"
+              placeholder="Поиск по артикулу, названию, размерам..."
+            />
           </div>
 
           {/* Actions */}
