@@ -12,11 +12,13 @@ import {
   Edit, 
   Trash2,
   Package,
-  TrendingUp
+  TrendingUp,
+  Settings
 } from "lucide-react";
 import ProductForm from "@/components/admin/product-form";
 import ProductsList from "@/components/admin/products-list";
 import { ProductParser } from "@/components/admin/product-parser";
+import SiteSettings from "@/components/admin/site-settings";
 import type { Product, Category } from "@shared/schema";
 
 export default function Admin() {
@@ -127,6 +129,10 @@ export default function Admin() {
             <TabsTrigger value="parser" className="flex items-center space-x-2">
               <Package className="w-4 h-4" />
               <span>Парсер</span>
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="flex items-center space-x-2">
+              <Settings className="w-4 h-4" />
+              <span>Настройки</span>
             </TabsTrigger>
           </TabsList>
 

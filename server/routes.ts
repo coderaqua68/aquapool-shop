@@ -875,6 +875,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Site Settings API
+  app.get('/api/admin/settings', adminAuth, async (req, res) => {
+    try {
+      const settings = await storage.getSiteSettings();
+      res.json(settings);
+    } catch (error) {
+      console.error('Error fetching site settings:', error);
+      res.status(500).json({ message: 'Failed to fetch settings' });
+    }
+  });
+
+  app.post('/api/admin/settings', adminAuth, async (req, res) => {
+    try {
+      const setting = await storage.createSiteSetting(req.body);
+      res.json(setting);
+    } catch (error) {
+      console.error('Error creating site setting:', error);
+      res.status(500).json({ message: 'Failed to create setting' });
+    }
+  });
+
+  app.put('/api/admin/settings/:id', adminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const setting = await storage.updateSiteSetting(id, req.body);
+      res.json(setting);
+    } catch (error) {
+      console.error('Error updating site setting:', error);
+      res.status(500).json({ message: 'Failed to update setting' });
+    }
+  });
+
+  app.delete('/api/admin/settings/:id', adminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteSiteSetting(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting site setting:', error);
+      res.status(500).json({ message: 'Failed to delete setting' });
+    }
+  });
+
+  // Public endpoint for getting active tracking settings
+  app.get('/api/tracking-settings', async (req, res) => {
+    try {
+      const settings = await storage.getActiveTrackingSettings();
+      res.json(settings);
+    } catch (error) {
+      console.error('Error fetching tracking settings:', error);
+      res.status(500).json({ message: 'Failed to fetch tracking settings' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

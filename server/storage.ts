@@ -521,6 +521,44 @@ export class DatabaseStorage implements IStorage {
     return consultation;
   }
 
+  // Site Settings
+  async getSiteSettings(): Promise<SiteSetting[]> {
+    return await db.select().from(siteSettings).orderBy(siteSettings.category, siteSettings.key);
+  }
+
+  async getSiteSetting(key: string): Promise<SiteSetting | undefined> {
+    const [setting] = await db.select().from(siteSettings).where(eq(siteSettings.key, key));
+    return setting;
+  }
+
+  async createSiteSetting(insertSetting: InsertSiteSetting): Promise<SiteSetting> {
+    const [setting] = await db
+      .insert(siteSettings)
+      .values(insertSetting)
+      .returning();
+    return setting;
+  }
+
+  async updateSiteSetting(id: number, data: Partial<InsertSiteSetting>): Promise<SiteSetting> {
+    const [setting] = await db
+      .update(siteSettings)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(siteSettings.id, id))
+      .returning();
+    return setting;
+  }
+
+  async deleteSiteSetting(id: number): Promise<void> {
+    await db.delete(siteSettings).where(eq(siteSettings.id, id));
+  }
+
+  async getActiveTrackingSettings(): Promise<SiteSetting[]> {
+    return await db
+      .select()
+      .from(siteSettings)
+      .where(and(eq(siteSettings.isActive, true), eq(siteSettings.category, 'tracking')));
+  }
+
   private generateSlug(name: string): string {
     return name
       .toLowerCase()
