@@ -143,20 +143,19 @@ export default function Home() {
             {categories.map((category) => (
               <Link key={category.id} href={`/catalog/${category.slug}`}>
                 <div className="group cursor-pointer">
-                  <div className="relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-shadow p-3">
-                    <div className="relative overflow-hidden rounded-lg">
-                      <img
-                        src={category.imageUrl || "https://images.unsplash.com/photo-1544551763-46a013bb70d5"}
-                        alt={category.name}
-                        className="w-full h-56 object-cover object-center group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                      <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                        <h3 className="text-2xl font-bold mb-2">{category.name}</h3>
-                        <p className="text-sm opacity-90">
-                          {category.minPrice > 0 ? `От ${category.minPrice.toLocaleString()} ₽` : "от 1 500 ₽"} • {category.productCount > 0 ? `${category.productCount} товаров` : "товары"}
-                        </p>
-                      </div>
+                  <div className="relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+                    <img
+                      src={category.imageUrl || "https://images.unsplash.com/photo-1544551763-46a013bb70d5"}
+                      alt={category.name}
+                      className="w-full h-60 object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                      style={{ transform: 'scale(0.95)' }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                      <h3 className="text-2xl font-bold mb-2">{category.name}</h3>
+                      <p className="text-sm opacity-90">
+                        {category.minPrice > 0 ? `От ${category.minPrice.toLocaleString()} ₽` : "от 1 500 ₽"} • {category.productCount > 0 ? `${category.productCount} товаров` : "товары"}
+                      </p>
                     </div>
                   </div>
                 </div>
