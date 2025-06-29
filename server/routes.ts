@@ -483,13 +483,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Products
   app.get("/api/products", async (req, res) => {
     try {
+      const searchQuery = req.query.search as string;
+      console.log(`[DEBUG] Search query received: "${searchQuery}"`);
+      
       const filters = {
         category: req.query.category as string,
         brand: req.query.brand as string,
         minPrice: req.query.minPrice ? parseFloat(req.query.minPrice as string) : undefined,
         maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice as string) : undefined,
         inStock: req.query.inStock ? req.query.inStock === 'true' : undefined,
-        search: req.query.search as string,
+        search: searchQuery,
         poolType: req.query.poolType as string,
         volumeRange: req.query.volumeRange as string,
         shape: req.query.shape as string,

@@ -61,6 +61,7 @@ export interface IStorage {
 
 export class DatabaseStorage implements IStorage {
   async getProducts(filters?: ProductFilters): Promise<Product[]> {
+    console.log(`[DEBUG] DatabaseStorage.getProducts called with filters:`, filters);
     let query = db.select().from(products);
     
     if (filters) {
@@ -106,6 +107,7 @@ export class DatabaseStorage implements IStorage {
       
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
+        console.log(`[DEBUG] DatabaseStorage: Searching for "${searchTerm}"`);
         conditions.push(or(
           ilike(products.name, `%${searchTerm}%`),
           ilike(products.sku, `%${searchTerm}%`),
