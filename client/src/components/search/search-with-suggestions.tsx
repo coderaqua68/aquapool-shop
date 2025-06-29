@@ -22,7 +22,7 @@ interface SearchWithSuggestionsProps {
 
 export default function SearchWithSuggestions({ 
   className,
-  placeholder = "Поиск по артикулу, названию, размерам..." 
+  placeholder = "поиск" 
 }: SearchWithSuggestionsProps) {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");

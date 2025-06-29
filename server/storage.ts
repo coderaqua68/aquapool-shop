@@ -220,6 +220,8 @@ export class DatabaseStorage implements IStorage {
     const searchTerm = query.toLowerCase().trim();
     const suggestions: SearchSuggestion[] = [];
 
+    console.log(`[Search Debug] Query: "${query}" -> searchTerm: "${searchTerm}"`);
+
     // Поиск точных совпадений по артикулу
     const exactSkuProducts = await db.select({
       id: products.id,
