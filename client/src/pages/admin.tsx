@@ -19,6 +19,7 @@ import ProductForm from "@/components/admin/product-form";
 import ProductsList from "@/components/admin/products-list";
 import { ProductParser } from "@/components/admin/product-parser";
 import SiteSettings from "@/components/admin/site-settings";
+import TelegramAdminManager from "@/components/admin/telegram-admin-manager";
 import type { Product, Category } from "@shared/schema";
 
 export default function Admin() {
@@ -113,7 +114,7 @@ export default function Admin() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:grid-cols-5">
             <TabsTrigger value="dashboard" className="flex items-center space-x-2">
               <TrendingUp className="w-4 h-4" />
               <span>Статистика</span>
@@ -129,6 +130,10 @@ export default function Admin() {
             <TabsTrigger value="parser" className="flex items-center space-x-2">
               <Package className="w-4 h-4" />
               <span>Парсер</span>
+            </TabsTrigger>
+            <TabsTrigger value="telegram" className="flex items-center space-x-2">
+              <Settings className="w-4 h-4" />
+              <span>Telegram</span>
             </TabsTrigger>
             <TabsTrigger value="settings" className="flex items-center space-x-2">
               <Settings className="w-4 h-4" />
@@ -213,6 +218,11 @@ export default function Admin() {
           {/* Product Parser */}
           <TabsContent value="parser" className="space-y-6">
             <ProductParser />
+          </TabsContent>
+
+          {/* Telegram Admin Management */}
+          <TabsContent value="telegram" className="space-y-6">
+            <TelegramAdminManager />
           </TabsContent>
 
           {/* Site Settings */}

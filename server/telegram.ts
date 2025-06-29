@@ -147,6 +147,7 @@ ${itemsList}
 export async function testTelegramBot() {
   try {
     const me = await bot.getMe();
+    const adminChatIds = await getActiveAdminChatIds();
     console.log('Telegram бот успешно подключен:', me.username);
     console.log(`Настроено ${adminChatIds.length} получателей уведомлений:`, adminChatIds.join(', '));
     
@@ -163,10 +164,11 @@ export async function testTelegramBot() {
 }
 
 // Функция для получения списка администраторов
-export function getAdminChatIds() {
+export async function getAdminChatIds() {
+  const adminChatIds = await getActiveAdminChatIds();
   return {
     chatIds: adminChatIds,
     count: adminChatIds.length,
-    rawConfig: ADMIN_CHAT_IDS
+    source: 'database'
   };
 }
