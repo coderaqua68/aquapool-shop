@@ -117,9 +117,6 @@ export default function Header() {
             <a href="#" className="hover:text-[hsl(207,90%,54%)] transition-colors">
               Telegram
             </a>
-            <a href="#" className="hover:text-[hsl(207,90%,54%)] transition-colors">
-              VK
-            </a>
             <span className="font-medium text-[hsl(207,89%,40%)]">8 (800) 123-45-67</span>
           </div>
         </div>
