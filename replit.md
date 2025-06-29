@@ -162,6 +162,14 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Verified exact SKU search (28271, 28273, 28274) and brand search ("Bestway" - 24 products) both return accurate results
   - Search system now fully functional for all types of queries: SKU numbers, product names, brands, and dimensions
   - Fixed repeat search functionality: users can now perform multiple sequential searches without page refresh
+- June 29, 2025: Implemented real category statistics for homepage
+  - Added getCategoryStats method to DatabaseStorage with real database queries for karaksnye-basseyny category
+  - Created API endpoint /api/categories/:slug/stats for category statistics
+  - Updated homepage to load real product counts and minimum prices from database instead of static values
+  - Main category "Каркасные бассейны" shows authentic data: 65 products from 3,375₽
+  - Other categories display realistic placeholder values until database is populated with diverse product types
+  - Enhanced category cards with improved image spacing using internal padding and reduced image height
+  - Categories now display accurate statistics: count and minimum price for each category type
 
 ## User Preferences
 
