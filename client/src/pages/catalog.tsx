@@ -51,7 +51,7 @@ export default function Catalog() {
       
       if (filters.category) params.append('category', filters.category);
       if (filters.brand) params.append('brand', filters.brand);
-      if (filters.search) params.append('search', filters.search);
+      if (filters.search) params.append('search', encodeURIComponent(filters.search));
       if (filters.minPrice) params.append('minPrice', filters.minPrice.toString());
       if (filters.maxPrice) params.append('maxPrice', filters.maxPrice.toString());
       if (filters.inStock) params.append('inStock', 'true');
