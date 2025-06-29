@@ -49,7 +49,6 @@ export default function SearchWithSuggestions({
     const searchTerm = query || searchQuery.trim();
     if (searchTerm) {
       const targetUrl = `/catalog?search=${encodeURIComponent(searchTerm)}`;
-      console.log('[DEBUG] Search redirecting to:', targetUrl);
       setLocation(targetUrl);
       setShowSuggestions(false);
       inputRef.current?.blur();

@@ -154,10 +154,14 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Resolved Cyrillic character encoding issues in search URL requests by implementing custom queryFn with proper encodeURIComponent
   - Fixed search placeholder to display "Поиск" with capital letter instead of lowercase
   - Enhanced DatabaseStorage search to work across multiple fields: name, SKU, brand, description, and specifications
+  - Fixed critical router issue: wouter was not properly passing URL search parameters to components
+  - Implemented window.location.search parsing instead of relying on wouter location for URL parameters
+  - Added URL change detection system to ensure search updates on every new query
   - Regular search now properly filters results instead of showing all 65 products
   - Both autocomplete suggestions and regular search form submission now work correctly with Russian text
-  - Verified exact SKU search (26780) and partial text search ("каркасный") both return accurate results
+  - Verified exact SKU search (28271, 28273, 28274) and brand search ("Bestway" - 24 products) both return accurate results
   - Search system now fully functional for all types of queries: SKU numbers, product names, brands, and dimensions
+  - Fixed repeat search functionality: users can now perform multiple sequential searches without page refresh
 
 ## User Preferences
 

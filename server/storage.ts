@@ -106,7 +106,6 @@ export class DatabaseStorage implements IStorage {
       
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
-        console.log('[SERVER DEBUG] Search term:', searchTerm);
         conditions.push(or(
           ilike(products.name, `%${searchTerm}%`),
           ilike(products.sku, `%${searchTerm}%`),
@@ -114,7 +113,6 @@ export class DatabaseStorage implements IStorage {
           ilike(products.description, `%${searchTerm}%`),
           ilike(products.specifications, `%${searchTerm}%`)
         ));
-        console.log('[SERVER DEBUG] Search conditions added');
       }
 
       // Фильтр по типу бассейна (на основе названия и характеристик)
@@ -201,14 +199,11 @@ export class DatabaseStorage implements IStorage {
       }
       
       if (conditions.length > 0) {
-        console.log('[SERVER DEBUG] Total conditions:', conditions.length);
         query = query.where(and(...conditions));
       }
     }
     
-    const results = await query.orderBy(desc(products.id));
-    console.log('[SERVER DEBUG] Query returned', results.length, 'products');
-    return results;
+    return await query.orderBy(desc(products.id));
   }
 
   async getProduct(id: number): Promise<Product | undefined> {

@@ -13,12 +13,8 @@ export default function Catalog() {
 
   // Parse URL parameters
   useEffect(() => {
-    console.log('[DEBUG] Current location:', location);
-    console.log('[DEBUG] window.location.search:', window.location.search);
-    
     // Используем window.location.search вместо парсинга из location
     const params = new URLSearchParams(window.location.search);
-    console.log('[DEBUG] URLSearchParams:', Array.from(params.entries()));
     const categoryFromPath = location.split('/catalog/')[1]?.split('?')[0];
     
     const newFilters: any = {};
@@ -29,7 +25,6 @@ export default function Catalog() {
     
     if (params.get('search')) {
       newFilters.search = params.get('search');
-      console.log('[DEBUG] Search param found:', params.get('search'));
     }
     
     if (params.get('brand')) {
@@ -91,12 +86,9 @@ export default function Catalog() {
       if (filters.inStock) params.append('inStock', 'true');
       
       const url = `/api/products?${params}`;
-      console.log('[DEBUG] Catalog API request:', url);
-      console.log('[DEBUG] Current filters:', filters);
       
       const response = await fetch(url);
       const data = await response.json();
-      console.log('[DEBUG] API response products count:', data.length);
       return data;
     },
   });
