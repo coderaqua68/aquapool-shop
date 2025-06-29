@@ -208,6 +208,12 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Replaced all email addresses throughout the site with aquapoolshop@yandex.ru
   - Updated footer, contact page, order confirmation, and SEO structured data
   - Maintained consistency across all customer-facing communication channels
+- June 29, 2025: Created comprehensive privacy policy page
+  - Added detailed privacy policy page at /privacy-policy with complete legal content
+  - Covered all aspects: data collection, usage, protection, user rights, cookie policy
+  - Updated footer link from inactive "#" to working privacy policy page
+  - Removed inactive "Гарантия" link from footer navigation for cleaner UX
+  - Enhanced site legal compliance for production launch
 
 ## Production Readiness
 

@@ -19,6 +19,7 @@ import Payment from "./pages/payment";
 import AdminLogin from "./pages/admin-login";
 import Admin from "./pages/admin";
 import TrackingDemo from "./pages/tracking-demo";
+import PrivacyPolicy from "./pages/privacy-policy";
 import NotFound from "@/pages/not-found";
 import CallbackModal from "./components/modals/callback-modal";
 import CartSidebar from "./components/cart/cart-sidebar";
@@ -51,6 +52,7 @@ function Router() {
         <Route path="/contacts" component={Contacts} />
         <Route path="/delivery" component={Delivery} />
         <Route path="/payment" component={Payment} />
+        <Route path="/privacy-policy" component={PrivacyPolicy} />
         <Route path="/admin/login" component={AdminLogin} />
         <Route path="/admin" component={Admin} />
         <Route path="/tracking-demo" component={TrackingDemo} />

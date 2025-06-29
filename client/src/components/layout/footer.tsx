@@ -123,9 +123,9 @@ export default function Footer() {
             © 2025 AquaPool. Все права защищены.
           </p>
           <div className="flex space-x-6 text-sm">
-            <a href="#" className="text-gray-400 hover:text-[hsl(188,83%,70%)] transition-colors">
+            <Link href="/privacy-policy" className="text-gray-400 hover:text-[hsl(188,83%,70%)] transition-colors">
               Политика конфиденциальности
-            </a>
+            </Link>
             <a href="#" className="text-gray-400 hover:text-[hsl(188,83%,70%)] transition-colors">
               Пользовательское соглашение
             </a>
