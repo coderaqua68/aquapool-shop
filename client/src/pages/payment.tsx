@@ -13,33 +13,34 @@ export default function Payment() {
               <CreditCard className="w-8 h-8 text-[hsl(207,90%,54%)] mr-3" />
               <h2 className="text-xl font-semibold text-gray-900">Онлайн оплата</h2>
             </div>
-            <ul className="space-y-3 text-gray-600">
+            <ul className="space-y-3 text-gray-400">
               <li>• Банковские карты Visa, MasterCard, МИР</li>
               <li>• Яндекс.Деньги, WebMoney</li>
               <li>• QIWI кошелек</li>
               <li>• СБП (Система быстрых платежей)</li>
             </ul>
-            <div className="mt-4 p-3 bg-green-50 rounded-lg">
-              <p className="text-sm text-green-700 font-medium">
-                ✓ Мгновенное зачисление платежа
+            <div className="mt-4 p-3 bg-orange-50 rounded-lg">
+              <p className="text-sm text-orange-700 font-medium">
+                ⏳ Временно недоступно
               </p>
             </div>
           </div>
 
-          {/* Наличные */}
+          {/* Сервис безопасных сделок Наложка */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="flex items-center mb-4">
-              <Banknote className="w-8 h-8 text-[hsl(207,90%,54%)] mr-3" />
-              <h2 className="text-xl font-semibold text-gray-900">Наличные</h2>
+              <Shield className="w-8 h-8 text-green-600 mr-3" />
+              <h2 className="text-xl font-semibold text-gray-900">Сервис безопасных сделок Наложка</h2>
             </div>
             <ul className="space-y-3 text-gray-600">
-              <li>• Наличными при самовывозе</li>
-              <li>• Наличными курьеру при доставке</li>
-              <li>• Оплата в офисе</li>
+              <li>• Безопасная сделка с гарантией</li>
+              <li>• Оплата через проверенный сервис</li>
+              <li>• Защита покупателя и продавца</li>
+              <li>• Возврат средств при проблемах</li>
             </ul>
-            <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-              <p className="text-sm text-blue-700 font-medium">
-                ℹ Предварительный звонок обязателен
+            <div className="mt-4 p-3 bg-green-50 rounded-lg">
+              <p className="text-sm text-green-700 font-medium">
+                ✓ Рекомендуемый способ оплаты
               </p>
             </div>
           </div>
@@ -53,7 +54,7 @@ export default function Payment() {
             <ul className="space-y-3 text-gray-600">
               <li>• Банковский перевод для юридических лиц</li>
               <li>• Счет на оплату</li>
-              <li>• Работаем с НДС</li>
+              <li>• Переводы для физических лиц</li>
             </ul>
             <div className="mt-4 p-3 bg-orange-50 rounded-lg">
               <p className="text-sm text-orange-700 font-medium">
