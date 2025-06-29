@@ -86,9 +86,13 @@ export default function CategoryMenu() {
                       
                       {/* Horizontal Submenu */}
                       {categorySubcategories.length > 0 && hoveredCategory === category.id && (
-                        <div className="absolute left-full top-0 ml-1 bg-white border border-gray-200 rounded-lg shadow-lg p-4 min-w-[250px] z-50">
-                          <h4 className="font-semibold text-gray-900 mb-3 text-sm">{category.name}</h4>
-                          <div className="space-y-1">
+                        <div className="fixed bg-white border border-gray-200 rounded-lg shadow-xl p-4 min-w-[280px] z-[9999]"
+                             style={{
+                               left: '500px', // Фиксированная позиция справа от основного меню
+                               top: `${Math.max(120, window.scrollY + 120)}px` // Адаптивная позиция по вертикали
+                             }}>
+                          <h4 className="font-semibold text-gray-900 mb-3 text-sm border-b border-gray-100 pb-2">{category.name}</h4>
+                          <div className="space-y-1 max-h-[400px] overflow-y-auto">
                             {categorySubcategories
                               .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
                               .map((subcategory) => (
