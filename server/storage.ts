@@ -65,29 +65,24 @@ export class DatabaseStorage implements IStorage {
       
       // Фильтр по категории - поддержка основных категорий с подкатегориями
       if (filters.category) {
-        // Проверяем, это основная категория или подкатегория
-        const mainCategorySubcategories: Record<string, string[]> = {
-          'karkasnye-basseyny': ['karkasnye-basseyny'],
-          'morozostojkie-basseyny': ['morozostojkie-basseyny'],
-          'dzjakuzi': ['dzjakuzi-intex', 'dzjakuzi-bestway'],
-          'zapasnye-chashi': ['zapasnye-chashi']
-        };
+        // Сначала найдем саму категорию
+        const [category] = await db.select().from(categories)
+          .where(eq(categories.slug, filters.category));
         
-        if (mainCategorySubcategories[filters.category]) {
-          // Это основная категория - нужно включить все подкатегории
+        if (category) {
+          // Проверяем, есть ли у этой категории дочерние категории
           const subcategories = await db.select().from(categories)
-            .where(eq(categories.slug, filters.category));
+            .where(eq(categories.parentId, category.id));
           
-          // Создаем условия OR для всех подкатегорий
-          const categoryConditions = [eq(products.category, filters.category)];
-          subcategories.forEach(sub => {
-            categoryConditions.push(eq(products.category, sub.slug));
-          });
-          
-          conditions.push(or(...categoryConditions));
-        } else {
-          // Это подкатегория - обычная фильтрация
-          conditions.push(eq(products.category, filters.category));
+          if (subcategories.length > 0) {
+            // Это родительская категория - включаем товары из всех дочерних категорий
+            const subcategorySlugs = subcategories.map(sub => sub.slug);
+            const categoryConditions = subcategorySlugs.map(slug => eq(products.category, slug));
+            conditions.push(or(...categoryConditions));
+          } else {
+            // Это дочерняя категория - обычная фильтрация
+            conditions.push(eq(products.category, filters.category));
+          }
         }
       }
       
@@ -401,7 +396,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getMainCategories(): Promise<Category[]> {
-    return await db.select().from(categories);
+    return await db.select().from(categories).where(sql`parent_id IS NULL`);
   }
 
   async getCategoryStats(categorySlug: string): Promise<{ count: number; minPrice: number } | null> {
