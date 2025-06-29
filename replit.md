@@ -232,7 +232,9 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Updated 45 Laguna film prices (8,625₽-39,375₽) with comprehensive pricing updates using laguna-films-price-update.js
   - Updated 4 Azuro film prices (13,500₽-21,000₽) with 25% discount using azuro-films-price-update.js
   - Updated 6 GRE film prices (20,250₽-42,000₽) with 25% discount using gre-films-price-update.js
-  - Total 288 products received accurate pricing updates with proper original/discounted price structure
+  - Updated 7 Atlantic Pool film prices (20,250₽-40,500₽) with 25% discount using atlantic-pool-films-price-update.js
+  - Updated 8 Larimar film prices (8,625₽-24,750₽) with 25% discount using larimar-films-price-update.js
+  - Total 303 products received accurate pricing updates with proper original/discounted price structure
   - All price update scripts include proper WebSocket configuration for Neon database connectivity
   - Price changes range from minor adjustments to significant corrections (e.g., 75,000₽ to 56,250₽ for bowls, complete film pricing restructure)
 
