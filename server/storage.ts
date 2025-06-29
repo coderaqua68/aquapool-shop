@@ -270,33 +270,55 @@ export class DatabaseStorage implements IStorage {
       });
     }
 
-    // Поиск по названию с точным совпадением размеров
+    // Поиск по размерам - улучшенный поиск
     const dimensionMatch = searchTerm.match(/(\d+)\s*[xх×]\s*(\d+)(?:\s*[xх×]\s*(\d+))?/);
     if (dimensionMatch) {
-      const nameProducts = await db.select({
-        id: products.id,
-        name: products.name,
-        sku: products.sku,
-        slug: products.slug,
-        price: products.price,
-        imageUrl: products.imageUrl,
-        brand: products.brand
-      }).from(products)
-        .where(ilike(products.name, `%${searchTerm}%`))
-        .limit(5);
+      // Если найдены размеры, ищем по всем комбинациям
+      const [, width, height, depth] = dimensionMatch;
+      const dimensionPatterns = [
+        `%${width} x ${height}%`,
+        `%${width}x${height}%`,
+        `%${width} х ${height}%`,
+        `%${width}х${height}%`
+      ];
+      
+      if (depth) {
+        dimensionPatterns.push(
+          `%${width} x ${height} x ${depth}%`,
+          `%${width}x${height}x${depth}%`,
+          `%${width} х ${height} х ${depth}%`,
+          `%${width}х${height}х${depth}%`
+        );
+      }
 
-      nameProducts.forEach(product => {
-        if (!suggestions.some(s => s.sku === product.sku)) {
-          suggestions.push({
-            type: 'product',
-            text: `${product.name} (арт. ${product.sku})`,
-            value: product.slug,
-            sku: product.sku,
-            price: product.price,
-            image: product.imageUrl || undefined
-          });
-        }
-      });
+      for (const pattern of dimensionPatterns) {
+        const nameProducts = await db.select({
+          id: products.id,
+          name: products.name,
+          sku: products.sku,
+          slug: products.slug,
+          price: products.price,
+          imageUrl: products.imageUrl,
+          brand: products.brand
+        }).from(products)
+          .where(ilike(products.name, pattern))
+          .limit(3);
+
+        nameProducts.forEach(product => {
+          if (!suggestions.some(s => s.sku === product.sku)) {
+            suggestions.push({
+              type: 'product',
+              text: `${product.name} (арт. ${product.sku})`,
+              value: product.slug,
+              sku: product.sku,
+              price: product.price,
+              image: product.imageUrl || undefined
+            });
+          }
+        });
+        
+        if (suggestions.length >= 5) break;
+      }
     }
 
     // Поиск по бренду
