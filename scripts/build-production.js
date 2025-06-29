@@ -8,13 +8,16 @@ import { execSync } from 'child_process';
 import { mkdirSync, existsSync } from 'fs';
 import path from 'path';
 
-function runCommand(command, description) {
+function runCommand(command, description, timeout = 300000) {
   console.log(`\n🔧 ${description}...`);
   try {
-    execSync(command, { stdio: 'inherit' });
+    execSync(command, { stdio: 'inherit', timeout });
     console.log(`✅ ${description} completed successfully`);
   } catch (error) {
     console.error(`❌ Failed to ${description.toLowerCase()}`);
+    if (error.code === 'TIMEOUT') {
+      console.error(`Build timed out after ${timeout/1000} seconds`);
+    }
     process.exit(1);
   }
 }

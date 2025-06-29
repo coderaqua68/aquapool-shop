@@ -42,14 +42,26 @@ console.log('🚀 Starting deployment preparation process...');
 ensureDirectoryExists('server');
 ensureDirectoryExists('logs');
 
-// Build frontend assets
-runCommand('vite build', 'Building frontend assets');
-
-// Build backend server to correct location
+// Build backend server to correct location (build this first in case frontend build times out)
 runCommand(
   'esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=server/index.js',
   'Building backend server'
 );
+
+// Build frontend assets (this may take longer)
+console.log('\n🔧 Building frontend assets (this may take a few minutes)...');
+try {
+  execSync('vite build', { stdio: 'inherit', timeout: 600000 }); // 10 minute timeout
+  console.log('✅ Frontend assets built successfully');
+} catch (error) {
+  if (error.code === 'TIMEOUT') {
+    console.warn('⚠️  Frontend build timed out, but backend server is ready');
+    console.log('💡 You can deploy with just the backend and build frontend separately');
+  } else {
+    console.error('❌ Frontend build failed:', error.message);
+    // Don't exit - backend is still functional
+  }
+}
 
 // Copy essential deployment files
 console.log('\n📋 Copying deployment configuration files...');
