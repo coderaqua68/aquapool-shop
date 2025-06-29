@@ -7,7 +7,7 @@ export default function PrivacyPolicy() {
       <SEOHead
         title="Политика конфиденциальности - AquaPool"
         description="Политика конфиденциальности интернет-магазина AquaPool. Информация о сборе, использовании и защите персональных данных покупателей."
-        canonical="/privacy-policy"
+        canonical="https://aquapool-shop.ru/privacy-policy"
       />
       
       <div className="container mx-auto px-4 py-12">
@@ -27,7 +27,7 @@ export default function PrivacyPolicy() {
                   Настоящая Политика конфиденциальности персональных данных (далее — Политика) 
                   действует в отношении всей информации, которую интернет-магазин AquaPool 
                   (далее — Магазин) может получить о Пользователе во время использования 
-                  им сайта aquapool.ru.
+                  им сайта aquapool-shop.ru.
                 </p>
                 <p className="text-gray-700">
                   Использование сайта означает безоговорочное согласие Пользователя с настоящей 

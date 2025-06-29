@@ -214,6 +214,11 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Updated footer link from inactive "#" to working privacy policy page
   - Removed inactive "Гарантия" link from footer navigation for cleaner UX
   - Enhanced site legal compliance for production launch
+- June 29, 2025: Updated domain throughout the site
+  - Changed domain references from aquapool.ru to aquapool-shop.ru
+  - Updated canonical URLs in privacy policy and other SEO components
+  - Updated deployment guide documentation with new domain
+  - Site ready for production deployment on aquapool-shop.ru domain
 
 ## Production Readiness
 

@@ -69,7 +69,7 @@ NODE_ENV=production
 
 ### 4.1 Купите домен
 - Любой регистратор (reg.ru, namecheap.com)
-- Например: aquapool.ru
+- Например: aquapool-shop.ru
 
 ### 4.2 Подключите к Vercel
 - В Vercel: Settings → Domains
