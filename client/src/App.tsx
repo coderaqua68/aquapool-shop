@@ -16,6 +16,7 @@ import About from "./pages/about";
 import Contacts from "./pages/contacts";
 import Delivery from "./pages/delivery";
 import Payment from "./pages/payment";
+import Favorites from "./pages/favorites";
 import AdminLogin from "./pages/admin-login";
 import Admin from "./pages/admin";
 import TrackingDemo from "./pages/tracking-demo";
@@ -46,6 +47,7 @@ function Router() {
         <Route path="/catalog/:category" component={Catalog} />
         <Route path="/product/:identifier" component={Product} />
         <Route path="/cart" component={Cart} />
+        <Route path="/favorites" component={Favorites} />
         <Route path="/checkout" component={Checkout} />
         <Route path="/order-confirmation" component={OrderConfirmation} />
         <Route path="/about" component={About} />

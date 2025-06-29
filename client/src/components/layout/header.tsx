@@ -32,6 +32,7 @@ interface Category {
 
 export default function Header() {
   const { getItemCount } = useCart();
+  const { getFavoritesCount } = useFavorites();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Получаем реальные категории из базы для мобильного меню
@@ -113,10 +114,17 @@ export default function Header() {
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" className="hidden md:flex items-center space-x-2">
-              <Heart className="w-4 h-4" />
-              <span>Избранное</span>
-            </Button>
+            <Link href="/favorites">
+              <Button variant="ghost" className="hidden md:flex items-center space-x-2">
+                <Heart className="w-4 h-4" />
+                <span>Избранное</span>
+                {getFavoritesCount() > 0 && (
+                  <span className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {getFavoritesCount()}
+                  </span>
+                )}
+              </Button>
+            </Link>
             <Button
               variant="ghost"
               className="flex items-center space-x-2"
