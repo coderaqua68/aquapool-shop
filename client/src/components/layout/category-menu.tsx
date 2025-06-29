@@ -58,7 +58,7 @@ export default function CategoryMenu() {
             Каталог товаров
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <div className="grid w-[600px] gap-3 p-6">
+            <div className="grid w-[90vw] max-w-[600px] min-w-[320px] gap-3 p-4 md:p-6">
               {mainCategories.map((category) => {
                 const categorySubcategories = subcategoriesByParent[category.id] || [];
                 
