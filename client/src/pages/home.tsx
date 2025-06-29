@@ -24,6 +24,38 @@ export default function Home() {
     queryKey: ["/api/products/popular"],
   });
 
+  // WhatsApp consultation function
+  const handleConsultationWhatsApp = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    
+    const name = formData.get('name') as string || '';
+    const phone = formData.get('phone') as string || '';
+    const message = formData.get('message') as string || '';
+    
+    // Create WhatsApp message
+    let whatsappMessage = `Здравствуйте! Меня зовут ${name || 'Клиент'}.`;
+    
+    if (phone) {
+      whatsappMessage += ` Мой номер телефона: ${phone}.`;
+    }
+    
+    whatsappMessage += ' Мне нужна консультация по выбору бассейна.';
+    
+    if (message) {
+      whatsappMessage += ` Дополнительная информация: ${message}`;
+    }
+    
+    // Encode message for URL
+    const encodedMessage = encodeURIComponent(whatsappMessage);
+    const whatsappUrl = `https://wa.me/79285668729?text=${encodedMessage}`;
+    
+    // Open WhatsApp
+    window.open(whatsappUrl, '_blank');
+  };
+
   // Главные категории с изображениями
   const staticCategories = [
     {
@@ -338,19 +370,20 @@ export default function Home() {
 
             <Card className="p-8 md:p-12">
               <CardContent>
-                <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={handleConsultationWhatsApp}>
                   <div>
                     <Label htmlFor="name">Ваше имя</Label>
-                    <Input id="name" type="text" placeholder="Введите имя" />
+                    <Input id="name" name="name" type="text" placeholder="Введите имя" />
                   </div>
                   <div>
                     <Label htmlFor="phone">Телефон</Label>
-                    <Input id="phone" type="tel" placeholder="+7 (___) ___-__-__" />
+                    <Input id="phone" name="phone" type="tel" placeholder="+7 (___) ___-__-__" />
                   </div>
                   <div className="md:col-span-2">
                     <Label htmlFor="message">Ваш вопрос (необязательно)</Label>
                     <Textarea
                       id="message"
+                      name="message"
                       rows={4}
                       placeholder="Расскажите о ваших потребностях..."
                     />
@@ -359,9 +392,9 @@ export default function Home() {
                     <Button
                       type="submit"
                       size="lg"
-                      className="bg-[hsl(207,90%,54%)] hover:bg-[hsl(207,89%,40%)] text-white px-8 py-4"
+                      className="bg-green-600 hover:bg-green-700 text-white px-8 py-4"
                     >
-                      Получить консультацию
+                      📱 Написать в WhatsApp
                     </Button>
                     <p className="text-sm text-gray-500 mt-3">
                       Нажимая кнопку, вы соглашаетесь с{" "}
