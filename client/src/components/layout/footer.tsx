@@ -75,7 +75,12 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/delivery" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
-                  Доставка и оплата
+                  Доставка
+                </Link>
+              </li>
+              <li>
+                <Link href="/payment" className="text-gray-300 hover:text-[hsl(188,83%,70%)] transition-colors">
+                  Оплата
                 </Link>
               </li>
               <li>
