@@ -230,7 +230,9 @@ AquaPool is a modern e-commerce platform specializing in swimming pools and pool
   - Updated 6 Bestway bowl prices (10,500₽-18,750₽) with 25% discount using bestway-bowls-price-update.js
   - Updated 25 INTEX bowl prices (9,000₽-56,250₽) with corrected pricing using intex-bowls-price-update.js
   - Updated 45 Laguna film prices (8,625₽-39,375₽) with comprehensive pricing updates using laguna-films-price-update.js
-  - Total 278 products received accurate pricing updates with proper original/discounted price structure
+  - Updated 4 Azuro film prices (13,500₽-21,000₽) with 25% discount using azuro-films-price-update.js
+  - Updated 6 GRE film prices (20,250₽-42,000₽) with 25% discount using gre-films-price-update.js
+  - Total 288 products received accurate pricing updates with proper original/discounted price structure
   - All price update scripts include proper WebSocket configuration for Neon database connectivity
   - Price changes range from minor adjustments to significant corrections (e.g., 75,000₽ to 56,250₽ for bowls, complete film pricing restructure)
 
