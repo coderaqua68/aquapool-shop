@@ -29,11 +29,6 @@ export default function CategoryMenu() {
     queryKey: ["/api/categories/main"],
   });
 
-  const { data: subcategories = [] } = useQuery<Category[]>({
-    queryKey: ["/api/categories", hoveredCategory, "subcategories"],
-    enabled: !!hoveredCategory,
-  });
-
   // Получаем все подкатегории для всех главных категорий
   const { data: allCategories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
@@ -58,58 +53,58 @@ export default function CategoryMenu() {
             Каталог товаров
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <div className="container mx-auto px-4">
-              <div className="grid w-full max-w-[800px] gap-3 p-4 md:p-6">
+            <div className="w-[400px] p-4">
+              <div className="space-y-2">
                 {mainCategories.map((category) => {
-                const categorySubcategories = subcategoriesByParent[category.id] || [];
-                
-                return (
-                  <div 
-                    key={category.id}
-                    className="group"
-                  >
-                    <Link
-                      to={`/catalog/${category.slug}`}
-                      className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                  const categorySubcategories = subcategoriesByParent[category.id] || [];
+                  
+                  return (
+                    <div 
+                      key={category.id}
+                      className="relative group"
+                      onMouseEnter={() => setHoveredCategory(category.id)}
+                      onMouseLeave={() => setHoveredCategory(null)}
                     >
-                      <div className="flex items-center space-x-3">
-                        {category.imageUrl && (
-                          <img 
-                            src={category.imageUrl} 
-                            alt={category.name}
-                            className="w-10 h-10 object-cover rounded"
-                          />
-                        )}
-                        <div>
-                          <h4 className="font-medium text-gray-900">{category.name}</h4>
-                          {category.description && (
-                            <p className="text-sm text-gray-600">{category.description}</p>
+                      <Link
+                        to={`/catalog/${category.slug}`}
+                        className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors w-full"
+                      >
+                        <div className="flex items-center space-x-3">
+                          {category.imageUrl && (
+                            <img 
+                              src={category.imageUrl} 
+                              alt={category.name}
+                              className="w-8 h-8 object-cover rounded"
+                            />
                           )}
+                          <span className="font-medium text-gray-900">{category.name}</span>
                         </div>
-                      </div>
-                      {categorySubcategories.length > 0 && (
-                        <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600" />
+                        {categorySubcategories.length > 0 && (
+                          <ChevronRight className="w-4 h-4 text-gray-400" />
+                        )}
+                      </Link>
+                      
+                      {/* Horizontal Submenu */}
+                      {categorySubcategories.length > 0 && hoveredCategory === category.id && (
+                        <div className="absolute left-full top-0 ml-1 bg-white border border-gray-200 rounded-lg shadow-lg p-4 min-w-[250px] z-50">
+                          <h4 className="font-semibold text-gray-900 mb-3 text-sm">{category.name}</h4>
+                          <div className="space-y-1">
+                            {categorySubcategories
+                              .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+                              .map((subcategory) => (
+                              <Link
+                                key={subcategory.id}
+                                to={`/catalog/${subcategory.slug}`}
+                                className="block p-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded transition-colors"
+                              >
+                                {subcategory.name}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
                       )}
-                    </Link>
-                    
-                    {/* Subcategories */}
-                    {categorySubcategories.length > 0 && (
-                      <div className="ml-6 mt-2 space-y-1">
-                        {categorySubcategories
-                          .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
-                          .map((subcategory) => (
-                          <Link
-                            key={subcategory.id}
-                            to={`/catalog/${subcategory.slug}`}
-                            className="block p-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded transition-colors"
-                          >
-                            {subcategory.name}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
+                    </div>
+                  );
                 })}
               </div>
             </div>
