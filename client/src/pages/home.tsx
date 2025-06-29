@@ -1,12 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 import ProductCard from "@/components/product/product-card";
-import { Truck, Shield, Headphones, Star } from "lucide-react";
+import { Truck, Shield, Headphones, Star, Send } from "lucide-react";
 import type { Product, Category } from "@shared/schema";
 import poolVideo from "@assets/d5eff5f333d3051b9f1f8efec1fd51ab_1751200866687.webm";
 
@@ -20,40 +23,72 @@ interface CategoryWithStats {
 }
 
 export default function Home() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  
+  // Состояние для формы консультации
+  const [consultationData, setConsultationData] = useState({
+    name: "",
+    phone: "",
+    message: "",
+  });
+
   const { data: popularProducts = [] } = useQuery<Product[]>({
     queryKey: ["/api/products/popular"],
   });
 
-  // WhatsApp consultation function for form
-  const handleConsultationWhatsApp = (e: React.FormEvent) => {
+  // Query for categories with stats
+  const { data: categoriesWithStats = [] } = useQuery<CategoryWithStats[]>({
+    queryKey: ["/api/categories/main"],
+  });
+
+  // Mutation для отправки заявки на консультацию
+  const consultationMutation = useMutation({
+    mutationFn: async (data: { customerName: string; customerPhone: string; message?: string }) => {
+      return await apiRequest("/api/consultations", "POST", data);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Заявка отправлена!",
+        description: "Мы получили вашу заявку и свяжемся с вами в ближайшее время.",
+      });
+      setConsultationData({ name: "", phone: "", message: "" });
+    },
+    onError: (error) => {
+      toast({
+        title: "Ошибка отправки",
+        description: "Произошла ошибка при отправке заявки. Попробуйте снова или свяжитесь с нами по телефону.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Обработчик отправки формы консультации
+  const handleConsultationSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    
-    const name = formData.get('name') as string || '';
-    const phone = formData.get('phone') as string || '';
-    const message = formData.get('message') as string || '';
-    
-    // Create WhatsApp message
-    let whatsappMessage = `Здравствуйте! Меня зовут ${name || 'Клиент'}.`;
-    
-    if (phone) {
-      whatsappMessage += ` Мой номер телефона: ${phone}.`;
+    if (!consultationData.name.trim() || !consultationData.phone.trim()) {
+      toast({
+        title: "Заполните обязательные поля",
+        description: "Пожалуйста, укажите ваше имя и номер телефона.",
+        variant: "destructive",
+      });
+      return;
     }
-    
-    whatsappMessage += ' Мне нужна консультация по выбору бассейна.';
-    
-    if (message) {
-      whatsappMessage += ` Дополнительная информация: ${message}`;
-    }
-    
-    // Encode message for URL
-    const encodedMessage = encodeURIComponent(whatsappMessage);
-    const whatsappUrl = `https://wa.me/79285668729?text=${encodedMessage}`;
-    
-    // Open WhatsApp
-    window.open(whatsappUrl, '_blank');
+
+    consultationMutation.mutate({
+      customerName: consultationData.name,
+      customerPhone: consultationData.phone,
+      message: consultationData.message || undefined,
+    });
+  };
+
+  // Обработчик изменения полей формы
+  const handleInputChange = (field: string, value: string) => {
+    setConsultationData(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
   // WhatsApp consultation function for hero button
@@ -379,31 +414,48 @@ export default function Home() {
 
             <Card className="p-8 md:p-12">
               <CardContent>
-                <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={handleConsultationWhatsApp}>
+                <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={handleConsultationSubmit}>
                   <div>
-                    <Label htmlFor="name">Ваше имя</Label>
-                    <Input id="name" name="name" type="text" placeholder="Введите имя" />
+                    <Label htmlFor="name">Ваше имя *</Label>
+                    <Input 
+                      id="name" 
+                      type="text" 
+                      placeholder="Введите имя" 
+                      value={consultationData.name}
+                      onChange={(e) => handleInputChange('name', e.target.value)}
+                      required
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="phone">Телефон</Label>
-                    <Input id="phone" name="phone" type="tel" placeholder="+7 (___) ___-__-__" />
+                    <Label htmlFor="phone">Телефон *</Label>
+                    <Input 
+                      id="phone" 
+                      type="tel" 
+                      placeholder="+7 (___) ___-__-__"
+                      value={consultationData.phone}
+                      onChange={(e) => handleInputChange('phone', e.target.value)}
+                      required
+                    />
                   </div>
                   <div className="md:col-span-2">
                     <Label htmlFor="message">Ваш вопрос (необязательно)</Label>
                     <Textarea
                       id="message"
-                      name="message"
                       rows={4}
                       placeholder="Расскажите о ваших потребностях..."
+                      value={consultationData.message}
+                      onChange={(e) => handleInputChange('message', e.target.value)}
                     />
                   </div>
                   <div className="md:col-span-2">
                     <Button
                       type="submit"
                       size="lg"
-                      className="bg-green-600 hover:bg-green-700 text-white px-8 py-4"
+                      className="bg-[hsl(207,90%,54%)] hover:bg-[hsl(207,90%,48%)] text-white px-8 py-4"
+                      disabled={consultationMutation.isPending}
                     >
-                      📱 Написать в WhatsApp
+                      <Send className="w-5 h-5 mr-2" />
+                      {consultationMutation.isPending ? 'Отправляем...' : 'Отправить заявку'}
                     </Button>
                     <p className="text-sm text-gray-500 mt-3">
                       Нажимая кнопку, вы соглашаетесь с{" "}
