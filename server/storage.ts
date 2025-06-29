@@ -16,6 +16,27 @@ import { eq, and, gte, lte, desc, ilike, or, sql } from "drizzle-orm";
 // Import products table
 import { products, categories, orders, consultations, siteSettings } from "@shared/schema";
 
+// Define interface types
+interface ProductFilters {
+  category?: string;
+  brand?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  inStock?: boolean;
+  search?: string;
+  type?: string;
+  material?: string;
+  shape?: string;
+  volume?: string;
+  sortBy?: string;
+}
+
+interface SearchSuggestion {
+  type: 'product' | 'category' | 'brand';
+  text: string;
+  slug?: string;
+}
+
 interface CategoryStats {
   count: number;
   minPrice: number;
@@ -72,13 +93,17 @@ export class DatabaseStorage implements IStorage {
           const subcategories = await db.select().from(categories)
             .where(eq(categories.parentId, category.id));
           
+          console.log(`Category "${filters.category}": found ${subcategories.length} subcategories`);
+          
           if (subcategories.length > 0) {
             // Это родительская категория - включаем товары из всех дочерних категорий
             const subcategorySlugs = subcategories.map(sub => sub.slug);
+            console.log(`Searching in subcategories: ${subcategorySlugs.join(', ')}`);
             const categoryConditions = subcategorySlugs.map(slug => eq(products.category, slug));
             conditions.push(or(...categoryConditions));
           } else {
             // Это дочерняя категория - обычная фильтрация
+            console.log(`Direct category search: ${filters.category}`);
             conditions.push(eq(products.category, filters.category));
           }
         }
