@@ -373,10 +373,10 @@ export class DatabaseStorage implements IStorage {
     // Маппинг главных категорий к их подкатегориям
     const categoryMapping: { [key: string]: string[] } = {
       'karkasnye-basseyny': ['intex-karkasnye', 'bestway-karkasnye'],
-      'morozostojkie-basseyny': ['morozostojkie-basseyny'],
+      'morozostojkie-basseyny': ['laguna', 'magic-pool', 'summer-fun', 'gre'],
       'dzjakuzi-intex': ['dzjakuzi-intex'],
       'dzjakuzi-bestway': ['dzjakuzi-bestway'],
-      'zapasnye-chashi': ['zapasnye-chashi', 'laguna-films', 'azuro-films', 'gre-films', 'atlantic-pool-films', 'larimar-films']
+      'zapasnye-chashi': ['chashi-laguna', 'chashi-intex', 'chashi-bestway', 'chashi-gre', 'chashi-azuro', 'chashi-atlantic-pool', 'chashi-larimar']
     };
 
     const subcategories = categoryMapping[categorySlug] || [categorySlug];
