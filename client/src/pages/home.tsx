@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import ProductCard from "@/components/product/product-card";
+import SEOHead from "@/components/seo/seo-head";
 import { Truck, Shield, Headphones, Star, Send } from "lucide-react";
 import type { Product, Category } from "@shared/schema";
 import poolVideo from "@assets/d5eff5f333d3051b9f1f8efec1fd51ab_1751200866687.webm";
@@ -161,6 +162,7 @@ export default function Home() {
 
   return (
     <div>
+      <SEOHead />
       {/* Hero Section */}
       <section className="relative">
         <div className="h-96 md:h-[500px] relative overflow-hidden">
