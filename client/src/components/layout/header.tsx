@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { Heart, ShoppingCart, Menu, MapPin, Truck, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
@@ -16,81 +17,41 @@ import { cn } from "@/lib/utils";
 import CategoryMenu from "@/components/layout/category-menu";
 import SearchWithSuggestions from "@/components/search/search-with-suggestions";
 
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+  imageUrl: string | null;
+  productCount: number | null;
+  parentId: number | null;
+  level: number | null;
+  sortOrder: number | null;
+}
+
 export default function Header() {
   const { getItemCount } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const catalogCategories = [
-    { 
-      name: "Каркасные бассейны", 
-      slug: "frame-pools",
-      subcategories: [
-        "Ultra Frame",
-        "Prism Frame", 
-        "Steel Pro Max",
-        "Metal Frame"
-      ]
-    },
-    { 
-      name: "Надувные бассейны", 
-      slug: "inflatable-pools",
-      subcategories: [
-        "Easy Set",
-        "Fast Set",
-        "Snap Set",
-        "Детские бассейны"
-      ]
-    },
-    { 
-      name: "Насосы и фильтры", 
-      slug: "pumps-filters",
-      subcategories: [
-        "Фильтр-насосы",
-        "Песочные фильтры",
-        "Картриджные фильтры",
-        "Скиммеры"
-      ]
-    },
-    { 
-      name: "Лестницы", 
-      slug: "ladders",
-      subcategories: [
-        "Лестницы безопасности",
-        "Стандартные лестницы",
-        "Поручни"
-      ]
-    },
-    { 
-      name: "Тенты и подстилки", 
-      slug: "covers-underlays",
-      subcategories: [
-        "Защитные тенты",
-        "Солнечные покрывала",
-        "Подстилки",
-        "Покрывала"
-      ]
-    },
-    { 
-      name: "Химия для бассейнов", 
-      slug: "chemicals",
-      subcategories: [
-        "Дезинфекция",
-        "pH регуляторы",
-        "Альгициды",
-        "Тест-наборы"
-      ]
-    },
-    { 
-      name: "Аксессуары", 
-      slug: "accessories",
-      subcategories: [
-        "Чаши для бассейнов",
-        "Комплектующие",
-        "Инструменты для чистки",
-        "Игрушки для бассейна"
-      ]
-    }
-  ];
+  // Получаем реальные категории из базы для мобильного меню
+  const { data: mainCategories = [] } = useQuery<Category[]>({
+    queryKey: ["/api/categories/main"],
+  });
+
+  const { data: allCategories = [] } = useQuery<Category[]>({
+    queryKey: ["/api/categories"],
+  });
+
+  // Группируем подкатегории по родительским категориям
+  const subcategoriesByParent = allCategories
+    .filter(cat => cat.level === 1)
+    .reduce((acc, cat) => {
+      if (!acc[cat.parentId!]) {
+        acc[cat.parentId!] = [];
+      }
+      acc[cat.parentId!].push(cat);
+      return acc;
+    }, {} as Record<number, Category[]>);
 
   const navigationPages = [
     { name: "Главная", href: "/" },
@@ -209,27 +170,33 @@ export default function Header() {
               {/* Mobile Categories */}
               <div className="space-y-2">
                 <h3 className="font-semibold text-gray-900 mb-3">Категории</h3>
-                {catalogCategories.map((category) => (
-                  <div key={category.slug} className="space-y-1">
-                    <Link
-                      href={`/catalog?category=${category.slug}`}
-                      className="block p-3 text-gray-700 hover:text-[hsl(207,90%,54%)] hover:bg-blue-50 rounded-md transition-colors font-medium"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {category.name}
-                    </Link>
-                    {category.subcategories.map((sub) => (
+                {mainCategories.map((category) => {
+                  const categorySubcategories = subcategoriesByParent[category.id] || [];
+                  
+                  return (
+                    <div key={category.slug} className="space-y-1">
                       <Link
-                        key={sub}
-                        href={`/catalog?category=${category.slug}&subcategory=${sub}`}
-                        className="block p-2 ml-4 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded transition-colors"
+                        href={`/catalog/${category.slug}`}
+                        className="block p-3 text-gray-700 hover:text-[hsl(207,90%,54%)] hover:bg-blue-50 rounded-md transition-colors font-medium"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        {sub}
+                        {category.name}
                       </Link>
-                    ))}
-                  </div>
-                ))}
+                      {categorySubcategories
+                        .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+                        .map((subcategory) => (
+                        <Link
+                          key={subcategory.slug}
+                          href={`/catalog/${subcategory.slug}`}
+                          className="block p-2 ml-4 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded transition-colors"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          {subcategory.name}
+                        </Link>
+                      ))}
+                    </div>
+                  );
+                })}
               </div>
               
               {/* Mobile Navigation Links */}
