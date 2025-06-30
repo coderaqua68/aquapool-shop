@@ -9,7 +9,7 @@ define('DB_PASS', '42892Xxx!');
 define('TELEGRAM_BOT_TOKEN', '7550930591:AAHZHqOnklv8EFkID5XaTkgzCrGwhY3Ex7M');
 define('TELEGRAM_CHAT_ID', '5696137293');
 
-define('SITE_URL', 'https://aquapool-shop.ru');
+define('SITE_URL', 'https://aquapool-shop.store');
 define('SITE_NAME', 'AquaPool');
 define('SITE_DESCRIPTION', 'Интернет-магазин бассейнов и оборудования. 300+ товаров, бесплатная доставка до 31 июля.');
 
