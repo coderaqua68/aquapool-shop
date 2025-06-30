@@ -72,14 +72,9 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
-  }
+  // Always setup vite for full React app functionality
+  // Use Vite dev server for the complete AquaPool experience
+  await setupVite(app, server);
 
   // Use environment port or fallback to 5000 for Replit, 3000 for other deployments
   const port = process.env.PORT ? parseInt(process.env.PORT) : (process.env.REPL_ID ? 5000 : 3000);
