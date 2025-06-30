@@ -1,10 +1,10 @@
 <?php
 // AquaPool Configuration
 
-define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-define('DB_NAME', getenv('DB_NAME') ?: 'aquapool_db');
-define('DB_USER', getenv('DB_USER') ?: 'username');
-define('DB_PASS', getenv('DB_PASS') ?: 'password');
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'aquapool_db');
+define('DB_USER', 'aquapool_db');
+define('DB_PASS', '42892Xxx!');
 
 define('TELEGRAM_BOT_TOKEN', '7550930591:AAHZHqOnklv8EFkID5XaTkgzCrGwhY3Ex7M');
 define('TELEGRAM_CHAT_ID', '5696137293');
