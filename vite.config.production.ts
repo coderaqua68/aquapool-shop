@@ -1,40 +1,38 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import path from "path";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  root: './client',
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./client/src"),
-      "@shared": path.resolve(__dirname, "./shared"),
-      "@assets": path.resolve(__dirname, "./attached_assets"),
-    },
-  },
+  root: 'client',
+  base: '/',
   build: {
-    outDir: 'dist',
+    outDir: '../dist',
+    emptyOutDir: true,
     rollupOptions: {
       output: {
         manualChunks: {
-          // Разделяем большие библиотеки на отдельные чанки для быстрой сборки
           vendor: ['react', 'react-dom'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select'],
-          query: ['@tanstack/react-query'],
-          // Группируем только используемые иконки
-          icons: ['lucide-react']
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
+          utils: ['clsx', 'tailwind-merge']
         }
       }
     },
-    // Увеличиваем лимит размера чанка для продакшена
-    chunkSizeWarningLimit: 1000,
-    // Включаем минификацию для продакшена
+    sourcemap: false,
     minify: 'esbuild',
-    // Отключаем sourcemaps для быстрой сборки
-    sourcemap: false
+    target: 'es2015'
   },
-  // Оптимизация для продакшена
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'client/src'),
+      '@assets': path.resolve(__dirname, 'attached_assets')
+    }
+  },
   define: {
     'process.env.NODE_ENV': '"production"'
+  },
+  server: {
+    port: 5173,
+    host: '0.0.0.0'
   }
 });
