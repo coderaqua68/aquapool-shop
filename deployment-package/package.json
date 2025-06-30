@@ -1,0 +1,21 @@
+{
+  "name": "aquapool-production",
+  "version": "1.0.0",
+  "description": "AquaPool E-commerce Platform - Production",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "pm2:start": "pm2 start server.js --name aquapool",
+    "pm2:stop": "pm2 stop aquapool",
+    "pm2:restart": "pm2 restart aquapool"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "@neondatabase/serverless": "^0.9.0",
+    "drizzle-orm": "^0.29.0",
+    "node-telegram-bot-api": "^0.64.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
