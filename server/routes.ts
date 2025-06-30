@@ -935,8 +935,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Public endpoint for getting active tracking settings
   app.get('/api/tracking-settings', async (req, res) => {
     try {
-      const settings = await storage.getActiveTrackingSettings();
-      res.json(settings);
+      // Получаем настройки трекинга из общих настроек сайта
+      const allSettings = await storage.getSiteSettings();
+      const trackingSettings = allSettings.filter(setting => 
+        setting.key.includes('tracking') || 
+        setting.key.includes('yandex') || 
+        setting.key.includes('google')
+      );
+      
+      res.json(trackingSettings);
     } catch (error) {
       console.error('Error fetching tracking settings:', error);
       res.status(500).json({ message: 'Failed to fetch tracking settings' });
