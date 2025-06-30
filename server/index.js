@@ -1593,7 +1593,7 @@ app.use((req, res, next) => {
   } else {
     serveStatic(app);
   }
-  const port = 5e3;
+  const port = process.env.PORT ? parseInt(process.env.PORT) : process.env.REPL_ID ? 5e3 : 3e3;
   server.listen({
     port,
     host: "0.0.0.0",

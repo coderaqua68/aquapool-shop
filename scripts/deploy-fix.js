@@ -33,9 +33,14 @@ try {
   process.exit(1);
 }
 
-// 3. Create minimal frontend build if dist doesn't exist or is empty
-if (!existsSync('dist/index.html')) {
-  console.log('🔧 Creating minimal frontend build...');
+// 3. Build frontend with Vite first
+console.log('🔧 Building frontend with Vite...');
+try {
+  execSync('vite build', { stdio: 'inherit', timeout: 300000 }); // 5 minute timeout
+  console.log('✅ Frontend built successfully with Vite');
+} catch (error) {
+  console.warn('⚠️ Vite build failed, creating minimal frontend build...');
+  // Create minimal frontend build as fallback
   
   // Create basic index.html for production
   const indexHtml = `<!DOCTYPE html>
@@ -98,11 +103,18 @@ if (!existsSync('dist/index.html')) {
   console.log('✅ Created minimal frontend build');
 }
 
-// 3.1. Ensure frontend assets are in the expected location for the server
+// 3.1. Copy frontend assets to the location the server expects
 if (!existsSync('server/public')) {
   mkdirSync('server/public', { recursive: true });
 }
-if (existsSync('dist')) {
+
+// Vite builds to dist/public, but server expects server/public
+if (existsSync('dist/public')) {
+  console.log('📋 Copying Vite build from dist/public to server/public...');
+  execSync('cp -r dist/public/* server/public/', { stdio: 'pipe' });
+  console.log('✅ Copied frontend assets to server/public');
+} else if (existsSync('dist')) {
+  console.log('📋 Copying dist contents to server/public...');
   execSync('cp -r dist/* server/public/', { stdio: 'pipe' });
   console.log('✅ Copied frontend assets to server/public');
 }
@@ -121,11 +133,24 @@ if (serverExists) {
   console.log('📍 Frontend assets: dist/');
   console.log('🚀 Ready for production deployment');
   
-  // Create a quick start script
+  // Create a comprehensive production start script
   const startScript = `#!/bin/bash
 echo "🚀 Starting AquaPool production server..."
 export NODE_ENV=production
-export PORT=\${PORT:-3001}
+
+# Use deployment environment port or fallback to 3000
+if [ -z "$PORT" ]; then
+  if [ -n "$REPL_ID" ]; then
+    export PORT=5000  # Replit uses port 5000
+  else
+    export PORT=3000  # Other deployments use port 3000
+  fi
+fi
+
+echo "📍 Using port: $PORT"
+echo "🌐 Environment: $NODE_ENV"
+
+# Start the server
 node server/index.js
 `;
   
