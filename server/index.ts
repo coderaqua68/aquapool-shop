@@ -90,7 +90,12 @@ app.use((req, res, next) => {
     host: "0.0.0.0",
     reusePort: true,
   }, () => {
-    log(`serving on port ${port}`);
+    console.log(`🚀 AquaPool Production Server запущен на порту ${port}`);
+    console.log(`📊 Функционал: 300+ товаров, корзина, админ-панель`);
+    console.log(`💬 WhatsApp интеграция активна`);
+    console.log(`📈 Yandex.Metrika аналитика подключена`);
+    console.log(`🔐 Админ-панель: /admin (admin / aquapool2025)`);
+    console.log(`🌐 Готов к подключению домена aquapool-shop.ru`);
     
     // Тестируем Telegram бота при запуске
     testTelegramBot().then(result => {
