@@ -10,6 +10,16 @@ app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 // Serve static files from attached_assets
 app.use('/attached_assets', express.static('attached_assets'));
 
+// Serve verification files from root
+app.use(express.static('.', { 
+  dotfiles: 'allow',
+  setHeaders: (res, path) => {
+    if (path.includes('yandex_') && path.endsWith('.html')) {
+      res.setHeader('Content-Type', 'text/html; charset=UTF-8');
+    }
+  }
+}));
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -41,6 +51,17 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Специальный маршрут для файла верификации Яндекса
+  app.get('/yandex_816365dd176df39c.html', (req, res) => {
+    res.setHeader('Content-Type', 'text/html; charset=UTF-8');
+    res.send(`<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>Verification: 816365dd176df39c</body>
+</html>`);
+  });
+
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
