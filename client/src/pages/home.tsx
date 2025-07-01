@@ -12,8 +12,7 @@ import ProductCard from "@/components/product/product-card";
 import SEOHead from "@/components/seo/seo-head";
 import { Truck, Shield, Headphones, Star, Send } from "lucide-react";
 import type { Product, Category } from "@shared/schema";
-// Используем красивое видео с бассейном
-const poolVideo = "https://videos.pexels.com/video-files/1851190/1851190-uhd_2560_1440_25fps.mp4";
+import poolVideo from "@assets/pool-video.mp4";
 
 interface CategoryWithStats {
   id: number;
