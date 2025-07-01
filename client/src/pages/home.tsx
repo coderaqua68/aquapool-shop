@@ -12,7 +12,7 @@ import ProductCard from "@/components/product/product-card";
 import SEOHead from "@/components/seo/seo-head";
 import { Truck, Shield, Headphones, Star, Send } from "lucide-react";
 import type { Product, Category } from "@shared/schema";
-import poolVideo from "@assets/d5eff5f333d3051b9f1f8efec1fd51ab_1751200866687.webm";
+// import poolVideo from "@assets/d5eff5f333d3051b9f1f8efec1fd51ab_1751200866687.webm";
 
 interface CategoryWithStats {
   id: number;
@@ -168,7 +168,7 @@ export default function Home() {
             loop
             playsInline
           >
-            <source src={poolVideo} type="video/webm" />
+            <source src="/d5eff5f333d3051b9f1f8efec1fd51ab_1751200866687.webm" type="video/webm" />
           </video>
           {/* Video Overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 to-blue-600/30"></div>
