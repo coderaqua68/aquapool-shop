@@ -1,9 +1,9 @@
 <?php
 class Product {
-    private $db;
+    private $pdo;
     
-    public function __construct() {
-        $this->db = Database::getInstance();
+    public function __construct($pdo) {
+        $this->pdo = $pdo;
     }
     
     public function getAll($filters = []) {
@@ -137,7 +137,63 @@ class Product {
     }
     
     public function delete($id) {
-        return $this->db->delete('products', 'id = ?', [$id]);
+        $stmt = $this->pdo->prepare("DELETE FROM products WHERE id = ?");
+        return $stmt->execute([$id]);
+    }
+    
+    public function getCategoryProductCount($categorySlug) {
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(p.id) as count 
+            FROM products p 
+            JOIN categories c ON p.category_id = c.id 
+            WHERE c.slug = ? OR c.parent_slug = ?
+        ");
+        $stmt->execute([$categorySlug, $categorySlug]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['count'] : 0;
+    }
+    
+    public function getPopularProducts($limit = 4) {
+        $stmt = $this->pdo->prepare("
+            SELECT * FROM products 
+            WHERE is_popular = 1 
+            ORDER BY rating DESC, review_count DESC 
+            LIMIT ?
+        ");
+        $stmt->execute([$limit]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    public function getAllProducts($filters = []) {
+        $sql = "SELECT p.*, c.name as category_name, c.slug as category_slug 
+                FROM products p 
+                LEFT JOIN categories c ON p.category_id = c.id 
+                WHERE 1=1";
+        $params = [];
+        
+        if (!empty($filters['category'])) {
+            $sql .= " AND (c.slug = ? OR c.parent_slug = ?)";
+            $params[] = $filters['category'];
+            $params[] = $filters['category'];
+        }
+        
+        if (!empty($filters['search'])) {
+            $sql .= " AND (p.name LIKE ? OR p.sku LIKE ? OR p.brand LIKE ? OR p.description LIKE ?)";
+            $searchTerm = '%' . $filters['search'] . '%';
+            $params = array_merge($params, [$searchTerm, $searchTerm, $searchTerm, $searchTerm]);
+        }
+        
+        $sql .= " ORDER BY p.name";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    public function getCategories() {
+        $stmt = $this->pdo->prepare("SELECT * FROM categories ORDER BY name");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 ?>
