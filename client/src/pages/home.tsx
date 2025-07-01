@@ -12,7 +12,8 @@ import ProductCard from "@/components/product/product-card";
 import SEOHead from "@/components/seo/seo-head";
 import { Truck, Shield, Headphones, Star, Send } from "lucide-react";
 import type { Product, Category } from "@shared/schema";
-import poolVideo from "@assets/pool-video.mp4";
+// Используем красивое изображение бассейна вместо видео
+const poolBackground = "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80";
 
 interface CategoryWithStats {
   id: number;
@@ -160,16 +161,11 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative">
         <div className="h-96 md:h-[500px] relative overflow-hidden">
-          {/* Video Background */}
-          <video
-            className="absolute inset-0 w-full h-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-          >
-            <source src={poolVideo} type="video/webm" />
-          </video>
+          {/* Background Image */}
+          <div 
+            className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${poolBackground})` }}
+          ></div>
           {/* Video Overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 to-blue-600/30"></div>
           <div className="absolute inset-0 flex items-center justify-center">
