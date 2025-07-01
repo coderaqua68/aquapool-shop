@@ -1005,15 +1005,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Database initialization endpoint (one-time use for Vercel)
   app.post('/api/init-database', async (req, res) => {
     try {
-      // Import Pool directly for initialization
-      const { Pool } = await import('@neondatabase/serverless');
+      // Import neon directly for initialization
+      const { neon } = await import('@neondatabase/serverless');
       
-      const pool = new Pool({
-        connectionString: process.env.DATABASE_URL
-      });
+      const sql = neon(process.env.DATABASE_URL!);
 
       // Create products table
-      await pool.query(`
+      await sql`
         CREATE TABLE IF NOT EXISTS products (
           id SERIAL PRIMARY KEY,
           sku TEXT UNIQUE NOT NULL,
@@ -1048,10 +1046,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           installation_type TEXT,
           country_origin TEXT
         );
-      `);
+      `;
 
       // Create categories table
-      await pool.query(`
+      await sql`
         CREATE TABLE IF NOT EXISTS categories (
           id SERIAL PRIMARY KEY,
           name TEXT NOT NULL,
@@ -1063,10 +1061,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           level INTEGER DEFAULT 0,
           sort_order INTEGER DEFAULT 0
         );
-      `);
+      `;
 
       // Create orders table
-      await pool.query(`
+      await sql`
         CREATE TABLE IF NOT EXISTS orders (
           id SERIAL PRIMARY KEY,
           customer_name TEXT NOT NULL,
@@ -1081,10 +1079,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           notes TEXT,
           created_at TIMESTAMP DEFAULT NOW()
         );
-      `);
+      `;
 
       // Create consultations table
-      await pool.query(`
+      await sql`
         CREATE TABLE IF NOT EXISTS consultations (
           id SERIAL PRIMARY KEY,
           name TEXT NOT NULL,
@@ -1094,10 +1092,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           status TEXT DEFAULT 'pending',
           created_at TIMESTAMP DEFAULT NOW()
         );
-      `);
+      `;
 
       // Create site_settings table
-      await pool.query(`
+      await sql`
         CREATE TABLE IF NOT EXISTS site_settings (
           id SERIAL PRIMARY KEY,
           key VARCHAR UNIQUE NOT NULL,
@@ -1108,10 +1106,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         );
-      `);
+      `;
 
       // Create telegram_admins table
-      await pool.query(`
+      await sql`
         CREATE TABLE IF NOT EXISTS telegram_admins (
           id SERIAL PRIMARY KEY,
           chat_id VARCHAR(50) UNIQUE NOT NULL,
@@ -1121,10 +1119,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           added_at TIMESTAMP DEFAULT NOW(),
           last_notified TIMESTAMP
         );
-      `);
+      `;
 
       // Insert basic categories
-      await pool.query(`
+      await sql`
         INSERT INTO categories (name, slug, description, level) VALUES
         ('Каркасные бассейны', 'karkasnye-basseyny', 'Надежные каркасные бассейны для дачи', 0),
         ('Морозоустойчивые бассейны', 'morozoustoychivye-basseyny', 'Всесезонные бассейны', 0),
@@ -1132,9 +1130,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ('Запасные чаши', 'zapasnie-chashi', 'Сменные чаши для бассейнов', 0),
         ('Пленка для бассейнов', 'plenka-dlya-basseinov', 'Покрытия и пленки', 0)
         ON CONFLICT (slug) DO NOTHING;
-      `);
-
-      await pool.end();
+      `;
 
       res.json({ 
         success: true, 
