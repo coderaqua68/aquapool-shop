@@ -1,15 +1,6 @@
 <?php
 session_start();
-
-// Database configuration
-$config = [
-    'db_host' => 'localhost',
-    'db_name' => 'aquapool_db',
-    'db_user' => 'username',
-    'db_pass' => 'password',
-    'telegram_bot_token' => '7550930591:AAHZHqOnklv8EFkID5XaTkgzCrGwhY3Ex7M',
-    'telegram_chat_id' => '5696137293'
-];
+require_once 'config.php';
 
 // Simple router
 $request_uri = $_SERVER['REQUEST_URI'];
